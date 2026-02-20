@@ -78,7 +78,7 @@ const PASSIVE_SKILLS = {
             const base = Math.floor((Math.sqrt(lvl*10)/100*1 + 1) * 100);
             return {
                 result: base,
-                elite_bonus: Math.floor(base * 0.3)  // В commands.py int(mult/100*30)
+                elite_bonus: Math.floor(base * 0.3)
             };
         },
         "desc": "Шанс встретить хранителя прохода повышен на {result}%. Шанс встретить элитных противников повышен на {elite_bonus}%.",
@@ -106,7 +106,8 @@ const PASSIVE_SKILLS = {
         },
         "desc": "Каждый ход в бою Вы восстанавливаете здоровье в размере {result:.2f}% от максимального.",
         "format": function(result) { 
-            return { result: (result / 100).toFixed(2) };  // ← ДЕЛИМ НА 100!
+            // Для 1 уровня: 206/100 = 2.06%
+            return { result: (result / 100).toFixed(2) }; 
         }
     },
     "расчетливость": {
@@ -138,7 +139,8 @@ const PASSIVE_SKILLS = {
         },
         "desc": "Вес рыбы увеличен в {result:.2f} раз.",
         "format": function(result) { 
-            return { result: (result / 100).toFixed(2) };  // ← ДЕЛИМ НА 100!
+            // Для 1 уровня: 101/100 = 1.01
+            return { result: (result / 100).toFixed(2) }; 
         }
     },
     "неуязвимый": {
@@ -178,7 +180,7 @@ const PASSIVE_SKILLS = {
     "феникс": {
         "calc": function(lvl) {
             const pve = Math.floor(90 - 40 / (1 + Math.sqrt(lvl / 1000)));
-            const pvp = Math.floor(pve / 2);  // В commands.py mult // 2
+            const pvp = Math.floor(pve / 2);
             return {
                 result: pve,
                 pvp_result: pvp
@@ -329,7 +331,8 @@ const PASSIVE_SKILLS = {
         },
         "desc": "Увеличивает устойчивость персонажа к периодическому урону, уменьшая получаемый урон от кровотечения и отравления на {result}%.",
         "format": function(result) { 
-            return { result: (result / 10).toFixed(2) };  // ← ДЕЛИМ НА 10!
+            // Для 1 уровня: 201/10 = 20.1%
+            return { result: (result / 10).toFixed(2) }; 
         }
     },
     "угроза": {
