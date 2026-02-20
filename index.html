@@ -124,7 +124,7 @@
         .books-list { width: 100%; padding: 15px; box-sizing: border-box; }
         .book-item { background-color: var(--card-bg); border-radius: 8px; padding: 12px 15px; margin-bottom: 10px; border: 1px solid var(--separator-color); display: flex; flex-direction: column; gap: 8px; }
         .book-header { display: flex; justify-content: space-between; align-items: center; }
-        .book-name { font-size: 14px; font-weight: 700; color: var(--text-main); text-transform: lowercase; }
+        .book-name { font-size: 14px; font-weight: 700; color: var(--text-main); text-transform: uppercase; }
         .book-level-control { display: flex; align-items: center; gap: 8px; }
         .book-level-control label { font-size: 11px; color: var(--text-secondary); text-transform: lowercase; }
         .book-level-input { background: var(--input-bg); border: 1px solid var(--accent); color: white; font-size: 13px; font-weight: 700; padding: 2px 6px; border-radius: 4px; width: 50px; text-align: center; outline: none; }
@@ -422,7 +422,7 @@
                         <div class="book-name">${name}</div>
                         <div class="book-level-control">
                             <label>ур:</label>
-                            <input type="number" class="book-level-input" value="${lvl}" onchange="updateBookLevel('${name}', this.value)" min="1">
+                            <input type="number" class="book-level-input" value="${lvl}" onchange="updateBookLevel('${name}', this.value, event)" min="1">
                         </div>
                     </div>
                     <div class="book-desc">${desc}</div>
@@ -432,7 +432,13 @@
             }
         }
 
-        window.updateBookLevel = function(name, value) {
+        // ИСПРАВЛЕННАЯ ФУНКЦИЯ - БЕЗ ПРОКРУТКИ
+        window.updateBookLevel = function(name, value, event) {
+            // Останавливаем стандартное поведение (чтобы не перематывало наверх)
+            if (event) {
+                event.preventDefault();
+            }
+            
             const savedLevels = JSON.parse(localStorage.getItem(BOOKS_LVL_KEY) || '{}');
             savedLevels[name] = parseInt(value) || 1;
             localStorage.setItem(BOOKS_LVL_KEY, JSON.stringify(savedLevels));
