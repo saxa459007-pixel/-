@@ -392,7 +392,7 @@
             return Math.floor(num);
         }
 
-        // --- РЕНДЕРИНГ КНИГ ---
+        // --- ИСПРАВЛЕННАЯ ФУНКЦИЯ РЕНДЕРИНГА КНИГ ---
         function renderBooks() {
             const savedLevels = JSON.parse(localStorage.getItem(BOOKS_LVL_KEY) || '{}');
             const container = document.getElementById('booksContainer');
@@ -401,35 +401,27 @@
             for (const [name, data] of Object.entries(PASSIVE_SKILLS)) {
                 const lvl = savedLevels[name] || 1;
                 let result = data.calc(lvl);
-                let desc = data.desc;
+                let formatData;
                 
-                // Обработка displayDivide
-                if (data.displayDivide && typeof result === 'number') { 
-                    result = result / 100; 
-                } else if (data.displayDivide && typeof result === 'object') { 
-                    for (let k in result) { 
-                        if (typeof result[k] === 'number') { 
-                            result[k] = result[k] / 100; 
-                        }
-                    } 
-                }
-                
-                // Замена плейсхолдеров в описании
-                if (typeof result === 'object') {
-                    for (const [key, val] of Object.entries(result)) {
-                        const regex = new RegExp(`\\{${key}(?::\\.2f)?\\}`, 'g');
-                        const isFloat = data.desc.includes(`${key}:.2f`);
-                        desc = desc.replace(regex, `<span class="book-val">${formatNumber(val, isFloat ? ':.2f' : '')}</span>`);
+                // ИСПОЛЬЗУЕМ format ИЗ data!
+                if (data.format) {
+                    if (typeof data.format === 'function') {
+                        // Если format - функция, вызываем её с result и lvl
+                        formatData = data.format(result, lvl);
+                    } else {
+                        // Если format - объект, используем его как есть
+                        formatData = data.format;
                     }
                 } else {
-                    const isFloat = desc.includes('result:.2f');
-                    desc = desc.replace(/\{result(?::\.2f)?\}/g, `<span class="book-val">${formatNumber(result, isFloat ? ':.2f' : '')}</span>`);
+                    formatData = { result: result };
                 }
                 
-                // Специальная обработка для {result_div}
-                if (desc.includes('{result_div}') && !data.displayDivide) {
-                    const finalDiv = (result / 100).toFixed(2);
-                    desc = desc.replace('{result_div}', `<span class="book-val">${finalDiv}</span>`);
+                let desc = data.desc;
+                
+                // Замена плейсхолдеров в описании
+                for (const [key, val] of Object.entries(formatData)) {
+                    const regex = new RegExp(`\\{${key}(?::\\.2f)?\\}`, 'g');
+                    desc = desc.replace(regex, `<span class="book-val">${val}</span>`);
                 }
                 
                 const item = document.createElement('div');
