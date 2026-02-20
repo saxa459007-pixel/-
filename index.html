@@ -123,26 +123,68 @@
 
         .books-list { width: 100%; padding: 15px; box-sizing: border-box; }
         .book-item { background-color: var(--card-bg); border-radius: 8px; padding: 12px 15px; margin-bottom: 10px; border: 1px solid var(--separator-color); display: flex; flex-direction: column; gap: 8px; }
-        .book-header { display: flex; justify-content: space-between; align-items: center; }
+        .book-header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            margin-bottom: 4px;
+        }
         .book-name { 
             font-size: 14px; 
             font-weight: 700; 
             color: var(--text-main); 
-            text-transform: none; /* убираем капс */
+            text-transform: none;
         }
-        .book-level-control { display: flex; align-items: center; gap: 8px; }
-        .book-level-control label { font-size: 11px; color: var(--text-secondary); text-transform: lowercase; }
-        .book-level-input { background: var(--input-bg); border: 1px solid var(--accent); color: white; font-size: 13px; font-weight: 700; padding: 2px 6px; border-radius: 4px; width: 50px; text-align: center; outline: none; }
-        .book-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.4; white-space: pre-line; }
-        .book-val { color: var(--text-main); font-weight: 600; }
+        .book-desc { 
+            font-size: 12px; 
+            color: var(--text-secondary); 
+            line-height: 1.4; 
+            white-space: pre-line;
+            margin-bottom: 8px;
+        }
+        .book-val { 
+            color: var(--text-main); 
+            font-weight: 600; 
+        }
+        
+        /* ФИНАЛЬНЫЙ СТИЛЬ ДЛЯ НИЖНЕЙ СТРОКИ */
+        .book-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 4px;
+            padding-top: 8px;
+            border-top: 1px dashed var(--separator-color);
+        }
+        
+        .book-level-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .book-level-input {
+            background: var(--input-bg);
+            border: 1px solid var(--accent);
+            color: white;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 4px 6px;
+            border-radius: 4px;
+            width: 60px;
+            text-align: center;
+            outline: none;
+        }
+        
+        .book-level-unit {
+            color: var(--text-secondary);
+            font-size: 13px;
+        }
+        
         .book-price { 
-            font-size: 13px; 
             color: var(--gold); 
-            margin-top: 8px; 
-            padding-top: 6px; 
-            border-top: 1px dashed var(--separator-color); 
-            text-align: right; 
             font-weight: 500;
+            font-size: 13px;
         }
 
         .controls { width: 100%; padding: 0 15px 15px 15px; box-sizing: border-box; }
@@ -376,7 +418,7 @@
             }
         }
 
-        // --- РЕНДЕРИНГ КНИГ С ЦЕНАМИ ---
+        // --- ФИНАЛЬНАЯ ВЕРСИЯ РЕНДЕРИНГА КНИГ ---
         async function renderBooks() {
             const savedLevels = JSON.parse(localStorage.getItem(BOOKS_LVL_KEY) || '{}');
             const container = document.getElementById('booksContainer');
@@ -407,7 +449,7 @@
                 const item = document.createElement('div');
                 item.className = 'book-item';
                 
-                let priceHtml = '';
+                let priceText = '0';
                 
                 // Получаем цену книги
                 try {
@@ -415,7 +457,7 @@
                     if (bookPrice && bookPrice > 0) {
                         const totalCost = calculateUpgradeCost(lvl, bookPrice);
                         if (totalCost) {
-                            priceHtml = `<div class="book-price">🌕 ${formatGold(totalCost)}</div>`;
+                            priceText = formatGold(totalCost);
                         }
                     }
                 } catch (e) {
@@ -424,26 +466,28 @@
                 
                 item.innerHTML = `
                     <div class="book-header">
-                        <div class="book-name" style="text-transform: none;">${name}</div>
-                        <div class="book-level-control">
-                            <label>ур:</label>
-                            <input type="number" class="book-level-input" value="${lvl}" onchange="updateBookLevel('${name}', this.value)" min="1">
-                        </div>
+                        <div class="book-name">${name}</div>
                     </div>
                     <div class="book-desc">${desc}</div>
-                    ${priceHtml}
+                    <div class="book-footer">
+                        <div class="book-level-wrapper">
+                            <input type="number" class="book-level-input" value="${lvl}" onchange="updateBookLevel('${name}', this.value)" min="1">
+                            <span class="book-level-unit">ур.</span>
+                        </div>
+                        <div class="book-price">🌕 ${priceText}</div>
+                    </div>
                 `;
                 container.appendChild(item);
             }
         }
 
-        // ИСПРАВЛЕННАЯ ФУНКЦИЯ - ВОЗВРАЩАЕМ FALSE
+        // Функция обновления уровня
         window.updateBookLevel = function(name, value) {
             const savedLevels = JSON.parse(localStorage.getItem(BOOKS_LVL_KEY) || '{}');
             savedLevels[name] = parseInt(value) || 1;
             localStorage.setItem(BOOKS_LVL_KEY, JSON.stringify(savedLevels));
             renderBooks();
-            return false; // Важно! Предотвращает стандартное поведение
+            return false;
         };
 
         window.switchPage = function(pageName) {
