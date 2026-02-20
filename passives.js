@@ -106,7 +106,7 @@ const PASSIVE_SKILLS = {
         },
         "desc": "Каждый ход в бою Вы восстанавливаете здоровье в размере {result:.2f}% от максимального.",
         "format": function(result) { 
-            return { result: (result / 100).toFixed(2) }; 
+            return { result: (result / 100).toFixed(2) };  // ← ДЕЛИМ НА 100!
         }
     },
     "расчетливость": {
@@ -138,7 +138,7 @@ const PASSIVE_SKILLS = {
         },
         "desc": "Вес рыбы увеличен в {result:.2f} раз.",
         "format": function(result) { 
-            return { result: (result / 100).toFixed(2) }; 
+            return { result: (result / 100).toFixed(2) };  // ← ДЕЛИМ НА 100!
         }
     },
     "неуязвимый": {
@@ -329,7 +329,7 @@ const PASSIVE_SKILLS = {
         },
         "desc": "Увеличивает устойчивость персонажа к периодическому урону, уменьшая получаемый урон от кровотечения и отравления на {result}%.",
         "format": function(result) { 
-            return { result: (result / 10).toFixed(2) }; 
+            return { result: (result / 10).toFixed(2) };  // ← ДЕЛИМ НА 10!
         }
     },
     "угроза": {
