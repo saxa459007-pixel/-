@@ -73,6 +73,7 @@
         .avatar { width: 50px; height: 50px; border-radius: 50%; margin-right: 12px; object-fit: cover; border: 2px solid var(--separator-color); flex-shrink: 0; background-color: #000; }
         .info { flex: 1; overflow: visible; position: relative; }
         .player-name { font-size: 17px; margin: 0 0 5px 0; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text-main); }
+        .user-id { font-size: 11px; color: var(--text-secondary); margin-bottom: 5px; }
         
         .class-wrapper { position: relative; width: 100%; z-index: 50; }
         .class-trigger { background: none; border: none; color: var(--text-secondary); font-size: 12px; padding: 4px 8px; margin: 0; cursor: pointer; text-transform: lowercase; font-family: inherit; display: inline-flex; align-items: center; gap: 4px; outline: none; text-align: left; border-radius: 4px; transition: background 0.2s; width: auto; }
@@ -163,6 +164,7 @@
                     <img src="https://via.placeholder.com/50" alt="Avatar" class="avatar" id="user-avatar">
                     <div class="info">
                         <h1 class="player-name" id="user-name">Загрузка...</h1>
+                        <div class="user-id" id="user-id"></div>
                         <div class="class-wrapper">
                             <button class="class-trigger" id="classTrigger" onclick="toggleClassList()">жнец душ</button>
                             <div class="class-list" id="classList"></div>
@@ -182,11 +184,11 @@
                     <!-- Ряд 3 -->
                     <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🍀</span><div class="stat-value-container"><span class="stat-value" data-key="luck">57</span></div><span class="stat-label">удч</span></div></div>
                     <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🎯</span><div class="stat-value-container"><span class="stat-value" data-key="acc">112</span></div><span class="stat-label">тчн</span></div></div>
-                    <div class="stat-cell" onclick="editStatByCell(this, false, true)"><div class="stat-row"><span class="stat-icon" id="karma-icon">😐</span><div class="stat-value-container"><span class="stat-value" data-key="karma">0</span></div><span class="stat-label">карма</span></div></div>
+                    <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🌀</span><div class="stat-value-container"><span class="stat-value" data-key="conc">64</span></div><span class="stat-label">кц</span></div></div>
                     <!-- Ряд 4 -->
                     <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">📜</span><div class="stat-value-container"><span class="stat-value" data-key="class_lvl">50</span></div><span class="stat-label">ур. кл.</span></div></div>
                     <div class="stat-cell" onclick="editStatByCell(this, true)"><div class="stat-row"><span class="stat-icon">🔰</span><div class="stat-value-container"><span class="stat-value" data-key="resist">0%</span></div><span class="stat-label">сопра</span></div></div>
-                    <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🌀</span><div class="stat-value-container"><span class="stat-value" data-key="conc">64</span></div><span class="stat-label">кц</span></div></div>
+                    <div class="stat-cell" onclick="editStatByCell(this, false, true)"><div class="stat-row"><span class="stat-icon" id="karma-icon">😐</span><div class="stat-value-container"><span class="stat-value" data-key="karma">0</span></div><span class="stat-label">карма</span></div></div>
                 </div>
 
                 <div class="class-result-box">
@@ -352,6 +354,37 @@
                 triggerBtn.classList.remove('open');
             }
         });
+
+        // --- ЗАГРУЗКА ДАННЫХ ПОЛЬЗОВАТЕЛЯ VK ---
+        async function loadVKUserData() {
+            try {
+                // Получаем данные пользователя
+                const user = await vkBridge.send('VKWebAppGetUserInfo');
+                
+                // Обновляем аватар
+                const avatar = document.getElementById('user-avatar');
+                if (user.photo_200) {
+                    avatar.src = user.photo_200;
+                } else if (user.photo_100) {
+                    avatar.src = user.photo_100;
+                } else if (user.photo_50) {
+                    avatar.src = user.photo_50;
+                }
+                
+                // Обновляем имя
+                const nameElement = document.getElementById('user-name');
+                nameElement.textContent = `${user.first_name} ${user.last_name}`;
+                
+                // Показываем ID
+                const idElement = document.getElementById('user-id');
+                idElement.textContent = `ID: ${user.id}`;
+                
+            } catch (error) {
+                console.log('Не удалось загрузить данные пользователя VK', error);
+                // Если не в VK, показываем заглушку
+                document.getElementById('user-name').textContent = 'Тестовый пользователь';
+            }
+        }
 
         // --- ФУНКЦИИ ДЛЯ ФОРМАТИРОВАНИЯ ---
         function formatNumber(num, format) {
@@ -523,18 +556,21 @@
             loadStats();
             initClassList();
             
-            // Инициализация VK Bridge с обработкой ошибок
+            // Инициализация VK Bridge и загрузка данных пользователя
             try {
                 vkBridge.send('VKWebAppInit')
-                    .then(data => {
+                    .then(() => {
                         console.log('VK Bridge инициализирован успешно');
+                        loadVKUserData();
                     })
                     .catch(error => {
                         console.log('Ошибка инициализации VK Bridge:', error);
-                        // Даже если ошибка, приложение должно работать
+                        // Загружаем тестовые данные
+                        document.getElementById('user-name').textContent = 'Тестовый пользователь';
                     });
             } catch (e) {
                 console.log('VK Bridge не доступен (возможно, запуск вне VK)');
+                document.getElementById('user-name').textContent = 'Тестовый пользователь';
             }
         };
     </script>
