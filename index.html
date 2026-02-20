@@ -15,6 +15,7 @@
             --accent: #5865F2;
             --input-bg: #4a5059;
             --separator-color: #4a5057;
+            --gold: #ffd700;
         }
 
         body {
@@ -31,7 +32,6 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* --- НАВИГАЦИЯ --- */
         .top-nav {
             width: 100%;
             max-width: 500px;
@@ -62,7 +62,6 @@
         .nav-item.active { color: var(--text-main); background-color: rgba(255,255,255,0.1); }
         .nav-icon { width: 26px; height: 26px; fill: currentColor; pointer-events: none; }
 
-        /* --- КОНТЕНТ --- */
         .content-container { width: 100%; max-width: 500px; display: flex; flex-direction: column; align-items: center; padding-bottom: 20px; box-sizing: border-box; }
         .page { display: none; width: 100%; animation: fadeIn 0.3s; }
         .page.active { display: block; }
@@ -131,6 +130,15 @@
         .book-level-input { background: var(--input-bg); border: 1px solid var(--accent); color: white; font-size: 13px; font-weight: 700; padding: 2px 6px; border-radius: 4px; width: 50px; text-align: center; outline: none; }
         .book-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.4; white-space: pre-line; }
         .book-val { color: var(--text-main); font-weight: 600; }
+        .book-price { 
+            font-size: 13px; 
+            color: var(--gold); 
+            margin-top: 8px; 
+            padding-top: 6px; 
+            border-top: 1px dashed var(--separator-color); 
+            text-align: right; 
+            font-weight: 500;
+        }
 
         .controls { width: 100%; padding: 0 15px 15px 15px; box-sizing: border-box; }
         .btn-reset { width: 100%; padding: 10px; background: transparent; color: #72767d; border: 1px solid #42454a; border-radius: 4px; font-size: 13px; font-weight: 600; cursor: pointer; margin-bottom: 8px; text-align: center; transition: all 0.2s; }
@@ -142,7 +150,6 @@
 </head>
 <body>
 
-    <!-- НАВИГАЦИЯ -->
     <div class="top-nav">
         <div class="nav-item active" onclick="switchPage('profile')" id="nav-profile">
             <svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
@@ -157,7 +164,6 @@
 
     <div class="content-container">
         
-        <!-- СТРАНИЦА ПРОФИЛЯ -->
         <div id="page-profile" class="page active">
             <div class="profile-card">
                 <div class="profile-header">
@@ -173,19 +179,15 @@
                 </div>
 
                 <div class="stats-grid">
-                    <!-- Ряд 1 -->
                     <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🕯️</span><div class="stat-value-container"><span class="stat-value" data-key="lvl">207</span></div><span class="stat-label">ур</span></div></div>
                     <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">⚔️</span><div class="stat-value-container"><span class="stat-value" data-key="atk">717</span></div><span class="stat-label">атк</span></div></div>
                     <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🛡️</span><div class="stat-value-container"><span class="stat-value" data-key="armor">212</span></div><span class="stat-label">брн</span></div></div>
-                    <!-- Ряд 2 -->
                     <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">💪</span><div class="stat-value-container"><span class="stat-value" data-key="str">403</span></div><span class="stat-label">сил</span></div></div>
                     <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">👐</span><div class="stat-value-container"><span class="stat-value" data-key="agi">861</span></div><span class="stat-label">лвк</span></div></div>
                     <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">❤️</span><div class="stat-value-container"><span class="stat-value" data-key="vit">602</span></div><span class="stat-label">внс</span></div></div>
-                    <!-- Ряд 3 -->
                     <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🍀</span><div class="stat-value-container"><span class="stat-value" data-key="luck">57</span></div><span class="stat-label">удч</span></div></div>
                     <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🎯</span><div class="stat-value-container"><span class="stat-value" data-key="acc">112</span></div><span class="stat-label">тчн</span></div></div>
                     <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🌀</span><div class="stat-value-container"><span class="stat-value" data-key="conc">64</span></div><span class="stat-label">кц</span></div></div>
-                    <!-- Ряд 4 -->
                     <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">📜</span><div class="stat-value-container"><span class="stat-value" data-key="class_lvl">50</span></div><span class="stat-label">ур. кл.</span></div></div>
                     <div class="stat-cell" onclick="editStatByCell(this, true)"><div class="stat-row"><span class="stat-icon">🔰</span><div class="stat-value-container"><span class="stat-value" data-key="resist">0%</span></div><span class="stat-label">сопра</span></div></div>
                     <div class="stat-cell" onclick="editStatByCell(this, false, true)"><div class="stat-row"><span class="stat-icon" id="karma-icon">😐</span><div class="stat-value-container"><span class="stat-value" data-key="karma">0</span></div><span class="stat-label">карма</span></div></div>
@@ -200,21 +202,16 @@
             <div class="controls"><button class="btn-reset danger" onclick="clearAll()">Сбросить всё вручную</button></div>
         </div>
 
-        <!-- СТРАНИЦА КНИГ -->
         <div id="page-books" class="page">
             <div class="books-list" id="booksContainer"></div>
         </div>
     </div>
 
-    <!-- Подключаем формулы пассивок -->
     <script src="passives.js"></script>
-    
-    <!-- Подключаем формулы активных умений -->
     <script src="actives.js"></script>
+    <script src="prices.js"></script>
 
-    <!-- Основная логика -->
     <script>
-        // --- КОНФИГУРАЦИЯ КЛАССОВ ---
         const CLASS_CONFIG = {
             "жнец душ": { type: "warlock", name: "Чернокнижник", desc: "<span class='highlight-class'>Чернокнижник</span>: Доп. снижение концентрации противника на <span class='highlight-val'>{val}%</span>" },
             "повелитель мрака": { type: "warlock", name: "Чернокнижник", desc: "<span class='highlight-class'>Чернокнижник</span>: Доп. снижение концентрации противника на <span class='highlight-val'>{val}%</span>" },
@@ -230,18 +227,15 @@
             "верховный маг": { type: "secret_keeper", name: "Хранитель тайн", desc: "<span class='highlight-class'>Хранитель тайн</span>: Шанс {val}% на повторное срабатывание умения (-30% при доп. действии)" }
         };
 
-        // Ключи для localStorage
         const DB_KEY = 'rpg_stats_final_verified_v8';
         const DATE_KEY = 'rpg_date_final_verified_v8';
         const CLASS_KEY = 'rpg_class_final_verified_v8';
         const BOOKS_LVL_KEY = 'rpg_books_levels_final_verified_v8';
 
-        // Элементы DOM
         const triggerBtn = document.getElementById('classTrigger');
         const listDiv = document.getElementById('classList');
         const karmaIconSpan = document.getElementById('karma-icon');
 
-        // --- ЛОГИКА КАРМЫ ---
         function getKarmaIcon(value) {
             const num = parseInt(value);
             if (num < 0) return '😈';
@@ -261,7 +255,6 @@
             }
         }
 
-        // --- ФОРМУЛЫ КЛАССА ---
         function calculateRunesResist(runesCount) {
             if (runesCount < 0) runesCount = 0;
             if (runesCount === 0) return 0;
@@ -297,7 +290,6 @@
             document.getElementById('res-class-desc').innerHTML = config.desc.replace('{val}', bonus.toFixed(1));
         }
 
-        // --- ФУНКЦИИ ДЛЯ СПИСКА КЛАССОВ ---
         window.toggleClassList = function() {
             const isShown = listDiv.classList.contains('show');
             if (isShown) {
@@ -347,7 +339,6 @@
             updateClassResult();
         }
 
-        // Закрытие списка при клике вне его
         document.addEventListener('click', function(e) {
             if (!listDiv.contains(e.target) && e.target !== triggerBtn) {
                 listDiv.classList.remove('show');
@@ -355,13 +346,10 @@
             }
         });
 
-        // --- ЗАГРУЗКА ДАННЫХ ПОЛЬЗОВАТЕЛЯ VK ---
         async function loadVKUserData() {
             try {
-                // Получаем данные пользователя
                 const user = await vkBridge.send('VKWebAppGetUserInfo');
                 
-                // Обновляем аватар
                 const avatar = document.getElementById('user-avatar');
                 if (user.photo_200) {
                     avatar.src = user.photo_200;
@@ -371,29 +359,20 @@
                     avatar.src = user.photo_50;
                 }
                 
-                // Обновляем имя
                 const nameElement = document.getElementById('user-name');
                 nameElement.textContent = `${user.first_name} ${user.last_name}`;
                 
-                // Показываем ID
                 const idElement = document.getElementById('user-id');
                 idElement.textContent = `ID: ${user.id}`;
                 
             } catch (error) {
                 console.log('Не удалось загрузить данные пользователя VK', error);
-                // Если не в VK, показываем заглушку
                 document.getElementById('user-name').textContent = 'Тестовый пользователь';
             }
         }
 
-        // --- ФУНКЦИИ ДЛЯ ФОРМАТИРОВАНИЯ ---
-        function formatNumber(num, format) {
-            if (format === ':.2f') return num.toFixed(2);
-            return Math.floor(num);
-        }
-
-        // --- ИСПРАВЛЕННАЯ ФУНКЦИЯ РЕНДЕРИНГА КНИГ ---
-        function renderBooks() {
+        // --- РЕНДЕРИНГ КНИГ С ЦЕНАМИ ---
+        async function renderBooks() {
             const savedLevels = JSON.parse(localStorage.getItem(BOOKS_LVL_KEY) || '{}');
             const container = document.getElementById('booksContainer');
             container.innerHTML = '';
@@ -403,13 +382,10 @@
                 let result = data.calc(lvl);
                 let formatData;
                 
-                // ИСПОЛЬЗУЕМ format ИЗ data!
                 if (data.format) {
                     if (typeof data.format === 'function') {
-                        // Если format - функция, вызываем её с result и lvl
                         formatData = data.format(result, lvl);
                     } else {
-                        // Если format - объект, используем его как есть
                         formatData = data.format;
                     }
                 } else {
@@ -418,7 +394,6 @@
                 
                 let desc = data.desc;
                 
-                // Замена плейсхолдеров в описании
                 for (const [key, val] of Object.entries(formatData)) {
                     const regex = new RegExp(`\\{${key}(?::\\.2f)?\\}`, 'g');
                     desc = desc.replace(regex, `<span class="book-val">${val}</span>`);
@@ -426,6 +401,22 @@
                 
                 const item = document.createElement('div');
                 item.className = 'book-item';
+                
+                let priceHtml = '';
+                
+                // Получаем цену книги
+                try {
+                    const bookPrice = await getBookPrice(name);
+                    if (bookPrice && bookPrice > 0) {
+                        const totalCost = calculateUpgradeCost(lvl, bookPrice);
+                        if (totalCost) {
+                            priceHtml = `<div class="book-price">🌕 ${formatGold(totalCost)}</div>`;
+                        }
+                    }
+                } catch (e) {
+                    console.log('Ошибка получения цены для', name);
+                }
+                
                 item.innerHTML = `
                     <div class="book-header">
                         <div class="book-name">${name}</div>
@@ -435,6 +426,7 @@
                         </div>
                     </div>
                     <div class="book-desc">${desc}</div>
+                    ${priceHtml}
                 `;
                 container.appendChild(item);
             }
@@ -447,7 +439,6 @@
             renderBooks();
         };
 
-        // --- НАВИГАЦИЯ ---
         window.switchPage = function(pageName) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -456,7 +447,6 @@
             if (pageName === 'books') renderBooks();
         };
 
-        // --- РАБОТА С СОХРАНЕНИЕМ ---
         function checkReset() {
             const last = localStorage.getItem(DATE_KEY);
             if (last && (Date.now() - parseInt(last) > 7 * 24 * 60 * 60 * 1000)) clearAll();
@@ -492,7 +482,6 @@
             }
         }
 
-        // --- РЕДАКТИРОВАНИЕ СТАТОВ ---
         window.editStatByCell = function(cellElement, isResist = false, isKarma = false) {
             const valueContainer = cellElement.querySelector('.stat-value-container');
             const valueSpan = valueContainer.querySelector('.stat-value');
@@ -542,13 +531,11 @@
             input.onclick = e => e.stopPropagation();
         }
 
-        // Инициализация при загрузке с VK Bridge
         window.onload = () => {
             checkReset();
             loadStats();
             initClassList();
             
-            // Инициализация VK Bridge и загрузка данных пользователя
             try {
                 vkBridge.send('VKWebAppInit')
                     .then(() => {
@@ -557,7 +544,6 @@
                     })
                     .catch(error => {
                         console.log('Ошибка инициализации VK Bridge:', error);
-                        // Загружаем тестовые данные
                         document.getElementById('user-name').textContent = 'Тестовый пользователь';
                     });
             } catch (e) {
