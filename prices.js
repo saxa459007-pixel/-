@@ -1,3 +1,5 @@
+// prices.js - Получение цен книг из GitHub Gist
+
 const PRICE_CACHE = {};
 const CACHE_DURATION = 3600000; // 1 час в миллисекундах
 
@@ -72,15 +74,9 @@ const BOOK_IDS = {
     "барьер": 15437
 };
 
-// Форматирование чисел с пробелами
+// Форматирование чисел с пробелами (ПОЛНАЯ СУММА БЕЗ СОКРАЩЕНИЙ)
 function formatGold(amount) {
-    if (amount >= 1000000) {
-        return (amount / 1000000).toFixed(2) + 'M';
-    }
-    if (amount >= 1000) {
-        return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
-    }
-    return amount.toString();
+    return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
 }
 
 // Получение цены книги из Gist
@@ -118,15 +114,21 @@ async function getBookPrice(bookName) {
     }
 }
 
-// Расчет стоимости прокачки (как в боте)
+// Расчет стоимости прокачки (1 книга = 5 уровней)
 function calculateUpgradeCost(targetLevel, bookPrice) {
     if (targetLevel <= 0 || bookPrice <= 0) return null;
     
-    // 1 книга = 5 уровней
-    const booksNeeded = Math.ceil(targetLevel / 5);
-    const booksCost = booksNeeded * bookPrice;
-    const levelCost = targetLevel * 103; // 103 золота за уровень
-    const totalCost = booksCost + levelCost;
+    // Стоимость одного уровня = цена книги / 5
+    const costPerLevel = bookPrice / 5;
+    
+    // Стоимость уровней
+    const levelCost = Math.ceil(targetLevel * costPerLevel);
+    
+    // Плата за каждый уровень (103 золота)
+    const upgradeFee = targetLevel * 103;
+    
+    // ИТОГО
+    const totalCost = levelCost + upgradeFee;
     
     return totalCost;
 }
