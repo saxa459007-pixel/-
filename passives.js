@@ -1,4 +1,4 @@
-// passives.js - Формулы пассивных умений с форматированием как в commands.py
+// passives.js - Формулы пассивных умений (ПОЛНОСТЬЮ ИСПРАВЛЕНО)
 
 const PASSIVE_SKILLS = {
     "незаметность": {
@@ -104,9 +104,8 @@ const PASSIVE_SKILLS = {
         "calc": function(lvl) {
             return Math.floor((Math.sqrt(lvl*10)/100*1 + 1) * 200);
         },
-        "desc": "Каждый ход в бою Вы восстанавливаете здоровье в размере {result:.2f}% от максимального.",
+        "desc": "Каждый ход в бою Вы восстанавливаете здоровье в размере {result}% от максимального.",
         "format": function(result) { 
-            // Для 1 уровня: 206/100 = 2.06%
             return { result: (result / 100).toFixed(2) }; 
         }
     },
@@ -137,9 +136,8 @@ const PASSIVE_SKILLS = {
         "calc": function(lvl) {
             return Math.floor((Math.sqrt(lvl*10)/100*0.5 + 1) * 100);
         },
-        "desc": "Вес рыбы увеличен в {result:.2f} раз.",
+        "desc": "Вес рыбы увеличен в {result} раз.",
         "format": function(result) { 
-            // Для 1 уровня: 101/100 = 1.01
             return { result: (result / 100).toFixed(2) }; 
         }
     },
@@ -331,7 +329,6 @@ const PASSIVE_SKILLS = {
         },
         "desc": "Увеличивает устойчивость персонажа к периодическому урону, уменьшая получаемый урон от кровотечения и отравления на {result}%.",
         "format": function(result) { 
-            // Для 1 уровня: 201/10 = 20.1%
             return { result: (result / 10).toFixed(2) }; 
         }
     },
