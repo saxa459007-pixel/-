@@ -736,31 +736,50 @@
             }
         }
 
-        // --- ИСПРАВЛЕННАЯ ФУНКЦИЯ ОБНОВЛЕНИЯ УРОВНЯ (СОХРАНЯЕТ ПОИСК) ---
-        window.updateBookLevel = function(name, value) {
-            const savedLevels = JSON.parse(localStorage.getItem(BOOKS_LVL_KEY) || '{}');
-            savedLevels[name] = parseInt(value) || 1;
-            localStorage.setItem(BOOKS_LVL_KEY, JSON.stringify(savedLevels));
-            
-            // Запоминаем текущий поисковый запрос
-            const searchInput = document.getElementById('bookSearchInput');
-            const currentQuery = searchInput ? searchInput.value : '';
-            
-            // Перерисовываем книги и восстанавливаем поиск
-            renderBooks().then(() => {
-                if (searchInput) {
-                    searchInput.value = currentQuery;
-                    filterBooksByName(); // Применяем фильтр
-                    
-                    // Обновляем видимость кнопки очистки
-                    const clearBtn = document.getElementById('clearSearchBtn');
-                    if (currentQuery.length > 0) {
-                        clearBtn.classList.add('visible');
-                    } else {
-                        clearBtn.classList.remove('visible');
+        // --- ФУНКЦИЯ ОБНОВЛЕНИЯ ЦЕНЫ ДЛЯ КОНКРЕТНОЙ КНИГИ ---
+        async function updateBookPrice(bookElement, bookName, level) {
+            try {
+                const bookPrice = await getBookPrice(bookName);
+                if (bookPrice && bookPrice > 0) {
+                    const totalCost = calculateUpgradeCost(level, bookPrice);
+                    if (totalCost) {
+                        const priceDiv = bookElement.querySelector('.book-price');
+                        if (priceDiv) {
+                            priceDiv.innerHTML = `🌕 ${formatGold(totalCost)}`;
+                        }
                     }
                 }
-            });
+            } catch (e) {
+                console.log('Ошибка обновления цены для', bookName);
+            }
+        }
+
+        // --- ОПТИМИЗИРОВАННАЯ ФУНКЦИЯ ОБНОВЛЕНИЯ УРОВНЯ (БЕЗ ДЕРГАНЬЯ) ---
+        window.updateBookLevel = function(name, value) {
+            const savedLevels = JSON.parse(localStorage.getItem(BOOKS_LVL_KEY) || '{}');
+            const newLevel = parseInt(value) || 1;
+            
+            // Если уровень не изменился - ничего не делаем
+            if (savedLevels[name] === newLevel) return;
+            
+            savedLevels[name] = newLevel;
+            localStorage.setItem(BOOKS_LVL_KEY, JSON.stringify(savedLevels));
+            
+            // Находим элемент книги по имени
+            const items = document.querySelectorAll('.book-item');
+            for (const item of items) {
+                if (item.dataset.bookName === name.toLowerCase()) {
+                    // Синхронизируем поле ввода
+                    const input = item.querySelector('.book-level-input');
+                    if (input && parseInt(input.value) !== newLevel) {
+                        input.value = newLevel;
+                    }
+                    
+                    // Обновляем только цену
+                    updateBookPrice(item, name, newLevel);
+                    break;
+                }
+            }
         };
 
         window.toggleSortOrder = function() {
