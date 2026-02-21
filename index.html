@@ -845,6 +845,7 @@
                 case "Целебный огонь":
                     const heal_percent_fire = Math.floor((Math.sqrt(level*10)/100*0.5 + 1) * 20);
                     const max_heal = stats.lvl * 50;
+                    // Заменяем оба плейсхолдера: {heal_percent} и {max_heal}
                     desc = desc.replace('{heal_percent}', `<span class="book-val">${heal_percent_fire}</span>`)
                                .replace('{max_heal}', `<span class="book-val">${max_heal}</span>`);
                     break;
