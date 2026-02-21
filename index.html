@@ -782,9 +782,10 @@
             }
         }
 
-        // --- ФУНКЦИЯ ДЛЯ РЕДАКТИРОВАНИЯ СТАТОВ В АКТИВНЫХ УМЕНИЯХ ---
+        // --- ФУНКЦИЯ ДЛЯ РЕДАКТИРОВАНИЯ СТАТОВ В АКТИВНЫХ УМЕНИЯХ (БЕЗ ПЕРЕМОТКИ) ---
         window.editActiveStat = function(event, element, statKey) {
-            // Предотвращаем всплытие события
+            // Предотвращаем всплытие и стандартное поведение
+            event.preventDefault();
             event.stopPropagation();
             
             const valueSpan = element.querySelector('.stat-value-small');
@@ -844,7 +845,7 @@
             input.onclick = e => e.stopPropagation();
         };
 
-        // --- ФУНКЦИЯ ДЛЯ ПОЛУЧЕНИЯ СТРОКИ СО СТАТАМИ (КЛИКАБЕЛЬНО) ---
+        // --- ФУНКЦИЯ ДЛЯ ПОЛУЧЕНИЯ СТРОКИ СО СТАТАМИ (КЛИКАБЕЛЬНО, БЕЗ ПЕРЕМОТКИ) ---
         function getStatsString(skillName, stats) {
             switch(skillName) {
                 case "Грязный удар":
