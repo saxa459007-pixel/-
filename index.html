@@ -149,7 +149,7 @@
             border: 1px solid var(--separator-color);
             color: var(--text-main);
             font-size: 14px;
-            padding: 10px 15px 10px 38px;
+            padding: 10px 40px 10px 38px;
             border-radius: 6px;
             outline: none;
             transition: border-color 0.2s;
@@ -177,7 +177,43 @@
             pointer-events: none;
         }
 
-        /* Стили для кнопки сортировки */
+        .clear-btn {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 24px;
+            height: 24px;
+            background: transparent;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            transition: background 0.2s;
+            z-index: 10;
+        }
+
+        .clear-btn.visible {
+            display: flex;
+        }
+
+        .clear-btn:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .clear-btn svg {
+            width: 14px;
+            height: 14px;
+            fill: var(--text-secondary);
+        }
+
+        .clear-btn:hover svg {
+            fill: var(--text-main);
+        }
+
         .sort-btn {
             background-color: var(--input-bg);
             border: 1px solid var(--separator-color);
@@ -213,7 +249,6 @@
             display: none;
         }
 
-        /* --- ОБНОВЛЕННЫЕ СТИЛИ КНИГ --- */
         .books-list { 
             width: 100%; 
             padding: 0 15px 15px 15px; 
@@ -366,22 +401,26 @@
         </div>
 
         <div id="page-books" class="page">
-            <!-- Блок поиска и сортировки -->
             <div class="search-container">
                 <div class="search-controls">
                     <div class="search-input-wrapper">
                         <svg class="search-icon" viewBox="0 0 24 24">
                             <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
                         </svg>
-                        <input type="text" class="search-input" id="bookSearchInput" placeholder="Поиск по названию..." oninput="filterBooksByName()">
+                        <input type="text" class="search-input" id="bookSearchInput" placeholder="Поиск по названию..." oninput="handleSearchInput()">
+                        <button class="clear-btn" id="clearSearchBtn" onclick="clearSearch()" aria-label="Очистить поиск">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                            </svg>
+                        </button>
                     </div>
                     
                     <button class="sort-btn" onclick="toggleSortOrder()" id="sortBtn" title="Сортировка">
-                        <!-- Иконка списка (по умолчанию) -->
+                        <!-- Иконка списка -->
                         <svg id="sortIconList" viewBox="0 0 24 24">
                             <path d="M3 18h6v-2H3v2zM3 6v2h18V6H3zm0 7h12v-2H3v2z"/>
                         </svg>
-                        <!-- Иконка A-Z (скрыта по умолчанию) -->
+                        <!-- Иконка A-Z (исправленная) -->
                         <svg id="sortIconAZ" viewBox="0 0 24 24" style="display: none;">
                             <path d="M2.5 4v3h5v12h3V7h5V4h-13zm19 5h-9v3h3v7h3v-7h3V9z"/>
                         </svg>
@@ -423,7 +462,6 @@
         const listDiv = document.getElementById('classList');
         const karmaIconSpan = document.getElementById('karma-icon');
 
-        // Глобальная переменная для режима сортировки
         let sortByAlphabet = false;
 
         function getKarmaIcon(value) {
@@ -561,23 +599,19 @@
             }
         }
 
-        // --- ГЛОБАЛЬНЫЙ ПЕРЕХВАТ ВСЕХ ФОРМ ---
         document.addEventListener('submit', function(event) {
             event.preventDefault();
             event.stopPropagation();
             return false;
         }, true);
 
-        // --- РЕНДЕРИНГ КНИГ С УЧЕТОМ СОРТИРОВКИ ---
         async function renderBooks() {
             const savedLevels = JSON.parse(localStorage.getItem(BOOKS_LVL_KEY) || '{}');
             const container = document.getElementById('booksContainer');
             container.innerHTML = '';
             
-            // Преобразуем объект в массив для сортировки
             let booksArray = Object.entries(PASSIVE_SKILLS);
             
-            // Сортируем если нужно
             if (sortByAlphabet) {
                 booksArray.sort((a, b) => a[0].localeCompare(b[0], 'ru'));
             }
@@ -622,7 +656,6 @@
                     console.log('Ошибка получения цены для', name);
                 }
                 
-                // Заголовок с названием
                 const headerDiv = document.createElement('div');
                 headerDiv.className = 'book-header';
                 const nameDiv = document.createElement('div');
@@ -630,12 +663,10 @@
                 nameDiv.textContent = name;
                 headerDiv.appendChild(nameDiv);
                 
-                // Описание
                 const descDiv = document.createElement('div');
                 descDiv.className = 'book-desc';
                 descDiv.innerHTML = desc;
                 
-                // Нижняя строка с уровнем и ценой
                 const footerDiv = document.createElement('div');
                 footerDiv.className = 'book-footer';
                 
@@ -705,7 +736,6 @@
             }
         }
 
-        // Функция обновления уровня
         window.updateBookLevel = function(name, value) {
             const savedLevels = JSON.parse(localStorage.getItem(BOOKS_LVL_KEY) || '{}');
             savedLevels[name] = parseInt(value) || 1;
@@ -714,11 +744,9 @@
             setTimeout(filterBooksByName, 0);
         };
 
-        // Переключение режима сортировки
         window.toggleSortOrder = function() {
             sortByAlphabet = !sortByAlphabet;
             
-            // Обновляем иконку
             const iconList = document.getElementById('sortIconList');
             const iconAZ = document.getElementById('sortIconAZ');
             
@@ -730,12 +758,34 @@
                 iconAZ.style.display = 'none';
             }
             
-            // Перерисовываем книги с новой сортировкой
             renderBooks();
             setTimeout(filterBooksByName, 0);
         };
 
-        // Фильтр только по названию
+        window.handleSearchInput = function() {
+            const input = document.getElementById('bookSearchInput');
+            const clearBtn = document.getElementById('clearSearchBtn');
+            
+            if (input.value.length > 0) {
+                clearBtn.classList.add('visible');
+            } else {
+                clearBtn.classList.remove('visible');
+            }
+            
+            filterBooksByName();
+        };
+
+        window.clearSearch = function() {
+            const input = document.getElementById('bookSearchInput');
+            const clearBtn = document.getElementById('clearSearchBtn');
+            
+            input.value = '';
+            clearBtn.classList.remove('visible');
+            input.focus();
+            
+            filterBooksByName();
+        };
+
         window.filterBooksByName = function() {
             const input = document.getElementById('bookSearchInput');
             const query = input.value.toLowerCase().trim();
@@ -771,7 +821,10 @@
                 renderBooks();
                 setTimeout(() => {
                     const input = document.getElementById('bookSearchInput');
-                    if(input) input.focus();
+                    if(input) {
+                        input.focus();
+                        handleSearchInput();
+                    }
                 }, 100);
             }
         };
