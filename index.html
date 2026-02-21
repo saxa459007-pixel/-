@@ -360,6 +360,12 @@
             padding-top: 6px;
         }
         
+        .left-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
         .book-level-wrapper {
             display: flex;
             align-items: center;
@@ -386,6 +392,11 @@
         .book-level-unit {
             color: var(--text-secondary);
             font-size: 13px;
+        }
+        
+        .book-percent {
+            color: var(--text-secondary);
+            font-size: 12px;
         }
         
         .book-price { 
@@ -847,6 +858,14 @@
                         statsDiv.innerHTML = getStatsString(bookName, stats);
                     }
                     
+                    // Обновляем процент эффекта
+                    const percentSpan = item.querySelector('.book-percent');
+                    const skill = ACTIVE_SKILLS[bookName];
+                    if (percentSpan && skill && skill.calc) {
+                        const effectPercent = skill.calc(level);
+                        percentSpan.textContent = `(${effectPercent}%)`;
+                    }
+                    
                     // Обновляем цену (асинхронно)
                     updateActiveBookPrice(item, bookName, level);
                 });
@@ -1280,6 +1299,9 @@
                 const desc = getSkillDescription(name, lvl, stats);
                 const statsString = getStatsString(name, stats);
                 
+                // Получаем процент эффекта
+                const effectPercent = data.calc ? data.calc(lvl) : 0;
+                
                 const item = document.createElement('div');
                 item.className = 'book-item';
                 item.dataset.bookName = name.toLowerCase();
@@ -1315,6 +1337,9 @@
                 
                 const footerDiv = document.createElement('div');
                 footerDiv.className = 'book-footer';
+                
+                const leftGroup = document.createElement('div');
+                leftGroup.className = 'left-group';
                 
                 const levelWrapper = document.createElement('div');
                 levelWrapper.className = 'book-level-wrapper';
@@ -1367,11 +1392,18 @@
                 levelWrapper.appendChild(levelInput);
                 levelWrapper.appendChild(levelUnit);
                 
+                const percentSpan = document.createElement('span');
+                percentSpan.className = 'book-percent';
+                percentSpan.textContent = `(${effectPercent}%)`;
+                
+                leftGroup.appendChild(levelWrapper);
+                leftGroup.appendChild(percentSpan);
+                
                 const priceDiv = document.createElement('div');
                 priceDiv.className = 'book-price';
                 priceDiv.innerHTML = `🌕 ${priceText}`;
                 
-                footerDiv.appendChild(levelWrapper);
+                footerDiv.appendChild(leftGroup);
                 footerDiv.appendChild(priceDiv);
                 
                 item.appendChild(headerDiv);
@@ -1392,6 +1424,14 @@
             const stats = getStatsFromProfile();
             const desc = getSkillDescription(bookName, level, stats);
             const statsString = getStatsString(bookName, stats);
+            
+            // Обновляем процент эффекта
+            const percentSpan = bookElement.querySelector('.book-percent');
+            const skill = ACTIVE_SKILLS[bookName];
+            if (percentSpan && skill && skill.calc) {
+                const effectPercent = skill.calc(level);
+                percentSpan.textContent = `(${effectPercent}%)`;
+            }
             
             const descDiv = bookElement.querySelector('.book-desc');
             if (descDiv) {
