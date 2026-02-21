@@ -121,7 +121,7 @@
         .highlight-class { color: var(--text-main); font-weight: 700; font-size: 13px; margin-right: 4px; }
         .highlight-val { color: var(--text-secondary); font-weight: 600; }
 
-        /* --- СТИЛИ ДЛЯ ПОИСКА --- */
+        /* --- СТИЛИ ДЛЯ ПОИСКА И СОРТИРОВКИ --- */
         .search-container {
             width: 100%;
             padding: 15px 15px 10px 15px;
@@ -132,9 +132,15 @@
             z-index: 90;
         }
 
+        .search-controls {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
         .search-input-wrapper {
             position: relative;
-            width: 100%;
+            flex: 1;
         }
 
         .search-input {
@@ -171,6 +177,34 @@
             pointer-events: none;
         }
 
+        /* Стили для кнопки сортировки */
+        .sort-btn {
+            background-color: var(--input-bg);
+            border: 1px solid var(--separator-color);
+            color: var(--text-secondary);
+            font-size: 13px;
+            padding: 10px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+            white-space: nowrap;
+            font-family: inherit;
+        }
+
+        .sort-btn:hover {
+            background-color: rgba(255,255,255,0.05);
+            color: var(--text-main);
+        }
+
+        .sort-btn svg {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+
         .no-results {
             text-align: center;
             color: var(--text-secondary);
@@ -190,17 +224,12 @@
             background-color: transparent;
             border: none; 
             border-radius: 0;
-            padding: 12px 0; 
+            padding: 12px 0;
             margin-bottom: 0; 
             display: flex; 
             flex-direction: column; 
             gap: 6px; 
             border-bottom: 1px dashed var(--separator-color);
-            transition: opacity 0.2s;
-        }
-        
-        .book-item.hidden {
-            display: none !important;
         }
 
         .book-item:last-child {
@@ -337,13 +366,26 @@
         </div>
 
         <div id="page-books" class="page">
-            <!-- Блок поиска -->
+            <!-- Блок поиска и сортировки -->
             <div class="search-container">
-                <div class="search-input-wrapper">
-                    <svg class="search-icon" viewBox="0 0 24 24">
-                        <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
-                    </svg>
-                    <input type="text" class="search-input" id="bookSearchInput" placeholder="Поиск по названию..." oninput="filterBooksByName()">
+                <div class="search-controls">
+                    <div class="search-input-wrapper">
+                        <svg class="search-icon" viewBox="0 0 24 24">
+                            <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                        </svg>
+                        <input type="text" class="search-input" id="bookSearchInput" placeholder="Поиск по названию..." oninput="filterBooksByName()">
+                    </div>
+                    
+                    <button class="sort-btn" onclick="toggleSortOrder()" id="sortBtn" title="Сортировка">
+                        <!-- Иконка списка (по умолчанию) -->
+                        <svg id="sortIconList" viewBox="0 0 24 24">
+                            <path d="M3 18h6v-2H3v2zM3 6v2h18V6H3zm0 7h12v-2H3v2z"/>
+                        </svg>
+                        <!-- Иконка A-Z (скрыта по умолчанию) -->
+                        <svg id="sortIconAZ" viewBox="0 0 24 24" style="display: none;">
+                            <path d="M2.5 4v3h5v12h3V7h5V4h-13zm19 5h-9v3h3v7h3v-7h3V9z"/>
+                        </svg>
+                    </button>
                 </div>
             </div>
 
@@ -380,6 +422,9 @@
         const triggerBtn = document.getElementById('classTrigger');
         const listDiv = document.getElementById('classList');
         const karmaIconSpan = document.getElementById('karma-icon');
+
+        // Глобальная переменная для режима сортировки
+        let sortByAlphabet = false;
 
         function getKarmaIcon(value) {
             const num = parseInt(value);
@@ -523,13 +568,21 @@
             return false;
         }, true);
 
-        // --- РЕНДЕРИНГ КНИГ (ОДИН РАЗ ПРИ ОТКРЫТИИ) ---
+        // --- РЕНДЕРИНГ КНИГ С УЧЕТОМ СОРТИРОВКИ ---
         async function renderBooks() {
             const savedLevels = JSON.parse(localStorage.getItem(BOOKS_LVL_KEY) || '{}');
             const container = document.getElementById('booksContainer');
             container.innerHTML = '';
             
-            for (const [name, data] of Object.entries(PASSIVE_SKILLS)) {
+            // Преобразуем объект в массив для сортировки
+            let booksArray = Object.entries(PASSIVE_SKILLS);
+            
+            // Сортируем если нужно
+            if (sortByAlphabet) {
+                booksArray.sort((a, b) => a[0].localeCompare(b[0], 'ru'));
+            }
+            
+            for (const [name, data] of booksArray) {
                 const lvl = savedLevels[name] || 1;
                 let result = data.calc(lvl);
                 let formatData;
@@ -554,7 +607,6 @@
                 const item = document.createElement('div');
                 item.className = 'book-item';
                 item.dataset.bookName = name.toLowerCase();
-                item.dataset.bookKey = name; // Сохраняем ключ для обновления
                 
                 let priceText = '0';
                 
@@ -570,7 +622,7 @@
                     console.log('Ошибка получения цены для', name);
                 }
                 
-                // Заголовок
+                // Заголовок с названием
                 const headerDiv = document.createElement('div');
                 headerDiv.className = 'book-header';
                 const nameDiv = document.createElement('div');
@@ -583,7 +635,7 @@
                 descDiv.className = 'book-desc';
                 descDiv.innerHTML = desc;
                 
-                // Футер
+                // Нижняя строка с уровнем и ценой
                 const footerDiv = document.createElement('div');
                 footerDiv.className = 'book-footer';
                 
@@ -596,13 +648,11 @@
                 levelInput.value = lvl;
                 levelInput.min = '1';
                 
-                // Атрибуты защиты
                 levelInput.setAttribute('form', 'off');
                 levelInput.setAttribute('autocomplete', 'off');
                 levelInput.setAttribute('autocorrect', 'off');
                 levelInput.setAttribute('spellcheck', 'false');
                 
-                // Обработчики ввода (БЕЗ ПЕРЕРАБОТКИ СПИСКА)
                 levelInput.addEventListener('keydown', function(event) {
                     if (event.key === 'Enter') {
                         event.preventDefault();
@@ -629,21 +679,8 @@
                     }
                 }, true);
                 
-                // СОХРАНЕНИЕ И ОБНОВЛЕНИЕ ТОЛЬКО ЭТОЙ КАРТОЧКИ
                 levelInput.addEventListener('blur', function() {
-                    const newName = item.dataset.bookKey;
-                    const newVal = parseInt(this.value) || 1;
-                    
-                    // 1. Сохраняем в LS
-                    const savedLevelsLocal = JSON.parse(localStorage.getItem(BOOKS_LVL_KEY) || '{}');
-                    savedLevelsLocal[newName] = newVal;
-                    localStorage.setItem(BOOKS_LVL_KEY, JSON.stringify(savedLevelsLocal));
-                    
-                    // 2. Обновляем значение в инпуте (если вдруг ввели ерунду)
-                    this.value = newVal;
-
-                    // 3. Пересчитываем цену и описание ТОЛЬКО для этого элемента
-                    updateSingleBookItem(item, newName, newVal);
+                    updateBookLevel(name, this.value);
                 });
                 
                 const levelUnit = document.createElement('span');
@@ -656,9 +693,6 @@
                 const priceDiv = document.createElement('div');
                 priceDiv.className = 'book-price';
                 priceDiv.innerHTML = `🌕 ${priceText}`;
-                // Сохраняем ссылку на элемент цены для быстрого обновления
-                item.dataset.priceElementId = 'price-' + name.replace(/\s+/g, '-'); 
-                priceDiv.id = item.dataset.priceElementId;
                 
                 footerDiv.appendChild(levelWrapper);
                 footerDiv.appendChild(priceDiv);
@@ -671,39 +705,37 @@
             }
         }
 
-        // Функция обновления ОДНОЙ карточки без перерисовки всего списка
-        async function updateSingleBookItem(itemElement, bookName, newLevel) {
-            const data = PASSIVE_SKILLS[bookName];
-            if (!data) return;
+        // Функция обновления уровня
+        window.updateBookLevel = function(name, value) {
+            const savedLevels = JSON.parse(localStorage.getItem(BOOKS_LVL_KEY) || '{}');
+            savedLevels[name] = parseInt(value) || 1;
+            localStorage.setItem(BOOKS_LVL_KEY, JSON.stringify(savedLevels));
+            renderBooks();
+            setTimeout(filterBooksByName, 0);
+        };
 
-            // 1. Пересчет описания
-            let result = data.calc(newLevel);
-            let formatData = data.format ? (typeof data.format === 'function' ? data.format(result, newLevel) : data.format) : { result: result };
+        // Переключение режима сортировки
+        window.toggleSortOrder = function() {
+            sortByAlphabet = !sortByAlphabet;
             
-            let desc = data.desc;
-            for (const [key, val] of Object.entries(formatData)) {
-                const regex = new RegExp(`\\{${key}(?::\\.2f)?\\}`, 'g');
-                desc = desc.replace(regex, `<span class="book-val">${val}</span>`);
+            // Обновляем иконку
+            const iconList = document.getElementById('sortIconList');
+            const iconAZ = document.getElementById('sortIconAZ');
+            
+            if (sortByAlphabet) {
+                iconList.style.display = 'none';
+                iconAZ.style.display = 'block';
+            } else {
+                iconList.style.display = 'block';
+                iconAZ.style.display = 'none';
             }
-            itemElement.querySelector('.book-desc').innerHTML = desc;
-
-            // 2. Пересчет цены
-            let priceText = '0';
-            try {
-                const bookPrice = await getBookPrice(bookName);
-                if (bookPrice && bookPrice > 0) {
-                    const totalCost = calculateUpgradeCost(newLevel, bookPrice);
-                    if (totalCost) {
-                        priceText = formatGold(totalCost);
-                    }
-                }
-            } catch (e) { console.log('Err price calc', e); }
             
-            const priceEl = document.getElementById(itemElement.dataset.priceElementId);
-            if (priceEl) priceEl.innerHTML = `🌕 ${priceText}`;
-        }
+            // Перерисовываем книги с новой сортировкой
+            renderBooks();
+            setTimeout(filterBooksByName, 0);
+        };
 
-        // Фильтр (теперь просто скрывает/показывает, не перерисовывая)
+        // Фильтр только по названию
         window.filterBooksByName = function() {
             const input = document.getElementById('bookSearchInput');
             const query = input.value.toLowerCase().trim();
@@ -713,16 +745,21 @@
 
             items.forEach(item => {
                 const name = item.dataset.bookName;
+                
                 if (name.includes(query)) {
-                    item.classList.remove('hidden');
+                    item.style.display = 'flex';
                     visibleCount++;
                 } else {
-                    item.classList.add('hidden');
+                    item.style.display = 'none';
                 }
             });
 
             const noResultsMsg = document.getElementById('noResultsMsg');
-            noResultsMsg.style.display = visibleCount === 0 ? 'block' : 'none';
+            if (visibleCount === 0) {
+                noResultsMsg.style.display = 'block';
+            } else {
+                noResultsMsg.style.display = 'none';
+            }
         };
 
         window.switchPage = function(pageName) {
@@ -731,10 +768,7 @@
             document.getElementById(`page-${pageName}`).classList.add('active');
             document.getElementById(`nav-${pageName}`).classList.add('active');
             if (pageName === 'books') {
-                // Рендерим только если контейнер пуст (первый вход)
-                if (document.getElementById('booksContainer').innerHTML.trim() === '') {
-                    renderBooks();
-                }
+                renderBooks();
                 setTimeout(() => {
                     const input = document.getElementById('bookSearchInput');
                     if(input) input.focus();
