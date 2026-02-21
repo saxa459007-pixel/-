@@ -646,12 +646,13 @@
             }
         }
 
+        // ИСПРАВЛЕННАЯ ФУНКЦИЯ - теперь максимум 100%
         function calculateRunesResist(runesCount) {
             if (runesCount < 0) runesCount = 0;
             if (runesCount === 0) return 0;
             let resist = 10.0 * Math.pow(runesCount, 0.25);
-            // Убираем ограничение в 100% - кап теперь 100%
-            return Math.floor(resist);
+            // Ограничиваем максимум 100%
+            return Math.min(100, Math.floor(resist));
         }
 
         function calculateClassEffect(type, level) {
@@ -771,7 +772,12 @@
         function getStatsFromProfile() {
             const stats = {};
             document.querySelectorAll('.stat-value').forEach(el => {
-                stats[el.dataset.key] = el.textContent;
+                let value = el.textContent;
+                // Для сопротивления убираем % перед парсингом
+                if (el.dataset.key === 'resist') {
+                    value = value.replace('%', '');
+                }
+                stats[el.dataset.key] = value;
             });
             return {
                 lvl: parseInt(stats.lvl) || 0,
