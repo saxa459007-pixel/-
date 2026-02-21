@@ -416,11 +416,9 @@
                     </div>
                     
                     <button class="sort-btn" onclick="toggleSortOrder()" id="sortBtn" title="Сортировка">
-                        <!-- Иконка списка -->
                         <svg id="sortIconList" viewBox="0 0 24 24">
                             <path d="M3 18h6v-2H3v2zM3 6v2h18V6H3zm0 7h12v-2H3v2z"/>
                         </svg>
-                        <!-- Иконка A-Z (исправленная) -->
                         <svg id="sortIconAZ" viewBox="0 0 24 24" style="display: none;">
                             <path d="M2.5 4v3h5v12h3V7h5V4h-13zm19 5h-9v3h3v7h3v-7h3V9z"/>
                         </svg>
@@ -786,6 +784,7 @@
             filterBooksByName();
         };
 
+        // --- ИСПРАВЛЕННАЯ ФУНКЦИЯ ПОИСКА ---
         window.filterBooksByName = function() {
             const input = document.getElementById('bookSearchInput');
             const query = input.value.toLowerCase().trim();
@@ -796,7 +795,9 @@
             items.forEach(item => {
                 const name = item.dataset.bookName;
                 
-                if (name.includes(query)) {
+                // ИЗМЕНЕНИЕ: Проверяем, НАЧИНАЕТСЯ ЛИ название с запроса
+                // startsWith возвращает true только если последовательность букв совпадает с начала
+                if (name.startsWith(query)) {
                     item.style.display = 'flex';
                     visibleCount++;
                 } else {
