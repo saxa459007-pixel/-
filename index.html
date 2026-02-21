@@ -6,10 +6,6 @@
     <title>RPG Stats & Books</title>
     <script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
     
-    <!-- Иконки для навигации -->
-    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/3.0.0/uicons-solid-straight/css/uicons-solid-straight.css'>
-    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/3.0.0/uicons-thin-straight/css/uicons-thin-straight.css'>
-    
     <style>
         :root {
             --bg-color: #34383d;
@@ -74,12 +70,13 @@
             pointer-events: none;
         }
         
-        .nav-item i {
+        .nav-item span {
             font-size: 24px;
-            pointer-events: none;
+            line-height: 1;
             display: flex;
             align-items: center;
             justify-content: center;
+            pointer-events: none;
         }
 
         .content-container { width: 100%; max-width: 500px; display: flex; flex-direction: column; align-items: center; padding-bottom: 20px; box-sizing: border-box; }
@@ -92,7 +89,6 @@
         .avatar { width: 50px; height: 50px; border-radius: 50%; margin-right: 12px; object-fit: cover; border: 2px solid var(--separator-color); flex-shrink: 0; background-color: #000; }
         .info { flex: 1; overflow: visible; position: relative; }
         .player-name { font-size: 17px; margin: 0 0 5px 0; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text-main); }
-        .user-id { font-size: 11px; color: var(--text-secondary); margin-bottom: 5px; }
         
         .class-wrapper { position: relative; width: 100%; z-index: 50; }
         .class-trigger { background: none; border: none; color: var(--text-secondary); font-size: 12px; padding: 4px 8px; margin: 0; cursor: pointer; text-transform: lowercase; font-family: inherit; display: inline-flex; align-items: center; gap: 4px; outline: none; text-align: left; border-radius: 4px; transition: background 0.2s; width: auto; }
@@ -440,13 +436,13 @@
         <div class="nav-item active" onclick="switchPage('profile')" id="nav-profile">
             <svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
         </div>
-        <!-- АКТИВНЫЕ (2) - ЖИРНАЯ КНИГА -->
+        <!-- АКТИВНЫЕ (2) - 📕 -->
         <div class="nav-item" onclick="switchPage('active')" id="nav-active">
-            <i class="fi fi-ts-book-open-cover"></i>
+            <span>📕</span>
         </div>
-        <!-- ПАССИВНЫЕ (3) - ТОНКАЯ КНИГА -->
+        <!-- ПАССИВНЫЕ (3) - 📘 -->
         <div class="nav-item" onclick="switchPage('passive')" id="nav-passive">
-            <i class="fi fi-rs-book-open-cover"></i>
+            <span>📘</span>
         </div>
     </div>
 
@@ -459,7 +455,6 @@
                     <img src="https://via.placeholder.com/50" alt="Avatar" class="avatar" id="user-avatar">
                     <div class="info">
                         <h1 class="player-name" id="user-name">Загрузка...</h1>
-                        <div class="user-id" id="user-id"></div>
                         <div class="class-wrapper">
                             <button class="class-trigger" id="classTrigger" onclick="toggleClassList()">жнец душ</button>
                             <div class="class-list" id="classList"></div>
@@ -710,9 +705,6 @@
                 
                 const nameElement = document.getElementById('user-name');
                 nameElement.textContent = `${user.first_name} ${user.last_name}`;
-                
-                const idElement = document.getElementById('user-id');
-                idElement.textContent = `ID: ${user.id}`;
                 
             } catch (error) {
                 console.log('Не удалось загрузить данные пользователя VK', error);
