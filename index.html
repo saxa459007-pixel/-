@@ -144,7 +144,7 @@
             color: var(--text-main);
             font-size: 14px;
             padding: 10px 15px 10px 38px;
-            border-radius: 6px; /* Чуть меньше скругление, более строгое */
+            border-radius: 6px;
             outline: none;
             transition: border-color 0.2s;
             box-sizing: border-box;
@@ -179,7 +179,7 @@
             display: none;
         }
 
-        /* --- ОБНОВЛЕННЫЕ СТИЛИ КНИГ (БЕЗ ОВАЛОВ) --- */
+        /* --- ОБНОВЛЕННЫЕ СТИЛИ КНИГ --- */
         .books-list { 
             width: 100%; 
             padding: 0 15px 15px 15px; 
@@ -187,15 +187,20 @@
         }
 
         .book-item { 
-            background-color: transparent; /* Убрали фон карточки */
+            background-color: transparent;
             border: none; 
-            border-radius: 0; /* Убрали скругления */
-            padding: 12px 0; /* Отступы только сверху и снизу */
+            border-radius: 0;
+            padding: 12px 0; 
             margin-bottom: 0; 
             display: flex; 
             flex-direction: column; 
             gap: 6px; 
-            border-bottom: 1px dashed var(--separator-color); /* Разделительная черта */
+            border-bottom: 1px dashed var(--separator-color);
+            transition: opacity 0.2s;
+        }
+        
+        .book-item.hidden {
+            display: none !important;
         }
 
         .book-item:last-child {
@@ -233,7 +238,6 @@
             align-items: center;
             margin-top: 2px;
             padding-top: 6px;
-            /* Убрали верхнюю черту, так как есть общая разделительная */
         }
         
         .book-level-wrapper {
@@ -519,7 +523,7 @@
             return false;
         }, true);
 
-        // --- РЕНДЕРИНГ КНИГ ---
+        // --- РЕНДЕРИНГ КНИГ (ОДИН РАЗ ПРИ ОТКРЫТИИ) ---
         async function renderBooks() {
             const savedLevels = JSON.parse(localStorage.getItem(BOOKS_LVL_KEY) || '{}');
             const container = document.getElementById('booksContainer');
@@ -549,8 +553,8 @@
                 
                 const item = document.createElement('div');
                 item.className = 'book-item';
-                // Сохраняем название в дата-атрибуте для быстрого поиска
                 item.dataset.bookName = name.toLowerCase();
+                item.dataset.bookKey = name; // Сохраняем ключ для обновления
                 
                 let priceText = '0';
                 
@@ -566,7 +570,7 @@
                     console.log('Ошибка получения цены для', name);
                 }
                 
-                // Заголовок с названием
+                // Заголовок
                 const headerDiv = document.createElement('div');
                 headerDiv.className = 'book-header';
                 const nameDiv = document.createElement('div');
@@ -579,7 +583,7 @@
                 descDiv.className = 'book-desc';
                 descDiv.innerHTML = desc;
                 
-                // Нижняя строка с уровнем и ценой
+                // Футер
                 const footerDiv = document.createElement('div');
                 footerDiv.className = 'book-footer';
                 
@@ -592,11 +596,13 @@
                 levelInput.value = lvl;
                 levelInput.min = '1';
                 
+                // Атрибуты защиты
                 levelInput.setAttribute('form', 'off');
                 levelInput.setAttribute('autocomplete', 'off');
                 levelInput.setAttribute('autocorrect', 'off');
                 levelInput.setAttribute('spellcheck', 'false');
                 
+                // Обработчики ввода (БЕЗ ПЕРЕРАБОТКИ СПИСКА)
                 levelInput.addEventListener('keydown', function(event) {
                     if (event.key === 'Enter') {
                         event.preventDefault();
@@ -623,8 +629,21 @@
                     }
                 }, true);
                 
+                // СОХРАНЕНИЕ И ОБНОВЛЕНИЕ ТОЛЬКО ЭТОЙ КАРТОЧКИ
                 levelInput.addEventListener('blur', function() {
-                    updateBookLevel(name, this.value);
+                    const newName = item.dataset.bookKey;
+                    const newVal = parseInt(this.value) || 1;
+                    
+                    // 1. Сохраняем в LS
+                    const savedLevelsLocal = JSON.parse(localStorage.getItem(BOOKS_LVL_KEY) || '{}');
+                    savedLevelsLocal[newName] = newVal;
+                    localStorage.setItem(BOOKS_LVL_KEY, JSON.stringify(savedLevelsLocal));
+                    
+                    // 2. Обновляем значение в инпуте (если вдруг ввели ерунду)
+                    this.value = newVal;
+
+                    // 3. Пересчитываем цену и описание ТОЛЬКО для этого элемента
+                    updateSingleBookItem(item, newName, newVal);
                 });
                 
                 const levelUnit = document.createElement('span');
@@ -637,6 +656,9 @@
                 const priceDiv = document.createElement('div');
                 priceDiv.className = 'book-price';
                 priceDiv.innerHTML = `🌕 ${priceText}`;
+                // Сохраняем ссылку на элемент цены для быстрого обновления
+                item.dataset.priceElementId = 'price-' + name.replace(/\s+/g, '-'); 
+                priceDiv.id = item.dataset.priceElementId;
                 
                 footerDiv.appendChild(levelWrapper);
                 footerDiv.appendChild(priceDiv);
@@ -649,17 +671,39 @@
             }
         }
 
-        // Функция обновления уровня
-        window.updateBookLevel = function(name, value) {
-            const savedLevels = JSON.parse(localStorage.getItem(BOOKS_LVL_KEY) || '{}');
-            savedLevels[name] = parseInt(value) || 1;
-            localStorage.setItem(BOOKS_LVL_KEY, JSON.stringify(savedLevels));
-            renderBooks();
-            // После перерисовки нужно снова применить фильтр, если он активен
-            setTimeout(filterBooksByName, 0);
-        };
+        // Функция обновления ОДНОЙ карточки без перерисовки всего списка
+        async function updateSingleBookItem(itemElement, bookName, newLevel) {
+            const data = PASSIVE_SKILLS[bookName];
+            if (!data) return;
 
-        // --- ФИЛЬТР ТОЛЬКО ПО НАЗВАНИЮ ---
+            // 1. Пересчет описания
+            let result = data.calc(newLevel);
+            let formatData = data.format ? (typeof data.format === 'function' ? data.format(result, newLevel) : data.format) : { result: result };
+            
+            let desc = data.desc;
+            for (const [key, val] of Object.entries(formatData)) {
+                const regex = new RegExp(`\\{${key}(?::\\.2f)?\\}`, 'g');
+                desc = desc.replace(regex, `<span class="book-val">${val}</span>`);
+            }
+            itemElement.querySelector('.book-desc').innerHTML = desc;
+
+            // 2. Пересчет цены
+            let priceText = '0';
+            try {
+                const bookPrice = await getBookPrice(bookName);
+                if (bookPrice && bookPrice > 0) {
+                    const totalCost = calculateUpgradeCost(newLevel, bookPrice);
+                    if (totalCost) {
+                        priceText = formatGold(totalCost);
+                    }
+                }
+            } catch (e) { console.log('Err price calc', e); }
+            
+            const priceEl = document.getElementById(itemElement.dataset.priceElementId);
+            if (priceEl) priceEl.innerHTML = `🌕 ${priceText}`;
+        }
+
+        // Фильтр (теперь просто скрывает/показывает, не перерисовывая)
         window.filterBooksByName = function() {
             const input = document.getElementById('bookSearchInput');
             const query = input.value.toLowerCase().trim();
@@ -668,23 +712,17 @@
             let visibleCount = 0;
 
             items.forEach(item => {
-                // Берем название из data-атрибута
                 const name = item.dataset.bookName;
-                
                 if (name.includes(query)) {
-                    item.style.display = 'flex';
+                    item.classList.remove('hidden');
                     visibleCount++;
                 } else {
-                    item.style.display = 'none';
+                    item.classList.add('hidden');
                 }
             });
 
             const noResultsMsg = document.getElementById('noResultsMsg');
-            if (visibleCount === 0) {
-                noResultsMsg.style.display = 'block';
-            } else {
-                noResultsMsg.style.display = 'none';
-            }
+            noResultsMsg.style.display = visibleCount === 0 ? 'block' : 'none';
         };
 
         window.switchPage = function(pageName) {
@@ -693,8 +731,10 @@
             document.getElementById(`page-${pageName}`).classList.add('active');
             document.getElementById(`nav-${pageName}`).classList.add('active');
             if (pageName === 'books') {
-                renderBooks();
-                // Фокус на поиск при открытии
+                // Рендерим только если контейнер пуст (первый вход)
+                if (document.getElementById('booksContainer').innerHTML.trim() === '') {
+                    renderBooks();
+                }
                 setTimeout(() => {
                     const input = document.getElementById('bookSearchInput');
                     if(input) input.focus();
