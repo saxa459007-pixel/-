@@ -1,4 +1,4 @@
-// actives.js - Формулы активных умений
+// actives.js - Формулы активных умений (синхронизировано с commands.py)
 
 function floor(x) {
     return Math.floor(x);
@@ -26,8 +26,9 @@ const ACTIVE_SKILLS = {
         "calc_damage": function(lvl, vit) {
             return floor((vit / 3) * ((Math.sqrt(lvl*10)/100*1 + 1)));
         },
-        "desc": "Вы восстанавливаете {damage} HP, на столько же снижая кровотечение, и дезориентируете врага, снижая его точность на {accuracy}% до конца боя.",
-        "params": ["vit"]
+        "desc": "Вы восстанавливаете {damage} HP ({heal_percent}% от макс. HP), на столько же снижая кровотечение, и дезориентируете врага, снижая его точность на {accuracy_reduce}% до конца боя.",
+        "params": ["vit"],
+        "vopla_bonus": true
     },
     "Удар вампира": {
         "calc": function(lvl) {
@@ -36,8 +37,9 @@ const ACTIVE_SKILLS = {
         "calc_damage": function(lvl, agi, vit) {
             return floor(0.4 * (agi + vit) * ((Math.sqrt(lvl*10)/100*1 + 1)));
         },
-        "desc": "Сблизившись с противником, Вы наносите урон (~{damage}✦), зависящий от ловкости и выносливости персонажа в равной степени, и восстанавливаете здоровье в размере половина от нанесенного урона.",
-        "params": ["agi", "vit"]
+        "desc": "Сблизившись с противником, Вы наносите урон (~{damage}✦), зависящий от ловкости и выносливости персонажа в равной степени, и восстанавливаете здоровье в размере половина от нанесенного урона. Добавляет регенерацию от нанесенного урона ~{regen} HP.",
+        "params": ["agi", "vit"],
+        "vampire_bonus": true
     },
     "Мощный удар": {
         "calc": function(lvl) {
@@ -47,7 +49,8 @@ const ACTIVE_SKILLS = {
             return floor((2.4*str + 0.8*atk) * ((Math.sqrt(lvl*10)/100*1 + 1)));
         },
         "desc": "Вы наносите серьёзный урон (~{damage}✧), зависящий очень значительно от силы и незначительно от атаки персонажа.",
-        "params": ["str", "atk"]
+        "params": ["str", "atk"],
+        "executioner_bonus": true
     },
     "Сила теней": {
         "calc": function(lvl) {
@@ -57,7 +60,8 @@ const ACTIVE_SKILLS = {
             return floor(char_lvl * ((Math.sqrt(lvl*10)/100*1 + 1) * 1.5));
         },
         "desc": "Используя тьму вокруг, Вы наносите противнику случайный урон (~{damage}✦), равный от текущего до удвоенного текущего уровня персонажа.",
-        "params": ["lvl"]
+        "params": ["lvl"],
+        "dark_bonus": true
     },
     "Расправа": {
         "calc": function(lvl) {
@@ -70,7 +74,7 @@ const ACTIVE_SKILLS = {
                 char_lvl * 50
             );
         },
-        "desc": "Вы наносите разовый урон в размере {damage}✧ от недостающего здоровья противника.",
+        "desc": "Вы наносите разовый урон в размере {x_percent}%✧ (но не более {max_damage}) от недостающего здоровья противника.",
         "params": ["lvl"]
     },
     "Слепота": {
@@ -96,8 +100,9 @@ const ACTIVE_SKILLS = {
             return floor((Math.sqrt(lvl*10)/100*1 + 1) * 100);
         },
         "calc_damage": null,
-        "desc": "Впадая в ярость, Вы наносите разовый урон в размере {damage}%✧ от Вашего недостающего здоровья.",
-        "params": []
+        "desc": "Впадая в ярость, Вы наносите разовый урон в размере {berserk_percent}%✧ от Вашего недостающего здоровья.",
+        "params": [],
+        "executioner_bonus": true
     },
     "Таран": {
         "calc": function(lvl) {
@@ -114,8 +119,9 @@ const ACTIVE_SKILLS = {
             return floor((Math.sqrt(lvl*10)/100*1 + 1) * 100);
         },
         "calc_damage": null,
-        "desc": "Вы проклинаете противника, уменьшая его атаку на {damage}%.",
-        "params": ["lvl"]
+        "desc": "Вы проклинаете противника, уменьшая его атаку на величину от {min_reduce}% до {max_reduce}% (но не более {max_units} единиц).",
+        "params": ["lvl"],
+        "warlock_bonus": true
     },
     "Огонек надежды": {
         "calc": function(lvl) {
@@ -125,14 +131,15 @@ const ACTIVE_SKILLS = {
             return floor((vit / 3) * ((Math.sqrt(lvl*10)/100*1 + 1)));
         },
         "desc": "Вы исцеляетесь на случайную величину (~{damage}), зависящую от параметра выносливости персонажа.",
-        "params": ["vit"]
+        "params": ["vit"],
+        "vopla_bonus": true
     },
     "Целебный огонь": {
         "calc": function(lvl) {
             return floor((Math.sqrt(lvl*10)/100*0.5 + 1) * 100);
         },
         "calc_damage": null,
-        "desc": "Вы наносите {damage}% урона✦ от текущего НР противника и исцеляетесь на {damage}% от своего потерянного здоровья.",
+        "desc": "Вы наносите {heal_percent}% урона✦ (но не более {max_heal}) от текущего НР противника и исцеляетесь на {heal_percent}% от своего потерянного здоровья.",
         "params": ["lvl"]
     },
     "Кровотечение": {
