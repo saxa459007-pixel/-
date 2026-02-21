@@ -291,6 +291,7 @@
             font-size: 12px;
             color: var(--text-secondary);
             margin-bottom: 4px;
+            flex-wrap: wrap;
         }
         
         .stat-item {
@@ -655,6 +656,13 @@
             }
         }
 
+        // Глобальный перехват отправки форм
+        document.addEventListener('submit', function(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            return false;
+        }, true);
+
         // --- ФУНКЦИЯ ДЛЯ ПОЛУЧЕНИЯ СТАТОВ ИЗ ПРОФИЛЯ ---
         function getStatsFromProfile() {
             const stats = {};
@@ -680,103 +688,132 @@
         // --- ФУНКЦИЯ ДЛЯ РАСЧЕТА УРОНА АКТИВНОГО УМЕНИЯ ---
         function calculateActiveDamage(skillName, level, stats) {
             const skill = ACTIVE_SKILLS[skillName];
-            if (!skill || !skill.calc_damage) return '?';
+            if (!skill) return '?';
             
             try {
-                let damage;
+                // Если у умения нет calc_damage, возвращаем множитель
+                if (!skill.calc_damage) {
+                    if (skill.calc) {
+                        return skill.calc(level);
+                    }
+                    return '?';
+                }
+                
+                // Расчет по параметрам из skill.params
+                const params = skill.params || [];
+                
+                if (params.length === 1) {
+                    const param = params[0];
+                    const value = stats[param] || 0;
+                    return skill.calc_damage(level, value);
+                } else if (params.length === 2) {
+                    const param1 = params[0];
+                    const param2 = params[1];
+                    const value1 = stats[param1] || 0;
+                    const value2 = stats[param2] || 0;
+                    return skill.calc_damage(level, value1, value2);
+                }
+                
+                // Fallback на switch если params не заданы
                 switch(skillName) {
                     case "Грязный удар":
-                        damage = skill.calc_damage(level, stats.agi, stats.str);
-                        break;
+                        return skill.calc_damage(level, stats.agi, stats.str);
                     case "Слабое исцеление":
-                        damage = skill.calc_damage(level, stats.vit);
-                        break;
+                        return skill.calc_damage(level, stats.vit);
                     case "Удар вампира":
-                        damage = skill.calc_damage(level, stats.agi, stats.vit);
-                        break;
+                        return skill.calc_damage(level, stats.agi, stats.vit);
                     case "Мощный удар":
-                        damage = skill.calc_damage(level, stats.str, stats.atk);
-                        break;
+                        return skill.calc_damage(level, stats.str, stats.atk);
                     case "Сила теней":
-                        damage = skill.calc_damage(level, stats.lvl);
-                        break;
+                        return skill.calc_damage(level, stats.lvl);
                     case "Расправа":
-                        damage = skill.calc_damage(level, stats.lvl);
-                        break;
-                    case "Слепота":
-                        return skill.calc_mult(level) + '%';
+                        return skill.calc_damage(level, stats.lvl);
                     case "Рассечение":
-                        damage = skill.calc_damage(level, stats.atk, stats.agi);
-                        break;
-                    case "Берсеркер":
-                        return skill.calc_mult(level) + '%';
+                        return skill.calc_damage(level, stats.atk, stats.agi);
                     case "Таран":
-                        damage = skill.calc_damage(level, stats.armor);
-                        break;
-                    case "Проклятие тьмы":
-                        return skill.calc_mult(level) + '%';
+                        return skill.calc_damage(level, stats.armor);
                     case "Огонек надежды":
-                        damage = skill.calc_damage(level, stats.vit);
-                        break;
-                    case "Целебный огонь":
-                        return skill.calc_mult(level) + '%';
+                        return skill.calc_damage(level, stats.vit);
                     case "Кровотечение":
-                        damage = skill.calc_damage(level, stats.atk, stats.agi);
-                        break;
+                        return skill.calc_damage(level, stats.atk, stats.agi);
                     case "Заражение":
-                        damage = skill.calc_damage(level, stats.vit);
-                        break;
+                        return skill.calc_damage(level, stats.vit);
                     case "Раскол":
-                        damage = skill.calc_damage(level, stats.agi);
-                        break;
+                        return skill.calc_damage(level, stats.agi);
                     default:
-                        return '?';
+                        return skill.calc ? skill.calc(level) : '?';
                 }
-                return damage;
             } catch (e) {
                 console.log('Ошибка расчета для', skillName, e);
                 return '?';
             }
         }
 
-        // --- ФУНКЦИЯ ДЛЯ ПОЛУЧЕНИЯ ОПИСАНИЯ СТАТОВ ДЛЯ УМЕНИЯ ---
-        function getStatsDescription(skillName, stats) {
+        // --- ФУНКЦИЯ ДЛЯ ПОЛУЧЕНИЯ СТРОКИ СО СТАТАМИ ---
+        function getStatsString(skillName, stats) {
             switch(skillName) {
                 case "Грязный удар":
-                    return `ловкость: ${stats.agi} | сила: ${stats.str}`;
+                    return `<span class="stat-item"><span class="stat-icon-small">👐</span> <span class="stat-value-small">${stats.agi}</span> | <span class="stat-icon-small">💪</span> <span class="stat-value-small">${stats.str}</span></span>`;
                 case "Слабое исцеление":
-                    return `выносливость: ${stats.vit}`;
+                    return `<span class="stat-item"><span class="stat-icon-small">❤️</span> <span class="stat-value-small">${stats.vit}</span></span>`;
                 case "Удар вампира":
-                    return `ловкость: ${stats.agi} | выносливость: ${stats.vit}`;
+                    return `<span class="stat-item"><span class="stat-icon-small">👐</span> <span class="stat-value-small">${stats.agi}</span> | <span class="stat-icon-small">❤️</span> <span class="stat-value-small">${stats.vit}</span></span>`;
                 case "Мощный удар":
-                    return `сила: ${stats.str} | атака: ${stats.atk}`;
+                    return `<span class="stat-item"><span class="stat-icon-small">💪</span> <span class="stat-value-small">${stats.str}</span> | <span class="stat-icon-small">⚔️</span> <span class="stat-value-small">${stats.atk}</span></span>`;
                 case "Сила теней":
-                    return `уровень: ${stats.lvl}`;
+                    return `<span class="stat-item"><span class="stat-icon-small">🕯️</span> <span class="stat-value-small">${stats.lvl}</span></span>`;
                 case "Расправа":
-                    return `уровень: ${stats.lvl}`;
+                    return `<span class="stat-item"><span class="stat-icon-small">🕯️</span> <span class="stat-value-small">${stats.lvl}</span></span>`;
                 case "Слепота":
-                    return `не требует статов`;
+                    return `<span class="stat-item">не требует статов</span>`;
                 case "Рассечение":
-                    return `атака: ${stats.atk} | ловкость: ${stats.agi}`;
+                    return `<span class="stat-item"><span class="stat-icon-small">⚔️</span> <span class="stat-value-small">${stats.atk}</span> | <span class="stat-icon-small">👐</span> <span class="stat-value-small">${stats.agi}</span></span>`;
                 case "Берсеркер":
-                    return `не требует статов`;
+                    return `<span class="stat-item">не требует статов</span>`;
                 case "Таран":
-                    return `броня: ${stats.armor}`;
+                    return `<span class="stat-item"><span class="stat-icon-small">🛡️</span> <span class="stat-value-small">${stats.armor}</span></span>`;
                 case "Проклятие тьмы":
-                    return `уровень: ${stats.lvl}`;
+                    return `<span class="stat-item"><span class="stat-icon-small">🕯️</span> <span class="stat-value-small">${stats.lvl}</span></span>`;
                 case "Огонек надежды":
-                    return `выносливость: ${stats.vit}`;
+                    return `<span class="stat-item"><span class="stat-icon-small">❤️</span> <span class="stat-value-small">${stats.vit}</span></span>`;
                 case "Целебный огонь":
-                    return `уровень: ${stats.lvl}`;
+                    return `<span class="stat-item"><span class="stat-icon-small">🕯️</span> <span class="stat-value-small">${stats.lvl}</span></span>`;
                 case "Кровотечение":
-                    return `атака: ${stats.atk} | ловкость: ${stats.agi}`;
+                    return `<span class="stat-item"><span class="stat-icon-small">⚔️</span> <span class="stat-value-small">${stats.atk}</span> | <span class="stat-icon-small">👐</span> <span class="stat-value-small">${stats.agi}</span></span>`;
                 case "Заражение":
-                    return `выносливость: ${stats.vit}`;
+                    return `<span class="stat-item"><span class="stat-icon-small">❤️</span> <span class="stat-value-small">${stats.vit}</span></span>`;
                 case "Раскол":
-                    return `ловкость: ${stats.agi}`;
+                    return `<span class="stat-item"><span class="stat-icon-small">👐</span> <span class="stat-value-small">${stats.agi}</span></span>`;
                 default:
                     return '';
             }
+        }
+
+        // --- ФУНКЦИЯ ДЛЯ ПОЛУЧЕНИЯ ОПИСАНИЯ ---
+        function getSkillDescription(skillName, level, stats) {
+            const skill = ACTIVE_SKILLS[skillName];
+            if (!skill) return skillName;
+            
+            let desc = skill.desc;
+            const damage = calculateActiveDamage(skillName, level, stats);
+            
+            // Заменяем все возможные плейсхолдеры
+            desc = desc.replace('{damage}', `<span class="book-val">${damage}</span>`);
+            
+            // Для Слабого исцеления добавляем точность
+            if (skillName === "Слабое исцеление" && skill.calc) {
+                const mult = skill.calc(level);
+                const accuracy = Math.floor(mult / 20);
+                desc = desc.replace('{accuracy}', `<span class="book-val">${accuracy}</span>`);
+            }
+            
+            // Для Раскола
+            if (skillName === "Раскол") {
+                const armorReduce = Math.floor((Math.sqrt(level*10)/100*0.5 + 1) * 30);
+                desc = desc.replace('{armor_reduce}', `<span class="book-val">${armorReduce}</span>`);
+            }
+            
+            return desc;
         }
 
         // --- ФУНКЦИИ ДЛЯ ПАССИВНЫХ КНИГ ---
@@ -1077,11 +1114,8 @@
             for (const [name, data] of booksArray) {
                 const lvl = savedLevels[name] || 1;
                 
-                let desc = data.desc;
-                let damage = calculateActiveDamage(name, lvl, stats);
-                desc = desc.replace('{damage}', `<span class="book-val">${damage}</span>`);
-                
-                const statsDesc = getStatsDescription(name, stats);
+                const desc = getSkillDescription(name, lvl, stats);
+                const statsString = getStatsString(name, stats);
                 
                 const item = document.createElement('div');
                 item.className = 'book-item';
@@ -1112,9 +1146,9 @@
                 descDiv.className = 'book-desc';
                 descDiv.innerHTML = desc;
                 
-                const statsRow = document.createElement('div');
-                statsRow.className = 'stats-row';
-                statsRow.innerHTML = statsDesc;
+                const statsDiv = document.createElement('div');
+                statsDiv.className = 'stats-row';
+                statsDiv.innerHTML = statsString;
                 
                 const footerDiv = document.createElement('div');
                 footerDiv.className = 'book-footer';
@@ -1179,8 +1213,8 @@
                 
                 item.appendChild(headerDiv);
                 item.appendChild(descDiv);
-                if (statsDesc) {
-                    item.appendChild(statsRow);
+                if (statsString) {
+                    item.appendChild(statsDiv);
                 }
                 item.appendChild(footerDiv);
                 
@@ -1193,22 +1227,17 @@
 
         function updateActiveBookDescription(bookElement, bookName, level) {
             const stats = getStatsFromProfile();
-            const data = ACTIVE_SKILLS[bookName];
-            if (!data) return;
-            
-            let desc = data.desc;
-            let damage = calculateActiveDamage(bookName, level, stats);
-            desc = desc.replace('{damage}', `<span class="book-val">${damage}</span>`);
+            const desc = getSkillDescription(bookName, level, stats);
+            const statsString = getStatsString(bookName, stats);
             
             const descDiv = bookElement.querySelector('.book-desc');
             if (descDiv) {
                 descDiv.innerHTML = desc;
             }
             
-            const statsRow = bookElement.querySelector('.stats-row');
-            if (statsRow) {
-                const statsDesc = getStatsDescription(bookName, stats);
-                statsRow.innerHTML = statsDesc;
+            const statsDiv = bookElement.querySelector('.stats-row');
+            if (statsDiv) {
+                statsDiv.innerHTML = statsString;
             }
         }
 
