@@ -426,7 +426,7 @@
         .book-level-wrapper {
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 0;  /* Убираем gap */
         }
         
         /* ИЗМЕНЕНО: поле ввода прозрачное (Вариант 1) */
@@ -438,7 +438,7 @@
             font-weight: 700;
             padding: 4px 0;
             width: 70px;  /* Увеличено для длинных чисел */
-            text-align: center;
+            text-align: right;  /* Число прижато вправо */
             outline: none;
             -moz-appearance: textfield;
         }
@@ -452,6 +452,7 @@
         .book-level-unit {
             color: var(--text-secondary);
             font-size: 13px;
+            margin-left: 2px;  /* Небольшой отступ после числа */
         }
         
         .book-percent {
