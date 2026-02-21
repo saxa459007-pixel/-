@@ -177,7 +177,7 @@
         }
         
         .book-level-input:focus {
-            border-color: var(--separator-color);
+            border-color: var(--accent);
         }
         
         .book-level-unit {
@@ -422,16 +422,7 @@
             }
         }
 
-        // --- ФУНКЦИЯ ДЛЯ ПРЕДОТВРАЩЕНИЯ ЛЮБЫХ ДЕЙСТВИЙ ПО УМОЛЧАНИЮ ---
-        function preventDefaultBehavior(event) {
-            if (event) {
-                event.preventDefault();
-                event.stopPropagation();
-            }
-            return false;
-        }
-
-        // --- РЕНДЕРИНГ КНИГ С 100% ЗАЩИТОЙ ОТ ПЕРЕМОТКИ ---
+        // --- РЕНДЕРИНГ КНИГ С ПОДДЕРЖКОЙ VK ---
         async function renderBooks() {
             const savedLevels = JSON.parse(localStorage.getItem(BOOKS_LVL_KEY) || '{}');
             const container = document.getElementById('booksContainer');
@@ -464,7 +455,6 @@
                 
                 let priceText = '0';
                 
-                // Получаем цену книги
                 try {
                     const bookPrice = await getBookPrice(name);
                     if (bookPrice && bookPrice > 0) {
@@ -477,52 +467,47 @@
                     console.log('Ошибка получения цены для', name);
                 }
                 
-                // Создаем элементы вручную, а не через innerHTML для лучшего контроля
+                // Заголовок с названием
                 const headerDiv = document.createElement('div');
                 headerDiv.className = 'book-header';
-                
                 const nameDiv = document.createElement('div');
                 nameDiv.className = 'book-name';
                 nameDiv.textContent = name;
                 headerDiv.appendChild(nameDiv);
                 
+                // Описание
                 const descDiv = document.createElement('div');
                 descDiv.className = 'book-desc';
                 descDiv.innerHTML = desc;
                 
+                // Нижняя строка с уровнем и ценой
                 const footerDiv = document.createElement('div');
                 footerDiv.className = 'book-footer';
                 
                 const levelWrapper = document.createElement('div');
                 levelWrapper.className = 'book-level-wrapper';
                 
-                // Создаем input с обработчиками для предотвращения перемотки
+                // УПРОЩЕННЫЙ INPUT ДЛЯ VK
                 const levelInput = document.createElement('input');
                 levelInput.type = 'number';
                 levelInput.className = 'book-level-input';
                 levelInput.value = lvl;
                 levelInput.min = '1';
                 
-                // Добавляем все возможные обработчики для предотвращения перемотки
-                levelInput.onclick = preventDefaultBehavior;
-                levelInput.onkeydown = function(event) {
+                // Обработчик изменения значения (сработает при потере фокуса или Enter)
+                levelInput.addEventListener('change', function() {
+                    updateBookLevel(name, this.value);
+                });
+                
+                // Обработчик Enter
+                levelInput.addEventListener('keydown', function(event) {
                     if (event.key === 'Enter') {
-                        preventDefaultBehavior(event);
-                        this.blur();
-                        updateBookLevel(name, this.value);
-                        return false;
+                        event.preventDefault();
+                        this.blur(); // Убираем фокус - сработает change
                     }
-                };
-                levelInput.onkeyup = preventDefaultBehavior;
-                levelInput.onkeypress = preventDefaultBehavior;
-                levelInput.onchange = function(event) {
-                    preventDefaultBehavior(event);
-                    updateBookLevel(name, this.value);
-                };
-                levelInput.onblur = function(event) {
-                    // Сохраняем при потере фокуса
-                    updateBookLevel(name, this.value);
-                };
+                });
+                
+                // НЕ БЛОКИРУЕМ обычные нажатия клавиш!
                 
                 const levelUnit = document.createElement('span');
                 levelUnit.className = 'book-level-unit';
@@ -546,14 +531,8 @@
             }
         }
 
-        // Функция обновления уровня с защитой от перемотки
-        window.updateBookLevel = function(name, value, event) {
-            // Предотвращаем любое стандартное поведение
-            if (event) {
-                event.preventDefault();
-                event.stopPropagation();
-            }
-            
+        // Функция обновления уровня
+        window.updateBookLevel = function(name, value) {
             const savedLevels = JSON.parse(localStorage.getItem(BOOKS_LVL_KEY) || '{}');
             savedLevels[name] = parseInt(value) || 1;
             localStorage.setItem(BOOKS_LVL_KEY, JSON.stringify(savedLevels));
