@@ -298,15 +298,45 @@
             display: flex;
             align-items: center;
             gap: 3px;
+            cursor: pointer;
+            padding: 2px 4px;
+            border-radius: 4px;
+            transition: background 0.2s;
+            position: relative;
+        }
+        
+        .stat-item:hover {
+            background-color: rgba(255, 255, 255, 0.05);
         }
         
         .stat-icon-small {
             font-size: 14px;
+            pointer-events: none;
         }
         
         .stat-value-small {
             color: var(--accent);
             font-weight: 600;
+            pointer-events: none;
+        }
+        
+        .stat-input-small {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--input-bg);
+            border: 1px solid var(--accent);
+            color: white;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 2px 4px;
+            border-radius: 4px;
+            text-align: center;
+            outline: none;
+            z-index: 20;
+            box-sizing: border-box;
         }
         
         .book-desc { 
@@ -752,47 +782,109 @@
             }
         }
 
-        // --- ФУНКЦИЯ ДЛЯ ПОЛУЧЕНИЯ СТРОКИ СО СТАТАМИ ---
+        // --- ФУНКЦИЯ ДЛЯ РЕДАКТИРОВАНИЯ СТАТОВ В АКТИВНЫХ УМЕНИЯХ ---
+        window.editActiveStat = function(event, element, statKey) {
+            // Предотвращаем всплытие события
+            event.stopPropagation();
+            
+            const valueSpan = element.querySelector('.stat-value-small');
+            if (!valueSpan) return;
+            
+            let currentVal = valueSpan.textContent;
+            const key = statKey;
+            
+            const input = document.createElement('input');
+            input.type = 'number';
+            input.value = currentVal === '0' ? '' : currentVal;
+            input.className = 'stat-input-small';
+            valueSpan.style.visibility = 'hidden'; 
+            
+            element.style.position = 'relative';
+            element.appendChild(input);
+            input.focus();
+            input.select();
+            
+            const finish = () => {
+                let newVal = input.value;
+                if (newVal === '') newVal = '0';
+                let finalValue = newVal;
+                
+                const num = parseInt(newVal);
+                if (!isNaN(num)) finalValue = num.toString();
+                
+                // Обновляем значение в DOM
+                valueSpan.textContent = finalValue;
+                valueSpan.style.visibility = 'visible';
+                input.remove();
+                
+                // Обновляем значение в профиле
+                const profileStat = document.querySelector(`.stat-value[data-key="${key}"]`);
+                if (profileStat) {
+                    profileStat.textContent = finalValue;
+                }
+                
+                // Сохраняем все статы
+                saveStats();
+                
+                // Перерисовываем активные умения с новыми статами
+                if (document.getElementById('page-active').classList.contains('active')) {
+                    renderActiveBooks();
+                }
+            };
+            
+            input.onblur = finish;
+            input.onkeydown = e => { 
+                if(e.key === 'Enter') {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    finish();
+                    return false;
+                }
+            };
+            input.onclick = e => e.stopPropagation();
+        };
+
+        // --- ФУНКЦИЯ ДЛЯ ПОЛУЧЕНИЯ СТРОКИ СО СТАТАМИ (КЛИКАБЕЛЬНО) ---
         function getStatsString(skillName, stats) {
             switch(skillName) {
                 case "Грязный удар":
-                    return `<span class="stat-item"><span class="stat-icon-small">👐</span> <span class="stat-value-small">${stats.agi}</span> | <span class="stat-icon-small">💪</span> <span class="stat-value-small">${stats.str}</span></span>`;
+                    return `<div class="stat-item" onclick="editActiveStat(event, this, 'agi')"><span class="stat-icon-small">👐</span> <span class="stat-value-small">${stats.agi}</span></div><div class="stat-item" onclick="editActiveStat(event, this, 'str')"><span class="stat-icon-small">💪</span> <span class="stat-value-small">${stats.str}</span></div>`;
                 case "Слабое исцеление":
-                    return `<span class="stat-item"><span class="stat-icon-small">❤️</span> <span class="stat-value-small">${stats.vit}</span></span>`;
+                    return `<div class="stat-item" onclick="editActiveStat(event, this, 'vit')"><span class="stat-icon-small">❤️</span> <span class="stat-value-small">${stats.vit}</span></div>`;
                 case "Удар вампира":
-                    return `<span class="stat-item"><span class="stat-icon-small">👐</span> <span class="stat-value-small">${stats.agi}</span> | <span class="stat-icon-small">❤️</span> <span class="stat-value-small">${stats.vit}</span></span>`;
+                    return `<div class="stat-item" onclick="editActiveStat(event, this, 'agi')"><span class="stat-icon-small">👐</span> <span class="stat-value-small">${stats.agi}</span></div><div class="stat-item" onclick="editActiveStat(event, this, 'vit')"><span class="stat-icon-small">❤️</span> <span class="stat-value-small">${stats.vit}</span></div>`;
                 case "Мощный удар":
-                    return `<span class="stat-item"><span class="stat-icon-small">💪</span> <span class="stat-value-small">${stats.str}</span> | <span class="stat-icon-small">⚔️</span> <span class="stat-value-small">${stats.atk}</span></span>`;
+                    return `<div class="stat-item" onclick="editActiveStat(event, this, 'str')"><span class="stat-icon-small">💪</span> <span class="stat-value-small">${stats.str}</span></div><div class="stat-item" onclick="editActiveStat(event, this, 'atk')"><span class="stat-icon-small">⚔️</span> <span class="stat-value-small">${stats.atk}</span></div>`;
                 case "Сила теней":
-                    return `<span class="stat-item"><span class="stat-icon-small">🕯️</span> <span class="stat-value-small">${stats.lvl}</span></span>`;
+                    return `<div class="stat-item" onclick="editActiveStat(event, this, 'lvl')"><span class="stat-icon-small">🕯️</span> <span class="stat-value-small">${stats.lvl}</span></div>`;
                 case "Расправа":
-                    return `<span class="stat-item"><span class="stat-icon-small">🕯️</span> <span class="stat-value-small">${stats.lvl}</span></span>`;
+                    return `<div class="stat-item" onclick="editActiveStat(event, this, 'lvl')"><span class="stat-icon-small">🕯️</span> <span class="stat-value-small">${stats.lvl}</span></div>`;
                 case "Слепота":
                     return `<span class="stat-item">не требует статов</span>`;
                 case "Рассечение":
-                    return `<span class="stat-item"><span class="stat-icon-small">⚔️</span> <span class="stat-value-small">${stats.atk}</span> | <span class="stat-icon-small">👐</span> <span class="stat-value-small">${stats.agi}</span></span>`;
+                    return `<div class="stat-item" onclick="editActiveStat(event, this, 'atk')"><span class="stat-icon-small">⚔️</span> <span class="stat-value-small">${stats.atk}</span></div><div class="stat-item" onclick="editActiveStat(event, this, 'agi')"><span class="stat-icon-small">👐</span> <span class="stat-value-small">${stats.agi}</span></div>`;
                 case "Берсеркер":
                     return `<span class="stat-item">не требует статов</span>`;
                 case "Таран":
-                    return `<span class="stat-item"><span class="stat-icon-small">🛡️</span> <span class="stat-value-small">${stats.armor}</span></span>`;
+                    return `<div class="stat-item" onclick="editActiveStat(event, this, 'armor')"><span class="stat-icon-small">🛡️</span> <span class="stat-value-small">${stats.armor}</span></div>`;
                 case "Проклятие тьмы":
-                    return `<span class="stat-item"><span class="stat-icon-small">🕯️</span> <span class="stat-value-small">${stats.lvl}</span></span>`;
+                    return `<div class="stat-item" onclick="editActiveStat(event, this, 'lvl')"><span class="stat-icon-small">🕯️</span> <span class="stat-value-small">${stats.lvl}</span></div>`;
                 case "Огонек надежды":
-                    return `<span class="stat-item"><span class="stat-icon-small">❤️</span> <span class="stat-value-small">${stats.vit}</span></span>`;
+                    return `<div class="stat-item" onclick="editActiveStat(event, this, 'vit')"><span class="stat-icon-small">❤️</span> <span class="stat-value-small">${stats.vit}</span></div>`;
                 case "Целебный огонь":
-                    return `<span class="stat-item"><span class="stat-icon-small">🕯️</span> <span class="stat-value-small">${stats.lvl}</span></span>`;
+                    return `<div class="stat-item" onclick="editActiveStat(event, this, 'lvl')"><span class="stat-icon-small">🕯️</span> <span class="stat-value-small">${stats.lvl}</span></div>`;
                 case "Кровотечение":
-                    return `<span class="stat-item"><span class="stat-icon-small">⚔️</span> <span class="stat-value-small">${stats.atk}</span> | <span class="stat-icon-small">👐</span> <span class="stat-value-small">${stats.agi}</span></span>`;
+                    return `<div class="stat-item" onclick="editActiveStat(event, this, 'atk')"><span class="stat-icon-small">⚔️</span> <span class="stat-value-small">${stats.atk}</span></div><div class="stat-item" onclick="editActiveStat(event, this, 'agi')"><span class="stat-icon-small">👐</span> <span class="stat-value-small">${stats.agi}</span></div>`;
                 case "Заражение":
-                    return `<span class="stat-item"><span class="stat-icon-small">❤️</span> <span class="stat-value-small">${stats.vit}</span></span>`;
+                    return `<div class="stat-item" onclick="editActiveStat(event, this, 'vit')"><span class="stat-icon-small">❤️</span> <span class="stat-value-small">${stats.vit}</span></div>`;
                 case "Раскол":
-                    return `<span class="stat-item"><span class="stat-icon-small">👐</span> <span class="stat-value-small">${stats.agi}</span></span>`;
+                    return `<div class="stat-item" onclick="editActiveStat(event, this, 'agi')"><span class="stat-icon-small">👐</span> <span class="stat-value-small">${stats.agi}</span></div>`;
                 default:
                     return '';
             }
         }
 
-        // --- ИСПРАВЛЕННАЯ ФУНКЦИЯ ДЛЯ ПОЛУЧЕНИЯ ОПИСАНИЯ ---
+        // --- ФУНКЦИЯ ДЛЯ ПОЛУЧЕНИЯ ОПИСАНИЯ ---
         function getSkillDescription(skillName, level, stats) {
             const skill = ACTIVE_SKILLS[skillName];
             if (!skill) return skillName;
