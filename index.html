@@ -792,28 +792,71 @@
             }
         }
 
-        // --- ФУНКЦИЯ ДЛЯ ПОЛУЧЕНИЯ ОПИСАНИЯ ---
+        // --- ФУНКЦИЯ ДЛЯ ПОЛУЧЕНИЯ ОПИСАНИЯ (СИНХРОНИЗИРОВАНО С COMMANDS.PY) ---
         function getSkillDescription(skillName, level, stats) {
             const skill = ACTIVE_SKILLS[skillName];
             if (!skill) return skillName;
             
             let desc = skill.desc;
             const damage = calculateActiveDamage(skillName, level, stats);
+            const mult = skill.calc ? skill.calc(level) : 0;
             
-            // Заменяем все возможные плейсхолдеры
+            // Базовая замена урона
             desc = desc.replace('{damage}', `<span class="book-val">${damage}</span>`);
             
-            // Для Слабого исцеления добавляем точность
-            if (skillName === "Слабое исцеление" && skill.calc) {
-                const mult = skill.calc(level);
-                const accuracy = Math.floor(mult / 20);
-                desc = desc.replace('{accuracy}', `<span class="book-val">${accuracy}</span>`);
-            }
-            
-            // Для Раскола
-            if (skillName === "Раскол") {
-                const armorReduce = Math.floor((Math.sqrt(level*10)/100*0.5 + 1) * 30);
-                desc = desc.replace('{armor_reduce}', `<span class="book-val">${armorReduce}</span>`);
+            // Специальные случаи из commands.py
+            switch(skillName) {
+                case "Расправа":
+                    const inner = Math.sqrt(level*10)/100 + 1;
+                    const rounded = Math.floor(inner * 100) / 100;
+                    const x_percent = Math.floor(rounded * 50);
+                    const max_damage = stats.lvl * 50;
+                    desc = desc.replace('{x_percent}', `<span class="book-val">${x_percent}</span>`)
+                               .replace('{max_damage}', `<span class="book-val">${max_damage}</span>`)
+                               .replace('{damage}', `<span class="book-val">${damage}</span>`);
+                    break;
+                    
+                case "Слабое исцеление":
+                    const heal_percent = Math.floor(mult / 4);
+                    const accuracy_reduce = Math.floor(heal_percent / 5);
+                    desc = desc.replace('{heal_percent}', `<span class="book-val">${heal_percent}</span>`)
+                               .replace('{accuracy_reduce}', `<span class="book-val">${accuracy_reduce}</span>`);
+                    break;
+                    
+                case "Удар вампира":
+                    const regen = Math.ceil(damage / 15);
+                    desc = desc.replace('{regen}', `<span class="book-val">${regen}</span>`);
+                    break;
+                    
+                case "Берсеркер":
+                    const berserk_percent = Math.floor((Math.sqrt(level*10)/100*1 + 1) * 50);
+                    desc = desc.replace('{berserk_percent}', `<span class="book-val">${berserk_percent}</span>`);
+                    break;
+                    
+                case "Проклятие тьмы":
+                    const min_reduce = Math.floor(mult / 20);
+                    const max_reduce = Math.floor(mult * 3 / 20);
+                    const max_units = stats.lvl * 10;
+                    desc = desc.replace('{min_reduce}', `<span class="book-val">${min_reduce}</span>`)
+                               .replace('{max_reduce}', `<span class="book-val">${max_reduce}</span>`)
+                               .replace('{max_units}', `<span class="book-val">${max_units}</span>`);
+                    break;
+                    
+                case "Целебный огонь":
+                    const heal_percent_fire = Math.floor((Math.sqrt(level*10)/100*0.5 + 1) * 20);
+                    const max_heal = stats.lvl * 50;
+                    desc = desc.replace('{heal_percent}', `<span class="book-val">${heal_percent_fire}</span>`)
+                               .replace('{max_heal}', `<span class="book-val">${max_heal}</span>`);
+                    break;
+                    
+                case "Слепота":
+                    desc = desc.replace('{damage}', `<span class="book-val">${mult}</span>`);
+                    break;
+                    
+                case "Раскол":
+                    const armor_reduce = Math.floor((Math.sqrt(level*10)/100*0.5 + 1) * 30);
+                    desc = desc.replace('{armor_reduce}', `<span class="book-val">${armor_reduce}</span>`);
+                    break;
             }
             
             return desc;
