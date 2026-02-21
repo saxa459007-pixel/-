@@ -421,12 +421,10 @@
             font-size: 13px;
         }
 
-        .controls { width: 100%; padding: 0 15px 15px 15px; box-sizing: border-box; }
-        .btn-reset { width: 100%; padding: 10px; background: transparent; color: #72767d; border: 1px solid #42454a; border-radius: 4px; font-size: 13px; font-weight: 600; cursor: pointer; margin-bottom: 8px; text-align: center; transition: all 0.2s; }
-        .btn-reset:hover { background-color: rgba(255,255,255,0.05); color: var(--text-main); }
-        .btn-reset:active { opacity: 0.6; }
-        .btn-reset.danger { color: #ed4245; border-color: #ed4245; }
-        .btn-reset.danger:hover { background-color: rgba(237, 66, 69, 0.1); }
+        /* Класс для скрытия элементов */
+        .hidden {
+            display: none !important;
+        }
     </style>
 </head>
 <body>
@@ -483,7 +481,7 @@
                     </div>
                 </div>
             </div>
-            <div class="controls"><button class="btn-reset danger" onclick="clearAll()">Сбросить всё вручную</button></div>
+            <!-- Кнопка сброса удалена -->
         </div>
 
         <!-- СТРАНИЦА АКТИВНЫХ УМЕНИЙ -->
@@ -1588,7 +1586,15 @@
 
         function checkReset() {
             const last = localStorage.getItem(DATE_KEY);
-            if (last && (Date.now() - parseInt(last) > 7 * 24 * 60 * 60 * 1000)) clearAll();
+            if (last && (Date.now() - parseInt(last) > 7 * 24 * 60 * 60 * 1000)) {
+                // Автоматический сброс раз в неделю
+                localStorage.removeItem(DB_KEY);
+                localStorage.removeItem(DATE_KEY);
+                localStorage.removeItem(CLASS_KEY);
+                localStorage.removeItem(BOOKS_LVL_KEY);
+                localStorage.removeItem(ACTIVE_BOOKS_LVL_KEY);
+                location.reload();
+            }
         }
 
         function saveStats() {
@@ -1611,16 +1617,7 @@
             updateKarmaIcon();
         }
 
-        window.clearAll = function() {
-            if(confirm('Вы уверены? Все данные будут сброшены.')) {
-                localStorage.removeItem(DB_KEY);
-                localStorage.removeItem(DATE_KEY);
-                localStorage.removeItem(CLASS_KEY);
-                localStorage.removeItem(BOOKS_LVL_KEY);
-                localStorage.removeItem(ACTIVE_BOOKS_LVL_KEY);
-                location.reload();
-            }
-        }
+        // Функция сброса удалена, так как кнопки больше нет
 
         window.editStatByCell = function(cellElement, isResist = false, isKarma = false) {
             const valueContainer = cellElement.querySelector('.stat-value-container');
