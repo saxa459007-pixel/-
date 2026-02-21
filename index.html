@@ -754,6 +754,37 @@
             }
         }
 
+        // --- ФУНКЦИЯ ОБНОВЛЕНИЯ ОПИСАНИЯ ДЛЯ КОНКРЕТНОЙ КНИГИ ---
+        function updateBookDescription(bookElement, bookName, level) {
+            const data = PASSIVE_SKILLS[bookName];
+            if (!data) return;
+            
+            let result = data.calc(level);
+            let formatData;
+            
+            if (data.format) {
+                if (typeof data.format === 'function') {
+                    formatData = data.format(result, level);
+                } else {
+                    formatData = data.format;
+                }
+            } else {
+                formatData = { result: result };
+            }
+            
+            let desc = data.desc;
+            
+            for (const [key, val] of Object.entries(formatData)) {
+                const regex = new RegExp(`\\{${key}(?::\\.2f)?\\}`, 'g');
+                desc = desc.replace(regex, `<span class="book-val">${val}</span>`);
+            }
+            
+            const descDiv = bookElement.querySelector('.book-desc');
+            if (descDiv) {
+                descDiv.innerHTML = desc;
+            }
+        }
+
         // --- ОПТИМИЗИРОВАННАЯ ФУНКЦИЯ ОБНОВЛЕНИЯ УРОВНЯ (БЕЗ ДЕРГАНЬЯ) ---
         window.updateBookLevel = function(name, value) {
             const savedLevels = JSON.parse(localStorage.getItem(BOOKS_LVL_KEY) || '{}');
@@ -775,7 +806,10 @@
                         input.value = newLevel;
                     }
                     
-                    // Обновляем только цену
+                    // Обновляем описание эффекта
+                    updateBookDescription(item, name, newLevel);
+                    
+                    // Обновляем цену
                     updateBookPrice(item, name, newLevel);
                     break;
                 }
