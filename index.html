@@ -827,10 +827,29 @@
                 // Сохраняем все статы
                 saveStats();
                 
-                // Перерисовываем активные умения с новыми статами
-                if (document.getElementById('page-active').classList.contains('active')) {
-                    renderActiveBooks();
-                }
+                // Обновляем все активные книги без перерисовки всего DOM
+                const items = document.querySelectorAll('#activeBooksContainer .book-item');
+                const stats = getStatsFromProfile();
+                
+                items.forEach(item => {
+                    const bookName = item.querySelector('.book-name').textContent;
+                    const level = parseInt(item.querySelector('.book-level-input').value) || 1;
+                    
+                    // Обновляем описание
+                    const descDiv = item.querySelector('.book-desc');
+                    if (descDiv) {
+                        descDiv.innerHTML = getSkillDescription(bookName, level, stats);
+                    }
+                    
+                    // Обновляем строку со статами
+                    const statsDiv = item.querySelector('.stats-row');
+                    if (statsDiv) {
+                        statsDiv.innerHTML = getStatsString(bookName, stats);
+                    }
+                    
+                    // Обновляем цену (асинхронно)
+                    updateActiveBookPrice(item, bookName, level);
+                });
             };
             
             input.onblur = finish;
@@ -838,7 +857,7 @@
                 if(e.key === 'Enter') {
                     e.preventDefault();
                     e.stopPropagation();
-                    finish();
+                    input.blur(); // Потеря фокуса вызовет finish
                     return false;
                 }
             };
