@@ -121,40 +121,119 @@
         .highlight-class { color: var(--text-main); font-weight: 700; font-size: 13px; margin-right: 4px; }
         .highlight-val { color: var(--text-secondary); font-weight: 600; }
 
-        .books-list { width: 100%; padding: 15px; box-sizing: border-box; }
-        .book-item { background-color: var(--card-bg); border-radius: 8px; padding: 12px 15px; margin-bottom: 10px; border: 1px solid var(--separator-color); display: flex; flex-direction: column; gap: 8px; }
+        /* --- СТИЛИ ДЛЯ ПОИСКА --- */
+        .search-container {
+            width: 100%;
+            padding: 15px 15px 10px 15px;
+            box-sizing: border-box;
+            background-color: var(--bg-color);
+            position: sticky;
+            top: 54px;
+            z-index: 90;
+        }
+
+        .search-input-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        .search-input {
+            width: 100%;
+            background-color: var(--input-bg);
+            border: 1px solid var(--separator-color);
+            color: var(--text-main);
+            font-size: 14px;
+            padding: 10px 15px 10px 38px;
+            border-radius: 6px; /* Чуть меньше скругление, более строгое */
+            outline: none;
+            transition: border-color 0.2s;
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+
+        .search-input:focus {
+            border-color: var(--accent);
+        }
+
+        .search-input::placeholder {
+            color: var(--text-secondary);
+            opacity: 0.6;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 18px;
+            height: 18px;
+            fill: var(--text-secondary);
+            pointer-events: none;
+        }
+
+        .no-results {
+            text-align: center;
+            color: var(--text-secondary);
+            padding: 20px;
+            font-size: 14px;
+            display: none;
+        }
+
+        /* --- ОБНОВЛЕННЫЕ СТИЛИ КНИГ (БЕЗ ОВАЛОВ) --- */
+        .books-list { 
+            width: 100%; 
+            padding: 0 15px 15px 15px; 
+            box-sizing: border-box; 
+        }
+
+        .book-item { 
+            background-color: transparent; /* Убрали фон карточки */
+            border: none; 
+            border-radius: 0; /* Убрали скругления */
+            padding: 12px 0; /* Отступы только сверху и снизу */
+            margin-bottom: 0; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 6px; 
+            border-bottom: 1px dashed var(--separator-color); /* Разделительная черта */
+        }
+
+        .book-item:last-child {
+            border-bottom: none;
+        }
+
         .book-header { 
             display: flex; 
             justify-content: space-between; 
             align-items: center;
-            margin-bottom: 4px;
+            margin-bottom: 2px;
         }
         .book-name { 
-            font-size: 14px; 
+            font-size: 15px; 
             font-weight: 700; 
             color: var(--text-main); 
             text-transform: none;
         }
         .book-desc { 
-            font-size: 12px; 
+            font-size: 13px; 
             color: var(--text-secondary); 
             line-height: 1.4; 
             white-space: pre-line;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
+            padding-right: 10px;
         }
         .book-val { 
             color: var(--text-main); 
             font-weight: 600; 
         }
         
-        /* Стили для нижней строки */
         .book-footer {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-top: 4px;
-            padding-top: 8px;
-            border-top: 1px dashed var(--separator-color);
+            margin-top: 2px;
+            padding-top: 6px;
+            /* Убрали верхнюю черту, так как есть общая разделительная */
         }
         
         .book-level-wrapper {
@@ -171,7 +250,7 @@
             font-weight: 700;
             padding: 4px 6px;
             border-radius: 4px;
-            width: 60px;
+            width: 55px;
             text-align: center;
             outline: none;
         }
@@ -254,7 +333,18 @@
         </div>
 
         <div id="page-books" class="page">
+            <!-- Блок поиска -->
+            <div class="search-container">
+                <div class="search-input-wrapper">
+                    <svg class="search-icon" viewBox="0 0 24 24">
+                        <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                    </svg>
+                    <input type="text" class="search-input" id="bookSearchInput" placeholder="Поиск по названию..." oninput="filterBooksByName()">
+                </div>
+            </div>
+
             <div class="books-list" id="booksContainer"></div>
+            <div class="no-results" id="noResultsMsg">Книги не найдены</div>
         </div>
     </div>
 
@@ -429,7 +519,7 @@
             return false;
         }, true);
 
-        // --- РЕНДЕРИНГ КНИГ С МАКСИМАЛЬНОЙ ЗАЩИТОЙ ---
+        // --- РЕНДЕРИНГ КНИГ ---
         async function renderBooks() {
             const savedLevels = JSON.parse(localStorage.getItem(BOOKS_LVL_KEY) || '{}');
             const container = document.getElementById('booksContainer');
@@ -459,6 +549,8 @@
                 
                 const item = document.createElement('div');
                 item.className = 'book-item';
+                // Сохраняем название в дата-атрибуте для быстрого поиска
+                item.dataset.bookName = name.toLowerCase();
                 
                 let priceText = '0';
                 
@@ -494,26 +586,23 @@
                 const levelWrapper = document.createElement('div');
                 levelWrapper.className = 'book-level-wrapper';
                 
-                // СОЗДАЕМ INPUT С МАКСИМАЛЬНОЙ ЗАЩИТОЙ
                 const levelInput = document.createElement('input');
                 levelInput.type = 'number';
                 levelInput.className = 'book-level-input';
                 levelInput.value = lvl;
                 levelInput.min = '1';
                 
-                // Атрибуты для запрета отправки формы
                 levelInput.setAttribute('form', 'off');
                 levelInput.setAttribute('autocomplete', 'off');
                 levelInput.setAttribute('autocorrect', 'off');
                 levelInput.setAttribute('spellcheck', 'false');
                 
-                // Перехватываем Enter на ВСЕХ уровнях (capturing фаза)
                 levelInput.addEventListener('keydown', function(event) {
                     if (event.key === 'Enter') {
                         event.preventDefault();
                         event.stopPropagation();
                         event.stopImmediatePropagation();
-                        this.blur(); // Потеря фокуса
+                        this.blur();
                         return false;
                     }
                 }, true);
@@ -534,7 +623,6 @@
                     }
                 }, true);
                 
-                // Сохраняем при потере фокуса
                 levelInput.addEventListener('blur', function() {
                     updateBookLevel(name, this.value);
                 });
@@ -567,6 +655,36 @@
             savedLevels[name] = parseInt(value) || 1;
             localStorage.setItem(BOOKS_LVL_KEY, JSON.stringify(savedLevels));
             renderBooks();
+            // После перерисовки нужно снова применить фильтр, если он активен
+            setTimeout(filterBooksByName, 0);
+        };
+
+        // --- ФИЛЬТР ТОЛЬКО ПО НАЗВАНИЮ ---
+        window.filterBooksByName = function() {
+            const input = document.getElementById('bookSearchInput');
+            const query = input.value.toLowerCase().trim();
+            
+            const items = document.querySelectorAll('.book-item');
+            let visibleCount = 0;
+
+            items.forEach(item => {
+                // Берем название из data-атрибута
+                const name = item.dataset.bookName;
+                
+                if (name.includes(query)) {
+                    item.style.display = 'flex';
+                    visibleCount++;
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+
+            const noResultsMsg = document.getElementById('noResultsMsg');
+            if (visibleCount === 0) {
+                noResultsMsg.style.display = 'block';
+            } else {
+                noResultsMsg.style.display = 'none';
+            }
         };
 
         window.switchPage = function(pageName) {
@@ -574,7 +692,14 @@
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             document.getElementById(`page-${pageName}`).classList.add('active');
             document.getElementById(`nav-${pageName}`).classList.add('active');
-            if (pageName === 'books') renderBooks();
+            if (pageName === 'books') {
+                renderBooks();
+                // Фокус на поиск при открытии
+                setTimeout(() => {
+                    const input = document.getElementById('bookSearchInput');
+                    if(input) input.focus();
+                }, 100);
+            }
         };
 
         function checkReset() {
