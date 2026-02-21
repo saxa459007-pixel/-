@@ -792,7 +792,7 @@
             }
         }
 
-        // --- ФУНКЦИЯ ДЛЯ ПОЛУЧЕНИЯ ОПИСАНИЯ (СИНХРОНИЗИРОВАНО С COMMANDS.PY) ---
+        // --- ИСПРАВЛЕННАЯ ФУНКЦИЯ ДЛЯ ПОЛУЧЕНИЯ ОПИСАНИЯ ---
         function getSkillDescription(skillName, level, stats) {
             const skill = ACTIVE_SKILLS[skillName];
             if (!skill) return skillName;
@@ -801,10 +801,7 @@
             const damage = calculateActiveDamage(skillName, level, stats);
             const mult = skill.calc ? skill.calc(level) : 0;
             
-            // Базовая замена урона
-            desc = desc.replace('{damage}', `<span class="book-val">${damage}</span>`);
-            
-            // Специальные случаи из commands.py
+            // Специальные случаи из commands.py (обрабатываем ДО общей замены damage)
             switch(skillName) {
                 case "Расправа":
                     const inner = Math.sqrt(level*10)/100 + 1;
@@ -820,12 +817,14 @@
                     const heal_percent = Math.floor(mult / 4);
                     const accuracy_reduce = Math.floor(heal_percent / 5);
                     desc = desc.replace('{heal_percent}', `<span class="book-val">${heal_percent}</span>`)
-                               .replace('{accuracy_reduce}', `<span class="book-val">${accuracy_reduce}</span>`);
+                               .replace('{accuracy_reduce}', `<span class="book-val">${accuracy_reduce}</span>`)
+                               .replace('{damage}', `<span class="book-val">${damage}</span>`);
                     break;
                     
                 case "Удар вампира":
                     const regen = Math.ceil(damage / 15);
-                    desc = desc.replace('{regen}', `<span class="book-val">${regen}</span>`);
+                    desc = desc.replace('{regen}', `<span class="book-val">${regen}</span>`)
+                               .replace('{damage}', `<span class="book-val">${damage}</span>`);
                     break;
                     
                 case "Берсеркер":
@@ -846,7 +845,7 @@
                     const heal_percent_fire = Math.floor((Math.sqrt(level*10)/100*0.5 + 1) * 20);
                     const max_heal = stats.lvl * 50;
                     // Заменяем оба плейсхолдера: {heal_percent} и {max_heal}
-                    desc = desc.replace('{heal_percent}', `<span class="book-val">${heal_percent_fire}</span>`)
+                    desc = desc.replace(/{heal_percent}/g, `<span class="book-val">${heal_percent_fire}</span>`)
                                .replace('{max_heal}', `<span class="book-val">${max_heal}</span>`);
                     break;
                     
@@ -856,8 +855,13 @@
                     
                 case "Раскол":
                     const armor_reduce = Math.floor((Math.sqrt(level*10)/100*0.5 + 1) * 30);
-                    desc = desc.replace('{armor_reduce}', `<span class="book-val">${armor_reduce}</span>`);
+                    desc = desc.replace('{armor_reduce}', `<span class="book-val">${armor_reduce}</span>`)
+                               .replace('{damage}', `<span class="book-val">${damage}</span>`);
                     break;
+                    
+                default:
+                    // Для всех остальных умений просто заменяем {damage}
+                    desc = desc.replace('{damage}', `<span class="book-val">${damage}</span>`);
             }
             
             return desc;
