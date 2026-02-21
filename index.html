@@ -147,7 +147,7 @@
             font-weight: 600; 
         }
         
-        /* СТИЛЬ ДЛЯ НИЖНЕЙ СТРОКИ */
+        /* Стили для нижней строки */
         .book-footer {
             display: flex;
             justify-content: space-between;
@@ -422,7 +422,16 @@
             }
         }
 
-        // --- РЕНДЕРИНГ КНИГ ---
+        // --- ФУНКЦИЯ ДЛЯ ПРЕДОТВРАЩЕНИЯ ЛЮБЫХ ДЕЙСТВИЙ ПО УМОЛЧАНИЮ ---
+        function preventDefaultBehavior(event) {
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            return false;
+        }
+
+        // --- РЕНДЕРИНГ КНИГ С 100% ЗАЩИТОЙ ОТ ПЕРЕМОТКИ ---
         async function renderBooks() {
             const savedLevels = JSON.parse(localStorage.getItem(BOOKS_LVL_KEY) || '{}');
             const container = document.getElementById('booksContainer');
@@ -468,36 +477,88 @@
                     console.log('Ошибка получения цены для', name);
                 }
                 
-                // ВАЖНО: передаем event в функцию!
-                item.innerHTML = `
-                    <div class="book-header">
-                        <div class="book-name">${name}</div>
-                    </div>
-                    <div class="book-desc">${desc}</div>
-                    <div class="book-footer">
-                        <div class="book-level-wrapper">
-                            <input type="number" class="book-level-input" value="${lvl}" onchange="updateBookLevel('${name}', this.value, event)" min="1">
-                            <span class="book-level-unit">ур.</span>
-                        </div>
-                        <div class="book-price">🌕 ${priceText}</div>
-                    </div>
-                `;
+                // Создаем элементы вручную, а не через innerHTML для лучшего контроля
+                const headerDiv = document.createElement('div');
+                headerDiv.className = 'book-header';
+                
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'book-name';
+                nameDiv.textContent = name;
+                headerDiv.appendChild(nameDiv);
+                
+                const descDiv = document.createElement('div');
+                descDiv.className = 'book-desc';
+                descDiv.innerHTML = desc;
+                
+                const footerDiv = document.createElement('div');
+                footerDiv.className = 'book-footer';
+                
+                const levelWrapper = document.createElement('div');
+                levelWrapper.className = 'book-level-wrapper';
+                
+                // Создаем input с обработчиками для предотвращения перемотки
+                const levelInput = document.createElement('input');
+                levelInput.type = 'number';
+                levelInput.className = 'book-level-input';
+                levelInput.value = lvl;
+                levelInput.min = '1';
+                
+                // Добавляем все возможные обработчики для предотвращения перемотки
+                levelInput.onclick = preventDefaultBehavior;
+                levelInput.onkeydown = function(event) {
+                    if (event.key === 'Enter') {
+                        preventDefaultBehavior(event);
+                        this.blur();
+                        updateBookLevel(name, this.value);
+                        return false;
+                    }
+                };
+                levelInput.onkeyup = preventDefaultBehavior;
+                levelInput.onkeypress = preventDefaultBehavior;
+                levelInput.onchange = function(event) {
+                    preventDefaultBehavior(event);
+                    updateBookLevel(name, this.value);
+                };
+                levelInput.onblur = function(event) {
+                    // Сохраняем при потере фокуса
+                    updateBookLevel(name, this.value);
+                };
+                
+                const levelUnit = document.createElement('span');
+                levelUnit.className = 'book-level-unit';
+                levelUnit.textContent = 'ур.';
+                
+                levelWrapper.appendChild(levelInput);
+                levelWrapper.appendChild(levelUnit);
+                
+                const priceDiv = document.createElement('div');
+                priceDiv.className = 'book-price';
+                priceDiv.innerHTML = `🌕 ${priceText}`;
+                
+                footerDiv.appendChild(levelWrapper);
+                footerDiv.appendChild(priceDiv);
+                
+                item.appendChild(headerDiv);
+                item.appendChild(descDiv);
+                item.appendChild(footerDiv);
+                
                 container.appendChild(item);
             }
         }
 
-        // Функция обновления уровня - ИСПРАВЛЕНО (без перемотки)
+        // Функция обновления уровня с защитой от перемотки
         window.updateBookLevel = function(name, value, event) {
-            // Предотвращаем стандартное поведение (перезагрузку страницы)
+            // Предотвращаем любое стандартное поведение
             if (event) {
                 event.preventDefault();
+                event.stopPropagation();
             }
             
             const savedLevels = JSON.parse(localStorage.getItem(BOOKS_LVL_KEY) || '{}');
             savedLevels[name] = parseInt(value) || 1;
             localStorage.setItem(BOOKS_LVL_KEY, JSON.stringify(savedLevels));
             renderBooks();
-            return false; // Дополнительная защита
+            return false;
         };
 
         window.switchPage = function(pageName) {
@@ -588,7 +649,12 @@
             };
             
             input.onblur = finish;
-            input.onkeydown = e => { if(e.key === 'Enter') input.blur(); };
+            input.onkeydown = e => { 
+                if(e.key === 'Enter') {
+                    e.preventDefault();
+                    input.blur(); 
+                }
+            };
             input.onclick = e => e.stopPropagation();
         }
 
