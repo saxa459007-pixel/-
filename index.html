@@ -422,7 +422,7 @@
             }
         }
 
-        // --- РЕНДЕРИНГ КНИГ С ПОДДЕРЖКОЙ VK ---
+        // --- ПОЛНОСТЬЮ ПЕРЕРАБОТАННЫЙ РЕНДЕРИНГ ДЛЯ VK ---
         async function renderBooks() {
             const savedLevels = JSON.parse(localStorage.getItem(BOOKS_LVL_KEY) || '{}');
             const container = document.getElementById('booksContainer');
@@ -487,27 +487,27 @@
                 const levelWrapper = document.createElement('div');
                 levelWrapper.className = 'book-level-wrapper';
                 
-                // УПРОЩЕННЫЙ INPUT ДЛЯ VK
+                // СОЗДАЕМ INPUT СПЕЦИАЛЬНО ДЛЯ VK
                 const levelInput = document.createElement('input');
                 levelInput.type = 'number';
                 levelInput.className = 'book-level-input';
                 levelInput.value = lvl;
                 levelInput.min = '1';
                 
-                // Обработчик изменения значения (сработает при потере фокуса или Enter)
-                levelInput.addEventListener('change', function() {
+                // Сохраняем значение при потере фокуса
+                levelInput.addEventListener('blur', function() {
                     updateBookLevel(name, this.value);
                 });
                 
-                // Обработчик Enter
+                // Для Enter используем preventDefault
                 levelInput.addEventListener('keydown', function(event) {
                     if (event.key === 'Enter') {
                         event.preventDefault();
-                        this.blur(); // Убираем фокус - сработает change
+                        this.blur(); // Потеря фокуса сохранит значение
                     }
                 });
                 
-                // НЕ БЛОКИРУЕМ обычные нажатия клавиш!
+                // НЕ БЛОКИРУЕМ обычные нажатия
                 
                 const levelUnit = document.createElement('span');
                 levelUnit.className = 'book-level-unit';
@@ -537,7 +537,6 @@
             savedLevels[name] = parseInt(value) || 1;
             localStorage.setItem(BOOKS_LVL_KEY, JSON.stringify(savedLevels));
             renderBooks();
-            return false;
         };
 
         window.switchPage = function(pageName) {
