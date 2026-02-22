@@ -116,7 +116,7 @@ z-index: 1000;
 .class-item:hover { background-color: rgba(255, 255, 255, 0.1); }
 .class-item.active { color: var(--accent); font-weight: 600; background-color: rgba(88, 101, 242, 0.15); }
 
-/* СТАТЫ В ПРОФИЛЕ - ТОЧНЫЕ ОТСТУПЫ */
+/* СТАТЫ В ПРОФИЛЕ - НАЗВАНИЕ ВПЛОТНУЮ К ЧИСЛУ + ФИКСАЦИЯ */
 .stats-grid { 
     width: 100%; 
     display: grid; 
@@ -145,7 +145,7 @@ z-index: 1000;
 .stat-row {
     display: flex;
     align-items: center;
-    gap: 4px; /* ← ОТСТУП ОТ ИКОНКИ ДО ЧИСЛА */
+    gap: 4px;
     pointer-events: none;
     width: 100%;
     justify-content: center;
@@ -161,10 +161,12 @@ z-index: 1000;
 
 .stat-value-container {
     position: relative;
-    min-width: 45px; /* ← ФИКСИРОВАННАЯ ШИРИНА ДЛЯ ВЫРАВНИВАНИЯ */
+    min-width: 55px; /* ← ФИКСИРОВАННАЯ МИНИМАЛЬНАЯ ШИРИНА ДЛЯ ВЫРАВНИВАНИЯ */
     display: flex;
     justify-content: flex-start;
     align-items: center;
+    gap: 2px; /* ← НАЗВАНИЕ ВПЛОТНУЮ К ЧИСЛУ */
+    flex-shrink: 0;
 }
 
 .stat-value {
@@ -183,7 +185,7 @@ z-index: 1000;
     color: var(--text-secondary);
     text-transform: lowercase;
     white-space: nowrap;
-    margin-left: 2px; /* ← НАЗВАНИЕ ВПЛОТНУЮ К ЧИСЛУ */
+    margin: 0; /* ← БЕЗ ОТСТУПА - ВПЛОТНУЮ */
 }
 
 /* ПОЛЕ ВВОДА В ПРОФИЛЕ - СТАТИЧНОЕ 100% */
@@ -576,18 +578,18 @@ display: none !important;
 </div>
 </div>
 <div class="stats-grid">
-<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🕯️</span><div class="stat-value-container"><span class="stat-value" data-key="lvl">207</span></div><span class="stat-label">ур</span></div></div>
-<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">⚔️</span><div class="stat-value-container"><span class="stat-value" data-key="atk">717</span></div><span class="stat-label">атк</span></div></div>
-<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🛡️</span><div class="stat-value-container"><span class="stat-value" data-key="armor">212</span></div><span class="stat-label">брн</span></div></div>
-<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">💪</span><div class="stat-value-container"><span class="stat-value" data-key="str">403</span></div><span class="stat-label">сил</span></div></div>
-<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">👐</span><div class="stat-value-container"><span class="stat-value" data-key="agi">861</span></div><span class="stat-label">лвк</span></div></div>
-<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">❤️</span><div class="stat-value-container"><span class="stat-value" data-key="vit">602</span></div><span class="stat-label">внс</span></div></div>
-<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🍀</span><div class="stat-value-container"><span class="stat-value" data-key="luck">57</span></div><span class="stat-label">удч</span></div></div>
-<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🎯</span><div class="stat-value-container"><span class="stat-value" data-key="acc">112</span></div><span class="stat-label">тчн</span></div></div>
-<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🌀</span><div class="stat-value-container"><span class="stat-value" data-key="conc">64</span></div><span class="stat-label">кц</span></div></div>
-<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">📜</span><div class="stat-value-container"><span class="stat-value" data-key="class_lvl">50</span></div><span class="stat-label">ур. кл.</span></div></div>
-<div class="stat-cell" onclick="editStatByCell(this, true)"><div class="stat-row"><span class="stat-icon">🔰</span><div class="stat-value-container"><span class="stat-value" data-key="resist">0%</span></div><span class="stat-label">сопр</span></div></div>
-<div class="stat-cell" onclick="editStatByCell(this, false, true)"><div class="stat-row"><span class="stat-icon" id="karma-icon">😐</span><div class="stat-value-container"><span class="stat-value" data-key="karma">0</span></div><span class="stat-label">карма</span></div></div>
+<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🕯️</span><div class="stat-value-container"><span class="stat-value" data-key="lvl">207</span><span class="stat-label">ур</span></div></div></div>
+<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">⚔️</span><div class="stat-value-container"><span class="stat-value" data-key="atk">717</span><span class="stat-label">атк</span></div></div></div>
+<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🛡️</span><div class="stat-value-container"><span class="stat-value" data-key="armor">212</span><span class="stat-label">брн</span></div></div></div>
+<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">💪</span><div class="stat-value-container"><span class="stat-value" data-key="str">403</span><span class="stat-label">сил</span></div></div></div>
+<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">👐</span><div class="stat-value-container"><span class="stat-value" data-key="agi">861</span><span class="stat-label">лвк</span></div></div></div>
+<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">❤️</span><div class="stat-value-container"><span class="stat-value" data-key="vit">602</span><span class="stat-label">внс</span></div></div></div>
+<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🍀</span><div class="stat-value-container"><span class="stat-value" data-key="luck">57</span><span class="stat-label">удч</span></div></div></div>
+<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🎯</span><div class="stat-value-container"><span class="stat-value" data-key="acc">112</span><span class="stat-label">тчн</span></div></div></div>
+<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🌀</span><div class="stat-value-container"><span class="stat-value" data-key="conc">64</span><span class="stat-label">кц</span></div></div></div>
+<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">📜</span><div class="stat-value-container"><span class="stat-value" data-key="class_lvl">50</span><span class="stat-label">ур. кл.</span></div></div></div>
+<div class="stat-cell" onclick="editStatByCell(this, true)"><div class="stat-row"><span class="stat-icon">🔰</span><div class="stat-value-container"><span class="stat-value" data-key="resist">0%</span><span class="stat-label">сопр</span></div></div></div>
+<div class="stat-cell" onclick="editStatByCell(this, false, true)"><div class="stat-row"><span class="stat-icon" id="karma-icon">😐</span><div class="stat-value-container"><span class="stat-value" data-key="karma">0</span><span class="stat-label">карма</span></div></div></div>
 </div>
 <div class="class-result-box">
 <div class="result-card">
@@ -1685,6 +1687,7 @@ updateKarmaIcon();
 window.editStatByCell = function(cellElement, isResist = false, isKarma = false) {
 const valueContainer = cellElement.querySelector('.stat-value-container');
 const valueSpan = valueContainer.querySelector('.stat-value');
+const labelSpan = valueContainer.querySelector('.stat-label');
 let currentVal = valueSpan.textContent;
 const key = valueSpan.dataset.key;
 let cleanVal = currentVal;
@@ -1706,6 +1709,7 @@ input.addEventListener('input', function() {
 });
 
 valueSpan.style.visibility = 'hidden';
+if (labelSpan) labelSpan.style.visibility = 'hidden';
 valueContainer.appendChild(input);
 input.focus();
 input.select();
@@ -1735,6 +1739,7 @@ if (key === 'class_lvl' && parseInt(finalValue) < 1) finalValue = '1';
 }
 valueSpan.textContent = finalValue;
 valueSpan.style.visibility = 'visible';
+if (labelSpan) labelSpan.style.visibility = 'visible';
 input.remove();
 if (isKarma) updateKarmaIcon();
 saveStats();
