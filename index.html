@@ -116,13 +116,13 @@ z-index: 1000;
 .class-item:hover { background-color: rgba(255, 255, 255, 0.1); }
 .class-item.active { color: var(--accent); font-weight: 600; background-color: rgba(88, 101, 242, 0.15); }
 
-/* СТАТЫ В ПРОФИЛЕ */
+/* СТАТЫ В ПРОФИЛЕ - ИСПРАВЛЕННЫЕ ОТСТУПЫ */
 .stats-grid { 
     width: 100%; 
     display: grid; 
     grid-template-columns: repeat(3, 1fr); 
     gap: 3px; 
-    padding: 8px 15px; 
+    padding: 8px 10px; 
     box-sizing: border-box; 
 }
 
@@ -130,7 +130,7 @@ z-index: 1000;
     background-color: transparent; 
     border: none; 
     border-radius: 0; 
-    padding: 4px 4px; 
+    padding: 4px 2px; 
     display: flex; 
     align-items: center; 
     justify-content: flex-start; 
@@ -150,6 +150,7 @@ z-index: 1000;
     width: 100%;
     justify-content: flex-start;
     direction: ltr;
+    padding-left: 4px;
 }
 
 .stat-icon {
@@ -190,13 +191,14 @@ z-index: 1000;
     padding: 0;
 }
 
-/* ПОЛЕ ВВОДА В ПРОФИЛЕ */
+/* ПОЛЕ ВВОДА В ПРОФИЛЕ - БЕЗ РАМОК */
 .stat-input {
     position: absolute;
     top: 0;
     left: 0;
     background: transparent;
     border: none;
+    outline: none;
     color: var(--text-main);
     font-size: 14px;
     font-weight: 700;
@@ -204,19 +206,24 @@ z-index: 1000;
     padding: 0;
     margin: 0;
     border-radius: 0;
-    outline: none;
     text-align: left;
     direction: ltr;
     z-index: 20;
     box-sizing: border-box;
     appearance: none;
     -webkit-appearance: none;
+    box-shadow: none;
 }
 .stat-input[type=number] { -moz-appearance: textfield; }
 .stat-input::-webkit-outer-spin-button,
 .stat-input::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
+}
+.stat-input:focus {
+    border: none;
+    outline: none;
+    box-shadow: none;
 }
 
 .class-result-box { width: 100%; padding: 0 15px; box-sizing: border-box; margin-bottom: 15px; }
@@ -1692,7 +1699,6 @@ const key = valueSpan.dataset.key;
 let cleanVal = currentVal;
 if (isResist) cleanVal = currentVal.replace('%', '');
 
-// Скрываем значение и лейбл
 valueSpan.style.visibility = 'hidden';
 if (labelSpan) labelSpan.style.visibility = 'hidden';
 
@@ -1704,7 +1710,6 @@ valueContainer.appendChild(input);
 input.focus();
 input.select();
 
-// Функция обновления ширины поля - как в книгах
 const updateInputWidth = function() {
 const font = window.getComputedStyle(this).font;
 const width = measureTextWidth(this.value || '0', font, 0);
@@ -1713,7 +1718,6 @@ this.style.width = (width + 4) + 'px';
 
 input.addEventListener('input', updateInputWidth);
 
-// Устанавливаем начальную ширину
 setTimeout(() => {
 const font = window.getComputedStyle(input).font;
 const width = measureTextWidth(input.value || '0', font, 0);
