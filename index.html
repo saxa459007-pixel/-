@@ -58,8 +58,6 @@
             border-radius: 8px;
             transition: background 0.2s, color 0.2s;
             color: #72767d;
-            min-height: 44px;
-            min-width: 44px;
         }
         .nav-item:hover { background-color: rgba(255,255,255,0.05); color: var(--text-main); }
         .nav-item.active { color: var(--text-main); background-color: rgba(255,255,255,0.1); }
@@ -125,61 +123,38 @@
         }
         .class-list.show { display: block; animation: fadeIn 0.2s; }
         
-        .class-item { padding: 10px 12px; font-size: 13px; color: var(--text-main); text-transform: lowercase; cursor: pointer; border-bottom: 1px solid var(--separator-color); transition: background 0.1s; user-select: none; min-height: 44px; min-width: 44px; }
+        .class-item { padding: 10px 12px; font-size: 13px; color: var(--text-main); text-transform: lowercase; cursor: pointer; border-bottom: 1px solid var(--separator-color); transition: background 0.1s; user-select: none; }
         .class-item:last-child { border-bottom: none; }
         .class-item:hover { background-color: rgba(255, 255, 255, 0.1); }
         .class-item.active { color: var(--accent); font-weight: 600; background-color: rgba(88, 101, 242, 0.15); }
 
         /* СТАТЫ В ПРОФИЛЕ - число растет вправо */
-        .stats-grid { 
-            width: 100%; 
-            display: grid; 
-            grid-template-columns: repeat(3, 1fr); 
-            gap: 6px; 
-            padding: 15px; 
-            box-sizing: border-box; 
-        }
-
-        .stat-cell { 
-            background-color: transparent; 
-            border: none; 
-            border-radius: 0; 
-            padding: 8px 4px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            cursor: pointer; 
-            position: relative; 
-            min-height: 44px;
-        }
-
+        .stats-grid { width: 100%; display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 15px; box-sizing: border-box; }
+        .stat-cell { background-color: transparent; border: none; border-radius: 0; padding: 8px 4px; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative; }
+        .stat-cell:active, .stat-cell:hover { background-color: transparent; }
         .stat-row { 
             display: flex; 
             align-items: center; 
-            gap: 0;
+            gap: 2px; 
             pointer-events: none; 
             width: 100%; 
             justify-content: flex-start;
-            direction: ltr; 
-            white-space: nowrap; 
+            direction: ltr;
+            white-space: nowrap;
         }
-
         .stat-icon { 
             font-size: 18px; 
             flex-shrink: 0; 
             width: 20px; 
             text-align: center; 
-            margin-right: 2px;
         }
-
         .stat-value-container { 
             position: relative; 
-            display: flex; 
-            justify-content: flex-start;
-            align-items: center; 
             min-width: 20px; 
+            display: flex; 
+            justify-content: flex-start; 
+            align-items: center; 
         }
-
         .stat-value { 
             font-size: 14px; 
             font-weight: 700; 
@@ -187,20 +162,18 @@
             padding: 0; 
             text-align: left; 
             white-space: nowrap; 
-            direction: ltr; 
-            display: inline-block; 
+            direction: ltr;
+            display: inline-block;
         }
-
         .stat-label { 
             font-size: 11px; 
             color: var(--text-secondary); 
             text-transform: lowercase; 
-            white-space: nowrap; 
-            margin-left: 0;
+            white-space: nowrap;
             flex-shrink: 0;
         }
-
-        /* ПОЛЕ ВВОДА В ПРОФИЛЕ - невидимое и динамическое */
+        
+        /* ПОЛЕ ВВОДА В ПРОФИЛЕ - динамическая ширина */
         .stat-input {
             position: absolute;
             top: 0;
@@ -226,7 +199,6 @@
             width: auto;
             min-width: 20px;
         }
-
         .stat-input[type=number] { -moz-appearance: textfield; }
         .stat-input::-webkit-outer-spin-button, 
         .stat-input::-webkit-inner-spin-button { 
@@ -347,8 +319,6 @@
             transition: all 0.2s;
             white-space: nowrap;
             font-family: inherit;
-            min-height: 44px;
-            min-width: 44px;
         }
 
         .sort-btn:hover {
@@ -405,7 +375,7 @@
             text-transform: none;
         }
         
-        /* СТАТЫ В АКТИВНЫХ КНИГАХ - число растет вправо */
+        /* СТАТЫ В АКТИВНЫХ КНИГАХ */
         .stats-row {
             display: flex;
             gap: 8px;
@@ -419,7 +389,7 @@
         .stat-item {
             display: flex;
             align-items: center;
-            gap: 0;
+            gap: 2px;
             cursor: pointer;
             padding: 2px 4px;
             border-radius: 4px;
@@ -427,7 +397,6 @@
             position: relative;
             direction: ltr;
             white-space: nowrap;
-            min-height: 44px;
         }
         
         .stat-item:hover {
@@ -440,21 +409,20 @@
             flex-shrink: 0;
             width: 16px;
             text-align: center;
-            margin-right: 2px;
         }
         
         .stat-value-small {
             color: var(--text-main);
             font-weight: 600;
             pointer-events: none;
+            min-width: 16px;
             display: inline-block;
             text-align: left;
             direction: ltr;
-            min-width: 16px;
             padding: 0;
         }
         
-        /* ПОЛЕ ВВОДА В АКТИВКАХ - динамическое */
+        /* ПОЛЕ ВВОДА В АКТИВКАХ - динамическая ширина */
         .stat-input-small {
             position: absolute;
             top: 0;
@@ -469,12 +437,12 @@
             padding: 2px 4px 2px 18px;
             border-radius: 0;
             text-align: left;
+            direction: ltr;
             outline: none;
             z-index: 20;
             box-sizing: border-box;
             -webkit-appearance: none;
             appearance: none;
-            margin: 0;
         }
         
         .stat-input-small::-webkit-outer-spin-button,
@@ -575,7 +543,7 @@
             margin-left: auto;
         }
 
-        /* ПОДВАЛ */
+        /* Стили для подвала */
         .app-footer {
             width: 100%;
             max-width: 500px;
@@ -611,14 +579,14 @@
     </style>
 </head>
 <body>
-    <div class="top-nav" role="tablist">
-        <div class="nav-item active" role="tab" aria-selected="true" aria-controls="page-profile" onclick="switchPage('profile')" id="nav-profile">
-            <svg class="nav-icon" viewBox="0 0 24 24" aria-label="Профиль"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+    <div class="top-nav">
+        <div class="nav-item active" onclick="switchPage('profile')" id="nav-profile">
+            <svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
         </div>
-        <div class="nav-item" role="tab" aria-selected="false" aria-controls="page-active" onclick="switchPage('active')" id="nav-active">
+        <div class="nav-item" onclick="switchPage('active')" id="nav-active">
             <span>📕</span>
         </div>
-        <div class="nav-item" role="tab" aria-selected="false" aria-controls="page-passive" onclick="switchPage('passive')" id="nav-passive">
+        <div class="nav-item" onclick="switchPage('passive')" id="nav-passive">
             <span>📘</span>
         </div>
     </div>
@@ -649,7 +617,7 @@
                     <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🍀</span><div class="stat-value-container"><span class="stat-value" data-key="luck">57</span></div><span class="stat-label">удч</span></div></div>
                     <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🎯</span><div class="stat-value-container"><span class="stat-value" data-key="acc">112</span></div><span class="stat-label">тчн</span></div></div>
                     <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🌀</span><div class="stat-value-container"><span class="stat-value" data-key="conc">64</span></div><span class="stat-label">кц</span></div></div>
-                    <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">📜</span><div class="stat-value-container"><span class="stat-value" data-key="class_lvl">50</span></div><span class="stat-label">ур.кл.</span></div></div>
+                    <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">📜</span><div class="stat-value-container"><span class="stat-value" data-key="class_lvl">50</span></div><span class="stat-label">ур. кл.</span></div></div>
                     <div class="stat-cell" onclick="editStatByCell(this, true)"><div class="stat-row"><span class="stat-icon">🔰</span><div class="stat-value-container"><span class="stat-value" data-key="resist">0%</span></div><span class="stat-label">сопр</span></div></div>
                     <div class="stat-cell" onclick="editStatByCell(this, false, true)"><div class="stat-row"><span class="stat-icon" id="karma-icon">😐</span><div class="stat-value-container"><span class="stat-value" data-key="karma">0</span></div><span class="stat-label">карма</span></div></div>
                 </div>
@@ -815,7 +783,6 @@
 
         let passiveSortByAlphabet = false;
         let activeSortByAlphabet = false;
-        let searchTimeout;
 
         // Функция для измерения ширины текста
         function measureTextWidth(text, font, padding = 0) {
@@ -1068,6 +1035,7 @@
             input.focus();
             input.select();
             
+            // Функция обновления ширины поля
             const updateInputWidth = function() {
                 const font = window.getComputedStyle(this).font;
                 const displayValue = this.value || '0';
@@ -1077,6 +1045,7 @@
             
             input.addEventListener('input', updateInputWidth);
             
+            // Устанавливаем начальную ширину
             setTimeout(() => {
                 const font = window.getComputedStyle(input).font;
                 const width = measureTextWidth(input.value || '0', font, 0);
@@ -1144,37 +1113,37 @@
         function getStatsString(skillName, stats) {
             switch(skillName) {
                 case "Грязный удар":
-                    return `<div class="stat-item" onclick="editActiveStat(event, this, 'agi')"><span class="stat-icon-small">👐</span><span class="stat-value-small" data-stat="agi">${stats.agi}</span></div><div class="stat-item" onclick="editActiveStat(event, this, 'str')"><span class="stat-icon-small">💪</span><span class="stat-value-small" data-stat="str">${stats.str}</span></div>`;
+                    return `<div class="stat-item" onclick="editActiveStat(event, this, 'agi')"><span class="stat-icon-small">👐</span><span class="stat-value-small">${stats.agi}</span></div><div class="stat-item" onclick="editActiveStat(event, this, 'str')"><span class="stat-icon-small">💪</span><span class="stat-value-small">${stats.str}</span></div>`;
                 case "Слабое исцеление":
-                    return `<div class="stat-item" onclick="editActiveStat(event, this, 'vit')"><span class="stat-icon-small">❤️</span><span class="stat-value-small" data-stat="vit">${stats.vit}</span></div>`;
+                    return `<div class="stat-item" onclick="editActiveStat(event, this, 'vit')"><span class="stat-icon-small">❤️</span><span class="stat-value-small">${stats.vit}</span></div>`;
                 case "Удар вампира":
-                    return `<div class="stat-item" onclick="editActiveStat(event, this, 'agi')"><span class="stat-icon-small">👐</span><span class="stat-value-small" data-stat="agi">${stats.agi}</span></div><div class="stat-item" onclick="editActiveStat(event, this, 'vit')"><span class="stat-icon-small">❤️</span><span class="stat-value-small" data-stat="vit">${stats.vit}</span></div>`;
+                    return `<div class="stat-item" onclick="editActiveStat(event, this, 'agi')"><span class="stat-icon-small">👐</span><span class="stat-value-small">${stats.agi}</span></div><div class="stat-item" onclick="editActiveStat(event, this, 'vit')"><span class="stat-icon-small">❤️</span><span class="stat-value-small">${stats.vit}</span></div>`;
                 case "Мощный удар":
-                    return `<div class="stat-item" onclick="editActiveStat(event, this, 'str')"><span class="stat-icon-small">💪</span><span class="stat-value-small" data-stat="str">${stats.str}</span></div><div class="stat-item" onclick="editActiveStat(event, this, 'atk')"><span class="stat-icon-small">⚔️</span><span class="stat-value-small" data-stat="atk">${stats.atk}</span></div>`;
+                    return `<div class="stat-item" onclick="editActiveStat(event, this, 'str')"><span class="stat-icon-small">💪</span><span class="stat-value-small">${stats.str}</span></div><div class="stat-item" onclick="editActiveStat(event, this, 'atk')"><span class="stat-icon-small">⚔️</span><span class="stat-value-small">${stats.atk}</span></div>`;
                 case "Сила теней":
-                    return `<div class="stat-item" onclick="editActiveStat(event, this, 'lvl')"><span class="stat-icon-small">🕯️</span><span class="stat-value-small" data-stat="lvl">${stats.lvl}</span></div>`;
+                    return `<div class="stat-item" onclick="editActiveStat(event, this, 'lvl')"><span class="stat-icon-small">🕯️</span><span class="stat-value-small">${stats.lvl}</span></div>`;
                 case "Расправа":
-                    return `<div class="stat-item" onclick="editActiveStat(event, this, 'lvl')"><span class="stat-icon-small">🕯️</span><span class="stat-value-small" data-stat="lvl">${stats.lvl}</span></div>`;
+                    return `<div class="stat-item" onclick="editActiveStat(event, this, 'lvl')"><span class="stat-icon-small">🕯️</span><span class="stat-value-small">${stats.lvl}</span></div>`;
                 case "Слепота":
                     return `<span class="stat-item">не требует статов</span>`;
                 case "Рассечение":
-                    return `<div class="stat-item" onclick="editActiveStat(event, this, 'atk')"><span class="stat-icon-small">⚔️</span><span class="stat-value-small" data-stat="atk">${stats.atk}</span></div><div class="stat-item" onclick="editActiveStat(event, this, 'agi')"><span class="stat-icon-small">👐</span><span class="stat-value-small" data-stat="agi">${stats.agi}</span></div>`;
+                    return `<div class="stat-item" onclick="editActiveStat(event, this, 'atk')"><span class="stat-icon-small">⚔️</span><span class="stat-value-small">${stats.atk}</span></div><div class="stat-item" onclick="editActiveStat(event, this, 'agi')"><span class="stat-icon-small">👐</span><span class="stat-value-small">${stats.agi}</span></div>`;
                 case "Берсеркер":
                     return `<span class="stat-item">не требует статов</span>`;
                 case "Таран":
-                    return `<div class="stat-item" onclick="editActiveStat(event, this, 'armor')"><span class="stat-icon-small">🛡️</span><span class="stat-value-small" data-stat="armor">${stats.armor}</span></div>`;
+                    return `<div class="stat-item" onclick="editActiveStat(event, this, 'armor')"><span class="stat-icon-small">🛡️</span><span class="stat-value-small">${stats.armor}</span></div>`;
                 case "Проклятие тьмы":
-                    return `<div class="stat-item" onclick="editActiveStat(event, this, 'lvl')"><span class="stat-icon-small">🕯️</span><span class="stat-value-small" data-stat="lvl">${stats.lvl}</span></div>`;
+                    return `<div class="stat-item" onclick="editActiveStat(event, this, 'lvl')"><span class="stat-icon-small">🕯️</span><span class="stat-value-small">${stats.lvl}</span></div>`;
                 case "Огонек надежды":
-                    return `<div class="stat-item" onclick="editActiveStat(event, this, 'vit')"><span class="stat-icon-small">❤️</span><span class="stat-value-small" data-stat="vit">${stats.vit}</span></div>`;
+                    return `<div class="stat-item" onclick="editActiveStat(event, this, 'vit')"><span class="stat-icon-small">❤️</span><span class="stat-value-small">${stats.vit}</span></div>`;
                 case "Целебный огонь":
-                    return `<div class="stat-item" onclick="editActiveStat(event, this, 'lvl')"><span class="stat-icon-small">🕯️</span><span class="stat-value-small" data-stat="lvl">${stats.lvl}</span></div>`;
+                    return `<div class="stat-item" onclick="editActiveStat(event, this, 'lvl')"><span class="stat-icon-small">🕯️</span><span class="stat-value-small">${stats.lvl}</span></div>`;
                 case "Кровотечение":
-                    return `<div class="stat-item" onclick="editActiveStat(event, this, 'atk')"><span class="stat-icon-small">⚔️</span><span class="stat-value-small" data-stat="atk">${stats.atk}</span></div><div class="stat-item" onclick="editActiveStat(event, this, 'agi')"><span class="stat-icon-small">👐</span><span class="stat-value-small" data-stat="agi">${stats.agi}</span></div>`;
+                    return `<div class="stat-item" onclick="editActiveStat(event, this, 'atk')"><span class="stat-icon-small">⚔️</span><span class="stat-value-small">${stats.atk}</span></div><div class="stat-item" onclick="editActiveStat(event, this, 'agi')"><span class="stat-icon-small">👐</span><span class="stat-value-small">${stats.agi}</span></div>`;
                 case "Заражение":
-                    return `<div class="stat-item" onclick="editActiveStat(event, this, 'vit')"><span class="stat-icon-small">❤️</span><span class="stat-value-small" data-stat="vit">${stats.vit}</span></div>`;
+                    return `<div class="stat-item" onclick="editActiveStat(event, this, 'vit')"><span class="stat-icon-small">❤️</span><span class="stat-value-small">${stats.vit}</span></div>`;
                 case "Раскол":
-                    return `<div class="stat-item" onclick="editActiveStat(event, this, 'agi')"><span class="stat-icon-small">👐</span><span class="stat-value-small" data-stat="agi">${stats.agi}</span></div>`;
+                    return `<div class="stat-item" onclick="editActiveStat(event, this, 'agi')"><span class="stat-icon-small">👐</span><span class="stat-value-small">${stats.agi}</span></div>`;
                 default:
                     return '';
             }
@@ -1332,6 +1301,7 @@
                 levelInput.setAttribute('autocorrect', 'off');
                 levelInput.setAttribute('spellcheck', 'false');
                 
+                // Функция для обновления ширины поля
                 const updateInputWidth = function() {
                     const font = window.getComputedStyle(this).font;
                     const width = measureTextWidth(this.value || '1', font, 2);
@@ -1370,6 +1340,7 @@
                     updatePassiveBookLevel(name, this.value);
                 });
                 
+                // Устанавливаем начальную ширину
                 setTimeout(() => {
                     const font = window.getComputedStyle(levelInput).font;
                     const width = measureTextWidth(levelInput.value || '1', font, 2);
@@ -1463,6 +1434,7 @@
                     if (input && parseInt(input.value) !== newLevel) {
                         input.value = newLevel;
                         
+                        // Обновляем ширину поля
                         const font = window.getComputedStyle(input).font;
                         const width = measureTextWidth(input.value || '1', font, 2);
                         input.style.width = (width + 2) + 'px';
@@ -1501,19 +1473,16 @@
         };
 
         window.handlePassiveSearch = function() {
-            clearTimeout(searchTimeout);
-            searchTimeout = setTimeout(() => {
-                const input = document.getElementById('passiveSearchInput');
-                const clearBtn = document.getElementById('clearPassiveSearchBtn');
-                
-                if (input.value.length > 0) {
-                    clearBtn.classList.add('visible');
-                } else {
-                    clearBtn.classList.remove('visible');
-                }
-                
-                filterPassiveBooks();
-            }, 300);
+            const input = document.getElementById('passiveSearchInput');
+            const clearBtn = document.getElementById('clearPassiveSearchBtn');
+            
+            if (input.value.length > 0) {
+                clearBtn.classList.add('visible');
+            } else {
+                clearBtn.classList.remove('visible');
+            }
+            
+            filterPassiveBooks();
         };
 
         window.clearPassiveSearch = function() {
@@ -1624,6 +1593,7 @@
                 levelInput.setAttribute('autocorrect', 'off');
                 levelInput.setAttribute('spellcheck', 'false');
                 
+                // Функция для обновления ширины поля
                 const updateInputWidth = function() {
                     const font = window.getComputedStyle(this).font;
                     const width = measureTextWidth(this.value || '1', font, 2);
@@ -1662,6 +1632,7 @@
                     updateActiveBookLevel(name, this.value);
                 });
                 
+                // Устанавливаем начальную ширину
                 setTimeout(() => {
                     const font = window.getComputedStyle(levelInput).font;
                     const width = measureTextWidth(levelInput.value || '1', font, 2);
@@ -1758,6 +1729,7 @@
                     if (input && parseInt(input.value) !== newLevel) {
                         input.value = newLevel;
                         
+                        // Обновляем ширину поля
                         const font = window.getComputedStyle(input).font;
                         const width = measureTextWidth(input.value || '1', font, 2);
                         input.style.width = (width + 2) + 'px';
@@ -1796,19 +1768,16 @@
         };
 
         window.handleActiveSearch = function() {
-            clearTimeout(searchTimeout);
-            searchTimeout = setTimeout(() => {
-                const input = document.getElementById('activeSearchInput');
-                const clearBtn = document.getElementById('clearActiveSearchBtn');
-                
-                if (input.value.length > 0) {
-                    clearBtn.classList.add('visible');
-                } else {
-                    clearBtn.classList.remove('visible');
-                }
-                
-                filterActiveBooks();
-            }, 300);
+            const input = document.getElementById('activeSearchInput');
+            const clearBtn = document.getElementById('clearActiveSearchBtn');
+            
+            if (input.value.length > 0) {
+                clearBtn.classList.add('visible');
+            } else {
+                clearBtn.classList.remove('visible');
+            }
+            
+            filterActiveBooks();
         };
 
         window.clearActiveSearch = function() {
@@ -1908,6 +1877,7 @@
             input.focus();
             input.select();
             
+            // Функция обновления ширины поля
             const updateInputWidth = function() {
                 const font = window.getComputedStyle(this).font;
                 const width = measureTextWidth(this.value || '0', font, 0);
@@ -1916,6 +1886,7 @@
             
             input.addEventListener('input', updateInputWidth);
             
+            // Устанавливаем начальную ширину
             setTimeout(() => {
                 const font = window.getComputedStyle(input).font;
                 const width = measureTextWidth(input.value || '0', font, 0);
@@ -1959,7 +1930,7 @@
                 }
             };
             input.onclick = e => e.stopPropagation();
-        };
+        }
 
         window.onload = () => {
             checkReset();
