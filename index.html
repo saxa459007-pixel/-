@@ -116,7 +116,7 @@ z-index: 1000;
 .class-item:hover { background-color: rgba(255, 255, 255, 0.1); }
 .class-item.active { color: var(--accent); font-weight: 600; background-color: rgba(88, 101, 242, 0.15); }
 
-/* СТАТЫ В ПРОФИЛЕ */
+/* СТАТЫ В ПРОФИЛЕ - ФИКСИРОВАННАЯ ШИРИНА */
 .stats-grid { 
     width: 100%; 
     display: grid; 
@@ -136,6 +136,7 @@ z-index: 1000;
     justify-content: flex-start; 
     cursor: pointer; 
     position: relative; 
+    min-width: 0;
 }
 
 .stat-cell:active, .stat-cell:hover { 
@@ -151,6 +152,7 @@ z-index: 1000;
     justify-content: flex-start;
     direction: ltr;
     padding-left: 4px;
+    min-width: 0;
 }
 
 .stat-icon {
@@ -169,6 +171,8 @@ z-index: 1000;
     justify-content: flex-start;
     align-items: center;
     gap: 4px;
+    min-width: 60px;
+    flex-shrink: 0;
 }
 
 .stat-value {
@@ -180,6 +184,8 @@ z-index: 1000;
     text-align: left;
     white-space: nowrap;
     direction: ltr;
+    min-width: 35px;
+    display: inline-block;
 }
 
 .stat-label {
@@ -189,6 +195,7 @@ z-index: 1000;
     white-space: nowrap;
     margin-left: 4px;
     padding: 0;
+    flex-shrink: 0;
 }
 
 /* ПОЛЕ ВВОДА В ПРОФИЛЕ - ПОЛНОСТЬЮ ПРОЗРАЧНОЕ */
@@ -214,6 +221,8 @@ z-index: 1000;
     -webkit-appearance: none;
     -moz-appearance: textfield;
     box-shadow: none !important;
+    width: auto;
+    min-width: 35px;
 }
 .stat-input::-webkit-outer-spin-button,
 .stat-input::-webkit-inner-spin-button {
@@ -1711,6 +1720,10 @@ valueContainer.appendChild(input);
 input.focus();
 input.select();
 
+// Фиксируем ширину контейнера чтобы не было сдвигов
+const containerWidth = valueContainer.offsetWidth;
+valueContainer.style.width = containerWidth + 'px';
+
 const updateInputWidth = function() {
 const font = window.getComputedStyle(this).font;
 const width = measureTextWidth(this.value || '0', font, 0);
@@ -1747,6 +1760,7 @@ valueSpan.textContent = finalValue;
 valueSpan.style.visibility = 'visible';
 if (labelSpan) labelSpan.style.visibility = 'visible';
 input.remove();
+valueContainer.style.width = '';
 if (isKarma) updateKarmaIcon();
 saveStats();
 };
