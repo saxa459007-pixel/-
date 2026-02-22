@@ -128,7 +128,7 @@
         .class-item:hover { background-color: rgba(255, 255, 255, 0.1); }
         .class-item.active { color: var(--accent); font-weight: 600; background-color: rgba(88, 101, 242, 0.15); }
 
-        /* СТАТЫ В ПРОФИЛЕ */
+        /* СТАТЫ В ПРОФИЛЕ - число и название двигаются вместе */
         .stats-grid { width: 100%; display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 15px; box-sizing: border-box; }
         .stat-cell { background-color: transparent; border: none; border-radius: 0; padding: 8px 4px; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative; }
         .stat-cell:active, .stat-cell:hover { background-color: transparent; }
@@ -147,30 +147,43 @@
             width: 20px; 
             text-align: center; 
         }
+        
+        /* Новая группа для числа и названия */
+        .stat-group {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            white-space: nowrap;
+            flex-shrink: 1;
+            min-width: 40px;
+        }
+        
         .stat-value-container { 
             position: relative; 
-            min-width: 40px; 
             display: flex; 
             justify-content: flex-start; 
             align-items: center; 
+            flex-shrink: 0;
         }
         .stat-value { 
             font-size: 14px; 
             font-weight: 700; 
             color: var(--text-main); 
-            padding: 0 2px; 
+            padding: 0; 
             text-align: left; 
             white-space: nowrap; 
             direction: ltr;
+            display: inline-block;
         }
         .stat-label { 
             font-size: 11px; 
             color: var(--text-secondary); 
             text-transform: lowercase; 
             white-space: nowrap;
+            flex-shrink: 0;
         }
         
-        /* ПОЛЕ ВВОДА В ПРОФИЛЕ */
+        /* ПОЛЕ ВВОДА В ПРОФИЛЕ - динамическая ширина */
         .stat-input {
             position: absolute;
             top: 0;
@@ -193,6 +206,8 @@
             box-sizing: border-box;
             appearance: none;
             -webkit-appearance: none;
+            width: auto;
+            min-width: 20px;
         }
         .stat-input[type=number] { -moz-appearance: textfield; }
         .stat-input::-webkit-outer-spin-button, 
@@ -378,6 +393,7 @@
             color: var(--text-secondary);
             margin-bottom: 4px;
             flex-wrap: wrap;
+            align-items: center;
         }
         
         .stat-item {
@@ -390,6 +406,7 @@
             transition: background 0.2s;
             position: relative;
             direction: ltr;
+            white-space: nowrap;
         }
         
         .stat-item:hover {
@@ -408,13 +425,13 @@
             color: var(--text-main);
             font-weight: 600;
             pointer-events: none;
-            min-width: 20px;
             display: inline-block;
             text-align: left;
             direction: ltr;
+            min-width: 20px;
         }
         
-        /* ПОЛЕ ВВОДА В АКТИВКАХ */
+        /* ПОЛЕ ВВОДА В АКТИВКАХ - динамическая ширина */
         .stat-input-small {
             position: absolute;
             top: 0;
@@ -477,7 +494,7 @@
             flex-shrink: 1;
         }
         
-        /* УРОВЕНЬ КНИГ - ВПРИТЫК К ЧИСЛУ */
+        /* УРОВЕНЬ КНИГ - СУПЕР КОМПАКТНО */
         .book-level-wrapper {
             display: flex;
             align-items: center;
@@ -535,7 +552,7 @@
             margin-left: auto;
         }
 
-        /* Стили для подвала */
+        /* ПОДВАЛ */
         .app-footer {
             width: 100%;
             max-width: 500px;
@@ -600,18 +617,18 @@
                 </div>
 
                 <div class="stats-grid">
-                    <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🕯️</span><div class="stat-value-container"><span class="stat-value" data-key="lvl">207</span></div><span class="stat-label">ур</span></div></div>
-                    <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">⚔️</span><div class="stat-value-container"><span class="stat-value" data-key="atk">717</span></div><span class="stat-label">атк</span></div></div>
-                    <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🛡️</span><div class="stat-value-container"><span class="stat-value" data-key="armor">212</span></div><span class="stat-label">брн</span></div></div>
-                    <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">💪</span><div class="stat-value-container"><span class="stat-value" data-key="str">403</span></div><span class="stat-label">сил</span></div></div>
-                    <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">👐</span><div class="stat-value-container"><span class="stat-value" data-key="agi">861</span></div><span class="stat-label">лвк</span></div></div>
-                    <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">❤️</span><div class="stat-value-container"><span class="stat-value" data-key="vit">602</span></div><span class="stat-label">внс</span></div></div>
-                    <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🍀</span><div class="stat-value-container"><span class="stat-value" data-key="luck">57</span></div><span class="stat-label">удч</span></div></div>
-                    <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🎯</span><div class="stat-value-container"><span class="stat-value" data-key="acc">112</span></div><span class="stat-label">тчн</span></div></div>
-                    <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🌀</span><div class="stat-value-container"><span class="stat-value" data-key="conc">64</span></div><span class="stat-label">кц</span></div></div>
-                    <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">📜</span><div class="stat-value-container"><span class="stat-value" data-key="class_lvl">50</span></div><span class="stat-label">ур. кл.</span></div></div>
-                    <div class="stat-cell" onclick="editStatByCell(this, true)"><div class="stat-row"><span class="stat-icon">🔰</span><div class="stat-value-container"><span class="stat-value" data-key="resist">0%</span></div><span class="stat-label">сопр</span></div></div>
-                    <div class="stat-cell" onclick="editStatByCell(this, false, true)"><div class="stat-row"><span class="stat-icon" id="karma-icon">😐</span><div class="stat-value-container"><span class="stat-value" data-key="karma">0</span></div><span class="stat-label">карма</span></div></div>
+                    <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🕯️</span><div class="stat-group"><div class="stat-value-container"><span class="stat-value" data-key="lvl">207</span></div><span class="stat-label">ур</span></div></div></div>
+                    <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">⚔️</span><div class="stat-group"><div class="stat-value-container"><span class="stat-value" data-key="atk">717</span></div><span class="stat-label">атк</span></div></div></div>
+                    <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🛡️</span><div class="stat-group"><div class="stat-value-container"><span class="stat-value" data-key="armor">212</span></div><span class="stat-label">брн</span></div></div></div>
+                    <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">💪</span><div class="stat-group"><div class="stat-value-container"><span class="stat-value" data-key="str">403</span></div><span class="stat-label">сил</span></div></div></div>
+                    <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">👐</span><div class="stat-group"><div class="stat-value-container"><span class="stat-value" data-key="agi">861</span></div><span class="stat-label">лвк</span></div></div></div>
+                    <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">❤️</span><div class="stat-group"><div class="stat-value-container"><span class="stat-value" data-key="vit">602</span></div><span class="stat-label">внс</span></div></div></div>
+                    <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🍀</span><div class="stat-group"><div class="stat-value-container"><span class="stat-value" data-key="luck">57</span></div><span class="stat-label">удч</span></div></div></div>
+                    <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🎯</span><div class="stat-group"><div class="stat-value-container"><span class="stat-value" data-key="acc">112</span></div><span class="stat-label">тчн</span></div></div></div>
+                    <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🌀</span><div class="stat-group"><div class="stat-value-container"><span class="stat-value" data-key="conc">64</span></div><span class="stat-label">кц</span></div></div></div>
+                    <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">📜</span><div class="stat-group"><div class="stat-value-container"><span class="stat-value" data-key="class_lvl">50</span></div><span class="stat-label">ур.кл.</span></div></div></div>
+                    <div class="stat-cell" onclick="editStatByCell(this, true)"><div class="stat-row"><span class="stat-icon">🔰</span><div class="stat-group"><div class="stat-value-container"><span class="stat-value" data-key="resist">0%</span></div><span class="stat-label">сопр</span></div></div></div>
+                    <div class="stat-cell" onclick="editStatByCell(this, false, true)"><div class="stat-row"><span class="stat-icon" id="karma-icon">😐</span><div class="stat-group"><div class="stat-value-container"><span class="stat-value" data-key="karma">0</span></div><span class="stat-label">карма</span></div></div></div>
                 </div>
 
                 <div class="class-result-box">
@@ -1853,8 +1870,11 @@
 
         // Функция для редактирования статов в профиле
         window.editStatByCell = function(cellElement, isResist = false, isKarma = false) {
+            const statGroup = cellElement.querySelector('.stat-group');
             const valueContainer = cellElement.querySelector('.stat-value-container');
             const valueSpan = valueContainer.querySelector('.stat-value');
+            const labelSpan = cellElement.querySelector('.stat-label');
+            
             let currentVal = valueSpan.textContent;
             const key = valueSpan.dataset.key;
             let cleanVal = currentVal;
@@ -1874,6 +1894,7 @@
                 const font = window.getComputedStyle(this).font;
                 const width = measureTextWidth(this.value || '0', font, 0);
                 this.style.width = width + 'px';
+                // Группа автоматически расширится из-за flex контейнера
             };
             
             input.addEventListener('input', updateInputWidth);
@@ -1922,7 +1943,7 @@
                 }
             };
             input.onclick = e => e.stopPropagation();
-        }
+        };
 
         window.onload = () => {
             checkReset();
