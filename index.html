@@ -116,13 +116,13 @@ z-index: 1000;
 .class-item:hover { background-color: rgba(255, 255, 255, 0.1); }
 .class-item.active { color: var(--accent); font-weight: 600; background-color: rgba(88, 101, 242, 0.15); }
 
-/* СТАТЫ В ПРОФИЛЕ - ЧЁТКОЕ ВЫРАВНИВАНИЕ */
+/* СТАТЫ В ПРОФИЛЕ - ПРАВИЛЬНАЯ СТРУКТУРА */
 .stats-grid { 
     width: 100%; 
     display: grid; 
     grid-template-columns: repeat(3, 1fr); 
-    gap: 6px; 
-    padding: 15px; 
+    gap: 3px; 
+    padding: 8px 15px; 
     box-sizing: border-box; 
 }
 
@@ -130,7 +130,7 @@ z-index: 1000;
     background-color: transparent; 
     border: none; 
     border-radius: 0; 
-    padding: 8px 4px; 
+    padding: 4px 4px; 
     display: flex; 
     align-items: center; 
     justify-content: center; 
@@ -165,6 +165,7 @@ z-index: 1000;
     display: flex;
     justify-content: flex-start;
     align-items: center;
+    gap: 4px; /* ← ОТСТУП МЕЖДУ ЧИСЛОМ И НАЗВАНИЕМ */
 }
 
 .stat-value {
@@ -182,38 +183,44 @@ z-index: 1000;
     color: var(--text-secondary);
     text-transform: lowercase;
     white-space: nowrap;
-    margin-left: 4px;
 }
 
-/* ПОЛЕ ВВОДА В ПРОФИЛЕ */
+/* ПОЛЕ ВВОДА В ПРОФИЛЕ - СТАТИЧНОЕ 100% */
 .stat-input {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: transparent;
-    border: none;
+    background: transparent !important;
+    border: none !important;
+    outline: none !important;
     color: var(--text-main);
     font-size: 14px;
     font-weight: 700;
     font-family: inherit;
-    padding: 0;
-    margin: 0;
+    padding: 0 !important;
+    margin: 0 !important;
     border-radius: 0;
-    outline: none;
     text-align: left;
     direction: ltr;
     z-index: 20;
     box-sizing: border-box;
     appearance: none;
     -webkit-appearance: none;
+    -moz-appearance: textfield;
+    box-shadow: none !important;
 }
-.stat-input[type=number] { -moz-appearance: textfield; }
 .stat-input::-webkit-outer-spin-button,
 .stat-input::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
+}
+.stat-input:focus {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
 }
 
 .class-result-box { width: 100%; padding: 0 15px; box-sizing: border-box; margin-bottom: 15px; }
@@ -575,18 +582,18 @@ display: none !important;
 </div>
 </div>
 <div class="stats-grid">
-<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🕯️</span><div class="stat-value-container"><span class="stat-value" data-key="lvl">207</span></div><span class="stat-label">ур</span></div></div>
-<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">⚔️</span><div class="stat-value-container"><span class="stat-value" data-key="atk">717</span></div><span class="stat-label">атк</span></div></div>
-<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🛡️</span><div class="stat-value-container"><span class="stat-value" data-key="armor">212</span></div><span class="stat-label">брн</span></div></div>
-<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">💪</span><div class="stat-value-container"><span class="stat-value" data-key="str">403</span></div><span class="stat-label">сил</span></div></div>
-<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">👐</span><div class="stat-value-container"><span class="stat-value" data-key="agi">861</span></div><span class="stat-label">лвк</span></div></div>
-<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">❤️</span><div class="stat-value-container"><span class="stat-value" data-key="vit">602</span></div><span class="stat-label">внс</span></div></div>
-<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🍀</span><div class="stat-value-container"><span class="stat-value" data-key="luck">57</span></div><span class="stat-label">удч</span></div></div>
-<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🎯</span><div class="stat-value-container"><span class="stat-value" data-key="acc">112</span></div><span class="stat-label">тчн</span></div></div>
-<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🌀</span><div class="stat-value-container"><span class="stat-value" data-key="conc">64</span></div><span class="stat-label">кц</span></div></div>
-<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">📜</span><div class="stat-value-container"><span class="stat-value" data-key="class_lvl">50</span></div><span class="stat-label">ур. кл.</span></div></div>
-<div class="stat-cell" onclick="editStatByCell(this, true)"><div class="stat-row"><span class="stat-icon">🔰</span><div class="stat-value-container"><span class="stat-value" data-key="resist">0%</span></div><span class="stat-label">сопр</span></div></div>
-<div class="stat-cell" onclick="editStatByCell(this, false, true)"><div class="stat-row"><span class="stat-icon" id="karma-icon">😐</span><div class="stat-value-container"><span class="stat-value" data-key="karma">0</span></div><span class="stat-label">карма</span></div></div>
+<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🕯️</span><div class="stat-value-container"><span class="stat-value" data-key="lvl">207</span><span class="stat-label">ур</span></div></div></div>
+<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">⚔️</span><div class="stat-value-container"><span class="stat-value" data-key="atk">717</span><span class="stat-label">атк</span></div></div></div>
+<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🛡️</span><div class="stat-value-container"><span class="stat-value" data-key="armor">212</span><span class="stat-label">брн</span></div></div></div>
+<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">💪</span><div class="stat-value-container"><span class="stat-value" data-key="str">403</span><span class="stat-label">сил</span></div></div></div>
+<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">👐</span><div class="stat-value-container"><span class="stat-value" data-key="agi">861</span><span class="stat-label">лвк</span></div></div></div>
+<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">❤️</span><div class="stat-value-container"><span class="stat-value" data-key="vit">602</span><span class="stat-label">внс</span></div></div></div>
+<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🍀</span><div class="stat-value-container"><span class="stat-value" data-key="luck">57</span><span class="stat-label">удч</span></div></div></div>
+<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🎯</span><div class="stat-value-container"><span class="stat-value" data-key="acc">112</span><span class="stat-label">тчн</span></div></div></div>
+<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🌀</span><div class="stat-value-container"><span class="stat-value" data-key="conc">64</span><span class="stat-label">кц</span></div></div></div>
+<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">📜</span><div class="stat-value-container"><span class="stat-value" data-key="class_lvl">50</span><span class="stat-label">ур. кл.</span></div></div></div>
+<div class="stat-cell" onclick="editStatByCell(this, true)"><div class="stat-row"><span class="stat-icon">🔰</span><div class="stat-value-container"><span class="stat-value" data-key="resist">0%</span><span class="stat-label">сопр</span></div></div></div>
+<div class="stat-cell" onclick="editStatByCell(this, false, true)"><div class="stat-row"><span class="stat-icon" id="karma-icon">😐</span><div class="stat-value-container"><span class="stat-value" data-key="karma">0</span><span class="stat-label">карма</span></div></div></div>
 </div>
 <div class="class-result-box">
 <div class="result-card">
@@ -1680,10 +1687,11 @@ updateClassResult();
 updateKarmaIcon();
 }
 
-// Функция для редактирования статов в профиле - С ОГРАНИЧЕНИЕМ 99999
+// Функция для редактирования статов в профиле - С ОГРАНИЧЕНИЕМ 5 СИМВОЛОВ
 window.editStatByCell = function(cellElement, isResist = false, isKarma = false) {
 const valueContainer = cellElement.querySelector('.stat-value-container');
 const valueSpan = valueContainer.querySelector('.stat-value');
+const labelSpan = valueContainer.querySelector('.stat-label');
 let currentVal = valueSpan.textContent;
 const key = valueSpan.dataset.key;
 let cleanVal = currentVal;
@@ -1692,26 +1700,25 @@ const input = document.createElement('input');
 input.type = 'number';
 input.value = cleanVal === '0' ? '' : cleanVal;
 input.className = 'stat-input';
+
+// ⬇️ ОГРАНИЧЕНИЕ НА 5 СИМВОЛОВ ⬇️
 input.maxLength = 5;
 input.max = '99999';
+
+// ⬇️ БЛОКИРОВКА ВВОДА БОЛЕЕ 5 СИМВОЛОВ ⬇️
+input.addEventListener('input', function() {
+    if (this.value.length > 5) {
+        this.value = this.value.slice(0, 5);
+    }
+});
+
 valueSpan.style.visibility = 'hidden';
+if (labelSpan) labelSpan.style.visibility = 'hidden';
 valueContainer.appendChild(input);
 input.focus();
 input.select();
 
-const updateInputWidth = function() {
-const font = window.getComputedStyle(this).font;
-const width = measureTextWidth(this.value || '0', font, 0);
-this.style.width = width + 'px';
-};
-
-input.addEventListener('input', updateInputWidth);
-
-setTimeout(() => {
-const font = window.getComputedStyle(input).font;
-const width = measureTextWidth(input.value || '0', font, 0);
-input.style.width = width + 'px';
-}, 0);
+// НЕТ динамического изменения ширины - поле статично 100%!
 
 const finish = () => {
 let newVal = input.value;
@@ -1737,6 +1744,7 @@ if (key === 'class_lvl' && parseInt(finalValue) < 1) finalValue = '1';
 }
 valueSpan.textContent = finalValue;
 valueSpan.style.visibility = 'visible';
+if (labelSpan) labelSpan.style.visibility = 'visible';
 input.remove();
 if (isKarma) updateKarmaIcon();
 saveStats();
