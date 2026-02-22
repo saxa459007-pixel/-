@@ -477,11 +477,11 @@
             flex-shrink: 1;
         }
         
-        /* УРОВЕНЬ КНИГ */
+        /* УРОВЕНЬ КНИГ - ИЗМЕНЕНО: ВПРИТЫК К ЧИСЛУ */
         .book-level-wrapper {
             display: flex;
             align-items: center;
-            gap: 2px;
+            gap: 0;
             max-width: 100%;
             flex-wrap: nowrap;
         }
@@ -501,6 +501,7 @@
             -moz-appearance: textfield;
             flex-shrink: 1;
             flex-grow: 0;
+            margin: 0;
         }
         
         .book-level-input::-webkit-outer-spin-button,
@@ -514,6 +515,7 @@
             font-size: 13px;
             white-space: nowrap;
             flex-shrink: 0;
+            margin-left: -2px;
         }
         
         .book-percent {
