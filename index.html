@@ -148,7 +148,7 @@
             text-align: center; 
         }
         
-        /* Группа для числа и названия - как у уровня книг */
+        /* Группа для числа и названия */
         .stat-group {
             display: flex;
             align-items: center;
@@ -1023,7 +1023,7 @@
             }
         }
 
-        // Функция для редактирования статов в активных книгах - ИСПРАВЛЕНО
+        // Функция для редактирования статов в активных книгах
         window.editActiveStat = function(event, element, statKey) {
             event.preventDefault();
             event.stopPropagation();
@@ -1868,9 +1868,18 @@
                 event.preventDefault();
             }
             
-            const statGroup = cellElement.querySelector('.stat-group');
+            // Если cellElement не передан или это событие, пытаемся найти ячейку
+            if (!cellElement && event && event.target) {
+                cellElement = event.target.closest('.stat-cell');
+            }
+            
+            if (!cellElement) return;
+            
             const valueContainer = cellElement.querySelector('.stat-value-container');
+            if (!valueContainer) return;
+            
             const valueSpan = valueContainer.querySelector('.stat-value');
+            if (!valueSpan) return;
             
             let currentVal = valueSpan.textContent;
             const key = valueSpan.dataset.key;
