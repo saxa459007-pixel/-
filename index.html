@@ -57,6 +57,7 @@ color: #72767d;
 }
 .nav-item:hover { background-color: rgba(255,255,255,0.05); color: var(--text-main); }
 .nav-item.active { color: var(--text-main); background-color: rgba(255,255,255,0.1); }
+/* Стили для иконок в навигации */
 .nav-icon {
 width: 26px;
 height: 26px;
@@ -123,45 +124,7 @@ z-index: 1000;
 .stat-value-container { position: relative; min-width: 34px; display: flex; justify-content: center; align-items: center; }
 .stat-value { font-size: 14px; font-weight: 700; color: var(--text-main); padding: 0 2px; text-align: center; white-space: nowrap; line-height: 1.4; }
 .stat-label { font-size: 11px; color: var(--text-secondary); text-transform: lowercase; flex-shrink: 0; }
-/* Стили для уровня класса в профиле - единое поле */
-.stat-level-wrapper {
-display: inline-flex;
-align-items: center;
-gap: 0;
-background: var(--input-bg);
-border-radius: 4px;
-overflow: hidden;
-}
-.stat-level-input {
-background: transparent;
-border: none;
-border-right: 1px solid rgba(255,255,255,0.1);
-color: var(--text-main);
-font-size: 14px;
-font-weight: 700;
-padding: 0 6px;
-width: 40px;
-min-width: 40px;
-text-align: left;
-outline: none;
--moz-appearance: textfield;
-margin: 0;
-line-height: 1.4;
-}
-.stat-level-input::-webkit-outer-spin-button,
-.stat-level-input::-webkit-inner-spin-button {
--webkit-appearance: none;
-margin: 0;
-}
-.stat-level-unit {
-color: var(--text-secondary);
-font-size: 14px;
-padding: 0 6px;
-white-space: nowrap;
-user-select: none;
-pointer-events: none;
-line-height: 1.4;
-}
+/* УБРАНА РАМКА У ПОЛЯ ВВОДА В ПРОФИЛЕ */
 .stat-input {
 position: absolute;
 top: 0;
@@ -196,6 +159,7 @@ margin: 0;
 .result-description { font-size: 13px; color: var(--text-secondary); line-height: 1.4; width: 100%; }
 .highlight-class { color: var(--text-main); font-weight: 700; font-size: 13px; margin-right: 4px; }
 .highlight-val { color: var(--text-secondary); font-weight: 600; }
+/* --- СТИЛИ ДЛЯ ПОИСКА И СОРТИРОВКИ --- */
 .search-container {
 width: 100%;
 padding: 15px 15px 10px 15px;
@@ -227,6 +191,7 @@ transition: border-color 0.2s;
 box-sizing: border-box;
 font-family: inherit;
 }
+/* УБРАНА ПОДСВЕТКА У ПОЛЯ ПОИСКА */
 .search-input:focus {
 border-color: var(--separator-color);
 }
@@ -316,12 +281,12 @@ box-sizing: border-box;
 background-color: transparent;
 border: none;
 border-radius: 0;
-padding: 12px 15px;
+padding: 12px 15px;  /* Отступы слева и справа */
 margin-bottom: 0;
 display: flex;
 flex-direction: column;
 gap: 6px;
-border-bottom: 1px solid var(--separator-color);
+border-bottom: 1px solid var(--separator-color);  /* Сплошная линия */
 }
 .book-item:last-child {
 border-bottom: none;
@@ -338,6 +303,7 @@ font-weight: 700;
 color: var(--text-main);
 text-transform: none;
 }
+/* Стили для отображения статов в активных умениях */
 .stats-row {
 display: flex;
 gap: 12px;
@@ -363,11 +329,13 @@ background-color: rgba(255, 255, 255, 0.05);
 font-size: 14px;
 pointer-events: none;
 }
+/* ИЗМЕНЕНО: цвет статов с синего на белый */
 .stat-value-small {
 color: var(--text-main);
 font-weight: 600;
 pointer-events: none;
 }
+/* УБРАНА РАМКА У ПОЛЯ ВВОДА В АКТИВКАХ */
 .stat-input-small {
 position: absolute;
 top: 0;
@@ -410,29 +378,23 @@ display: flex;
 align-items: center;
 gap: 8px;
 }
-/* Единое поле уровня для книг */
 .book-level-wrapper {
-display: inline-flex;
+display: flex;
 align-items: center;
-gap: 0;
-background: var(--input-bg);
-border-radius: 4px;
-overflow: hidden;
+gap: 4px;
 }
+/* ИЗМЕНЕНО: поле ввода прозрачное (Вариант 1) */
 .book-level-input {
 background: transparent;
 border: none;
-border-right: 1px solid rgba(255,255,255,0.1);
 color: var(--text-main);
 font-size: 13px;
 font-weight: 700;
-padding: 4px 6px;
-width: 40px;
-min-width: 40px;
-text-align: left;
+padding: 4px 0;
+width: 70px;  /* Увеличено для длинных чисел */
+text-align: center;
 outline: none;
 -moz-appearance: textfield;
-margin: 0;
 }
 .book-level-input::-webkit-outer-spin-button,
 .book-level-input::-webkit-inner-spin-button {
@@ -442,11 +404,6 @@ margin: 0;
 .book-level-unit {
 color: var(--text-secondary);
 font-size: 13px;
-padding: 4px 6px;
-white-space: nowrap;
-user-select: none;
-pointer-events: none;
-background: transparent;
 }
 .book-percent {
 color: var(--text-secondary);
@@ -457,6 +414,7 @@ color: var(--gold);
 font-weight: 500;
 font-size: 13px;
 }
+/* Стили для подвала */
 .app-footer {
 width: 100%;
 max-width: 500px;
@@ -472,6 +430,7 @@ font-size: 12px;
 color: var(--text-secondary);
 line-height: 1.6;
 }
+/* ИЗМЕНЕНО: ссылки белые, при наведении синие */
 .footer-link {
 color: var(--text-main);
 text-decoration: none;
@@ -482,6 +441,7 @@ transition: color 0.2s;
 color: var(--accent);
 text-decoration: underline;
 }
+/* Класс для скрытия элементов */
 .hidden {
 display: none !important;
 }
@@ -489,17 +449,21 @@ display: none !important;
 </head>
 <body>
 <div class="top-nav">
+<!-- ПРОФИЛЬ (1) -->
 <div class="nav-item active" onclick="switchPage('profile')" id="nav-profile">
 <svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
 </div>
+<!-- АКТИВНЫЕ (2) - 📕 -->
 <div class="nav-item" onclick="switchPage('active')" id="nav-active">
 <span>📕</span>
 </div>
+<!-- ПАССИВНЫЕ (3) - 📘 -->
 <div class="nav-item" onclick="switchPage('passive')" id="nav-passive">
 <span>📘</span>
 </div>
 </div>
 <div class="content-container">
+<!-- СТРАНИЦА ПРОФИЛЯ -->
 <div id="page-profile" class="page active">
 <div class="profile-card">
 <div class="profile-header">
@@ -522,7 +486,7 @@ display: none !important;
 <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🍀</span><div class="stat-value-container"><span class="stat-value" data-key="luck">57</span></div><span class="stat-label">удч</span></div></div>
 <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🎯</span><div class="stat-value-container"><span class="stat-value" data-key="acc">112</span></div><span class="stat-label">тчн</span></div></div>
 <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🌀</span><div class="stat-value-container"><span class="stat-value" data-key="conc">64</span></div><span class="stat-label">кц</span></div></div>
-<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">📜</span><div class="stat-value-container"><div class="stat-level-wrapper"><input type="number" class="stat-level-input" value="50" data-key="class_lvl"><span class="stat-level-unit">ур.</span></div></div><span class="stat-label">ур. кл.</span></div></div>
+<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">📜</span><div class="stat-value-container"><span class="stat-value" data-key="class_lvl">50</span></div><span class="stat-label">ур. кл.</span></div></div>
 <div class="stat-cell" onclick="editStatByCell(this, true)"><div class="stat-row"><span class="stat-icon">🔰</span><div class="stat-value-container"><span class="stat-value" data-key="resist">0%</span></div><span class="stat-label">сопр</span></div></div>
 <div class="stat-cell" onclick="editStatByCell(this, false, true)"><div class="stat-row"><span class="stat-icon" id="karma-icon">😐</span><div class="stat-value-container"><span class="stat-value" data-key="karma">0</span></div><span class="stat-label">карма</span></div></div>
 </div>
@@ -532,7 +496,9 @@ display: none !important;
 </div>
 </div>
 </div>
+<!-- Кнопка сброса удалена -->
 </div>
+<!-- СТРАНИЦА АКТИВНЫХ УМЕНИЙ -->
 <div id="page-active" class="page">
 <div class="search-container">
 <div class="search-controls">
@@ -560,6 +526,7 @@ display: none !important;
 <div class="books-list" id="activeBooksContainer"></div>
 <div class="no-results" id="activeNoResultsMsg">Активные умения не найдены</div>
 </div>
+<!-- СТРАНИЦА ПАССИВНЫХ КНИГ -->
 <div id="page-passive" class="page">
 <div class="search-container">
 <div class="search-controls">
@@ -588,6 +555,7 @@ display: none !important;
 <div class="no-results" id="passiveNoResultsMsg">Пассивные книги не найдены</div>
 </div>
 </div>
+<!-- ПОДВАЛ С ССЫЛКАМИ -->
 <div class="app-footer">
 <div class="footer-text">
 Приложение сообщества
@@ -621,6 +589,7 @@ const DATE_KEY = 'rpg_date_final_verified_v8';
 const CLASS_KEY = 'rpg_class_final_verified_v8';
 const BOOKS_LVL_KEY = 'rpg_books_levels_final_verified_v8';
 const ACTIVE_BOOKS_LVL_KEY = 'rpg_active_books_levels_final_verified_v8';
+// Новый порядок пассивных книг
 const PASSIVE_ORDER = [
 "Барьер",
 "Быстрое восстановление",
@@ -690,10 +659,12 @@ karmaIconSpan.textContent = getKarmaIcon(displayVal);
 if (val !== displayVal) karmaVal.textContent = displayVal;
 }
 }
+// ИСПРАВЛЕННАЯ ФУНКЦИЯ - теперь максимум 100%
 function calculateRunesResist(runesCount) {
 if (runesCount < 0) runesCount = 0;
 if (runesCount === 0) return 0;
 let resist = 10.0 * Math.pow(runesCount, 0.25);
+// Ограничиваем максимум 100%
 return Math.min(100, Math.floor(resist));
 }
 function calculateClassEffect(type, level) {
@@ -710,8 +681,8 @@ return Math.min(maxCap, effect);
 }
 function updateClassResult() {
 const className = triggerBtn.textContent.trim();
-const classLvlInput = document.querySelector('.stat-level-input[data-key="class_lvl"]');
-const classLvl = classLvlInput ? parseInt(classLvlInput.value) : 1;
+const classLvlInput = document.querySelector('.stat-value[data-key="class_lvl"]').textContent;
+const classLvl = parseInt(classLvlInput) || 1;
 const config = CLASS_CONFIG[className];
 if (!config) {
 document.getElementById('res-class-desc').innerHTML = "Класс не определен";
@@ -783,24 +754,23 @@ console.log('Не удалось загрузить данные пользов�
 document.getElementById('user-name').textContent = 'Тестовый пользователь';
 }
 }
+// Глобальный перехват отправки форм
 document.addEventListener('submit', function(event) {
 event.preventDefault();
 event.stopPropagation();
 return false;
 }, true);
+// --- ФУНКЦИЯ ДЛЯ ПОЛУЧЕНИЯ СТАТОВ ИЗ ПРОФИЛЯ ---
 function getStatsFromProfile() {
 const stats = {};
 document.querySelectorAll('.stat-value').forEach(el => {
 let value = el.textContent;
+// Для сопротивления убираем % перед парсингом
 if (el.dataset.key === 'resist') {
 value = value.replace('%', '');
 }
 stats[el.dataset.key] = value;
 });
-const classLvlInput = document.querySelector('.stat-level-input[data-key="class_lvl"]');
-if (classLvlInput) {
-stats['class_lvl'] = classLvlInput.value;
-}
 return {
 lvl: parseInt(stats.lvl) || 0,
 atk: parseInt(stats.atk) || 0,
@@ -811,21 +781,24 @@ vit: parseInt(stats.vit) || 0,
 luck: parseInt(stats.luck) || 0,
 acc: parseInt(stats.acc) || 0,
 conc: parseInt(stats.conc) || 0,
-class_lvl: parseInt(stats.class_lvl) || 1,
+class_lvl: parseInt(stats.class_lvl) || 0,
 resist: parseInt(stats.resist) || 0,
 karma: parseInt(stats.karma) || 0
 };
 }
+// --- ФУНКЦИЯ ДЛЯ РАСЧЕТА УРОНА АКТИВНОГО УМЕНИЯ ---
 function calculateActiveDamage(skillName, level, stats) {
 const skill = ACTIVE_SKILLS[skillName];
 if (!skill) return '?';
 try {
+// Если у умения нет calc_damage, возвращаем множитель
 if (!skill.calc_damage) {
 if (skill.calc) {
 return skill.calc(level);
 }
 return '?';
 }
+// Расчет по параметрам из skill.params
 const params = skill.params || [];
 if (params.length === 1) {
 const param = params[0];
@@ -838,6 +811,7 @@ const value1 = stats[param1] || 0;
 const value2 = stats[param2] || 0;
 return skill.calc_damage(level, value1, value2);
 }
+// Fallback на switch если params не заданы
 switch(skillName) {
 case "Грязный удар":
 return skill.calc_damage(level, stats.agi, stats.str);
@@ -871,7 +845,9 @@ console.log('Ошибка расчета для', skillName, e);
 return '?';
 }
 }
+// --- ФУНКЦИЯ ДЛЯ РЕДАКТИРОВАНИЯ СТАТОВ В АКТИВНЫХ УМЕНИЯХ (БЕЗ ПЕРЕМОТКИ) ---
 window.editActiveStat = function(event, element, statKey) {
+// Предотвращаем всплытие и стандартное поведение
 event.preventDefault();
 event.stopPropagation();
 const valueSpan = element.querySelector('.stat-value-small');
@@ -893,33 +869,41 @@ if (newVal === '') newVal = '0';
 let finalValue = newVal;
 const num = parseInt(newVal);
 if (!isNaN(num)) finalValue = num.toString();
+// Обновляем значение в DOM
 valueSpan.textContent = finalValue;
 valueSpan.style.visibility = 'visible';
 input.remove();
+// Обновляем значение в профиле
 const profileStat = document.querySelector(`.stat-value[data-key="${key}"]`);
 if (profileStat) {
 profileStat.textContent = finalValue;
 }
+// Сохраняем все статы
 saveStats();
+// Обновляем все активные книги без перерисовки всего DOM
 const items = document.querySelectorAll('#activeBooksContainer .book-item');
 const stats = getStatsFromProfile();
 items.forEach(item => {
 const bookName = item.querySelector('.book-name').textContent;
 const level = parseInt(item.querySelector('.book-level-input').value) || 1;
+// Обновляем описание
 const descDiv = item.querySelector('.book-desc');
 if (descDiv) {
 descDiv.innerHTML = getSkillDescription(bookName, level, stats);
 }
+// Обновляем строку со статами
 const statsDiv = item.querySelector('.stats-row');
 if (statsDiv) {
 statsDiv.innerHTML = getStatsString(bookName, stats);
 }
+// Обновляем процент эффекта
 const percentSpan = item.querySelector('.book-percent');
 const skill = ACTIVE_SKILLS[bookName];
 if (percentSpan && skill && skill.calc) {
 const effectPercent = skill.calc(level);
 percentSpan.textContent = `(${effectPercent}%)`;
 }
+// Обновляем цену (асинхронно)
 updateActiveBookPrice(item, bookName, level);
 });
 };
@@ -928,12 +912,13 @@ input.onkeydown = e => {
 if(e.key === 'Enter') {
 e.preventDefault();
 e.stopPropagation();
-input.blur();
+input.blur(); // Потеря фокуса вызовет finish
 return false;
 }
 };
 input.onclick = e => e.stopPropagation();
 };
+// --- ФУНКЦИЯ ДЛЯ ПОЛУЧЕНИЯ СТРОКИ СО СТАТАМИ (КЛИКАБЕЛЬНО, БЕЗ ПЕРЕМОТКИ) ---
 function getStatsString(skillName, stats) {
 switch(skillName) {
 case "Грязный удар":
@@ -972,12 +957,14 @@ default:
 return '';
 }
 }
+// --- ФУНКЦИЯ ДЛЯ ПОЛУЧЕНИЯ ОПИСАНИЯ ---
 function getSkillDescription(skillName, level, stats) {
 const skill = ACTIVE_SKILLS[skillName];
 if (!skill) return skillName;
 let desc = skill.desc;
 const damage = calculateActiveDamage(skillName, level, stats);
 const mult = skill.calc ? skill.calc(level) : 0;
+// Специальные случаи из commands.py (обрабатываем ДО общей замены damage)
 switch(skillName) {
 case "Расправа":
 const inner = Math.sqrt(level*10)/100 + 1;
@@ -1015,6 +1002,7 @@ break;
 case "Целебный огонь":
 const heal_percent_fire = Math.floor((Math.sqrt(level*10)/100*0.5 + 1) * 20);
 const max_heal = stats.lvl * 50;
+// Заменяем оба плейсхолдера: {heal_percent} и {max_heal}
 desc = desc.replace(/{heal_percent}/g, `<span class="book-val">${heal_percent_fire}</span>`)
 .replace('{max_heal}', `<span class="book-val">${max_heal}</span>`);
 break;
@@ -1027,23 +1015,29 @@ desc = desc.replace('{armor_reduce}', `<span class="book-val">${armor_reduce}</s
 .replace('{damage}', `<span class="book-val">${damage}</span>`);
 break;
 default:
+// Для всех остальных умений просто заменяем {damage}
 desc = desc.replace('{damage}', `<span class="book-val">${damage}</span>`);
 }
 return desc;
 }
+// --- ФУНКЦИИ ДЛЯ ПАССИВНЫХ КНИГ ---
 async function renderPassiveBooks() {
 const savedLevels = JSON.parse(localStorage.getItem(BOOKS_LVL_KEY) || '{}');
 const container = document.getElementById('passiveBooksContainer');
 container.innerHTML = '';
+// Сортируем книги согласно новому порядку
 let booksArray = [];
 if (passiveSortByAlphabet) {
+// Если включена сортировка по алфавиту, игнорируем кастомный порядок
 booksArray = Object.entries(PASSIVE_SKILLS).sort((a, b) => a[0].localeCompare(b[0], 'ru'));
 } else {
+// Используем кастомный порядок из PASSIVE_ORDER
 for (const bookName of PASSIVE_ORDER) {
 if (PASSIVE_SKILLS[bookName]) {
 booksArray.push([bookName, PASSIVE_SKILLS[bookName]]);
 }
 }
+// Добавляем книги, которых нет в списке (на всякий случай)
 const existingBooks = new Set(booksArray.map(([name]) => name));
 for (const [name, data] of Object.entries(PASSIVE_SKILLS)) {
 if (!existingBooks.has(name)) {
@@ -1147,6 +1141,7 @@ item.appendChild(descDiv);
 item.appendChild(footerDiv);
 container.appendChild(item);
 }
+// Применяем поиск после отрисовки
 handlePassiveSearch();
 }
 function updatePassiveBookDescription(bookElement, bookName, level) {
@@ -1267,6 +1262,7 @@ noResultsMsg.style.display = 'block';
 noResultsMsg.style.display = 'none';
 }
 };
+// --- ФУНКЦИИ ДЛЯ АКТИВНЫХ УМЕНИЙ ---
 async function renderActiveBooks() {
 const savedLevels = JSON.parse(localStorage.getItem(ACTIVE_BOOKS_LVL_KEY) || '{}');
 const container = document.getElementById('activeBooksContainer');
@@ -1280,6 +1276,7 @@ for (const [name, data] of booksArray) {
 const lvl = savedLevels[name] || 1;
 const desc = getSkillDescription(name, lvl, stats);
 const statsString = getStatsString(name, stats);
+// Получаем процент эффекта
 const effectPercent = data.calc ? data.calc(lvl) : 0;
 const item = document.createElement('div');
 item.className = 'book-item';
@@ -1372,12 +1369,14 @@ item.appendChild(statsDiv);
 item.appendChild(footerDiv);
 container.appendChild(item);
 }
+// Применяем поиск после отрисовки
 handleActiveSearch();
 }
 function updateActiveBookDescription(bookElement, bookName, level) {
 const stats = getStatsFromProfile();
 const desc = getSkillDescription(bookName, level, stats);
 const statsString = getStatsString(bookName, stats);
+// Обновляем процент эффекта
 const percentSpan = bookElement.querySelector('.book-percent');
 const skill = ACTIVE_SKILLS[bookName];
 if (percentSpan && skill && skill.calc) {
@@ -1487,6 +1486,7 @@ noResultsMsg.style.display = 'block';
 noResultsMsg.style.display = 'none';
 }
 };
+// --- НАВИГАЦИЯ ---
 window.switchPage = function(pageName) {
 document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
 document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -1501,6 +1501,7 @@ renderActiveBooks();
 function checkReset() {
 const last = localStorage.getItem(DATE_KEY);
 if (last && (Date.now() - parseInt(last) > 7 * 24 * 60 * 60 * 1000)) {
+// Автоматический сброс раз в неделю
 localStorage.removeItem(DB_KEY);
 localStorage.removeItem(DATE_KEY);
 localStorage.removeItem(CLASS_KEY);
@@ -1512,10 +1513,6 @@ location.reload();
 function saveStats() {
 const data = {};
 document.querySelectorAll('.stat-value').forEach(el => data[el.dataset.key] = el.textContent);
-const classLvlInput = document.querySelector('.stat-level-input[data-key="class_lvl"]');
-if (classLvlInput) {
-data['class_lvl'] = classLvlInput.value;
-}
 localStorage.setItem(DB_KEY, JSON.stringify(data));
 localStorage.setItem(DATE_KEY, Date.now().toString());
 updateClassResult();
@@ -1528,53 +1525,17 @@ const data = JSON.parse(raw);
 document.querySelectorAll('.stat-value').forEach(el => {
 if (data[el.dataset.key]) el.textContent = data[el.dataset.key];
 });
-const classLvlInput = document.querySelector('.stat-level-input[data-key="class_lvl"]');
-if (classLvlInput && data['class_lvl']) {
-classLvlInput.value = data['class_lvl'];
-}
 updateClassResult();
 updateKarmaIcon();
 }
 window.editStatByCell = function(cellElement, isResist = false, isKarma = false) {
 const valueContainer = cellElement.querySelector('.stat-value-container');
-const levelWrapper = valueContainer.querySelector('.stat-level-wrapper');
 const valueSpan = valueContainer.querySelector('.stat-value');
-const levelInput = valueContainer.querySelector('.stat-level-input');
-let currentVal, input, key;
-if (levelWrapper && levelInput) {
-currentVal = levelInput.value;
-key = 'class_lvl';
-input = levelInput;
-input.focus();
-input.select();
-const finish = () => {
-let newVal = input.value;
-if (newVal === '') newVal = '0';
-let finalValue = newVal;
-const num = parseInt(newVal);
-if (!isNaN(num)) {
-finalValue = Math.floor(num).toString();
-if (parseInt(finalValue) < 1) finalValue = '1';
-}
-input.value = finalValue;
-saveStats();
-};
-input.onblur = finish;
-input.onkeydown = e => {
-if(e.key === 'Enter') {
-e.preventDefault();
-e.stopPropagation();
-input.blur();
-return false;
-}
-};
-input.onclick = e => e.stopPropagation();
-} else {
-currentVal = valueSpan.textContent;
-key = valueSpan.dataset.key;
+let currentVal = valueSpan.textContent;
+const key = valueSpan.dataset.key;
 let cleanVal = currentVal;
 if (isResist) cleanVal = currentVal.replace('%', '');
-input = document.createElement('input');
+const input = document.createElement('input');
 input.type = 'number';
 input.value = cleanVal === '0' ? '' : cleanVal;
 input.className = 'stat-input';
@@ -1616,7 +1577,6 @@ return false;
 }
 };
 input.onclick = e => e.stopPropagation();
-}
 }
 window.onload = () => {
 checkReset();
