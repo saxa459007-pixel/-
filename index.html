@@ -116,7 +116,7 @@ z-index: 1000;
 .class-item:hover { background-color: rgba(255, 255, 255, 0.1); }
 .class-item.active { color: var(--accent); font-weight: 600; background-color: rgba(88, 101, 242, 0.15); }
 
-/* СТАТЫ В ПРОФИЛЕ - ПРАВИЛЬНАЯ СТРУКТУРА */
+/* СТАТЫ В ПРОФИЛЕ - ТОЧНЫЕ ОТСТУПЫ */
 .stats-grid { 
     width: 100%; 
     display: grid; 
@@ -145,7 +145,7 @@ z-index: 1000;
 .stat-row {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 4px; /* ← ОТСТУП ОТ ИКОНКИ ДО ЧИСЛА */
     pointer-events: none;
     width: 100%;
     justify-content: center;
@@ -161,18 +161,18 @@ z-index: 1000;
 
 .stat-value-container {
     position: relative;
-    min-width: 40px;
+    min-width: 45px; /* ← ФИКСИРОВАННАЯ ШИРИНА ДЛЯ ВЫРАВНИВАНИЯ */
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    gap: 4px; /* ← ОТСТУП МЕЖДУ ЧИСЛОМ И НАЗВАНИЕМ */
 }
 
 .stat-value {
     font-size: 14px;
     font-weight: 700;
     color: var(--text-main);
-    padding: 0 2px;
+    padding: 0;
+    margin: 0;
     text-align: left;
     white-space: nowrap;
     direction: ltr;
@@ -183,6 +183,7 @@ z-index: 1000;
     color: var(--text-secondary);
     text-transform: lowercase;
     white-space: nowrap;
+    margin-left: 2px; /* ← НАЗВАНИЕ ВПЛОТНУЮ К ЧИСЛУ */
 }
 
 /* ПОЛЕ ВВОДА В ПРОФИЛЕ - СТАТИЧНОЕ 100% */
@@ -192,35 +193,28 @@ z-index: 1000;
     left: 0;
     width: 100%;
     height: 100%;
-    background: transparent !important;
-    border: none !important;
-    outline: none !important;
+    background: transparent;
+    border: none;
     color: var(--text-main);
     font-size: 14px;
     font-weight: 700;
     font-family: inherit;
-    padding: 0 !important;
-    margin: 0 !important;
+    padding: 0;
+    margin: 0;
     border-radius: 0;
+    outline: none;
     text-align: left;
     direction: ltr;
     z-index: 20;
     box-sizing: border-box;
     appearance: none;
     -webkit-appearance: none;
-    -moz-appearance: textfield;
-    box-shadow: none !important;
 }
+.stat-input[type=number] { -moz-appearance: textfield; }
 .stat-input::-webkit-outer-spin-button,
 .stat-input::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
-}
-.stat-input:focus {
-    border: none !important;
-    outline: none !important;
-    box-shadow: none !important;
-    background: transparent !important;
 }
 
 .class-result-box { width: 100%; padding: 0 15px; box-sizing: border-box; margin-bottom: 15px; }
@@ -582,18 +576,18 @@ display: none !important;
 </div>
 </div>
 <div class="stats-grid">
-<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🕯️</span><div class="stat-value-container"><span class="stat-value" data-key="lvl">207</span><span class="stat-label">ур</span></div></div></div>
-<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">⚔️</span><div class="stat-value-container"><span class="stat-value" data-key="atk">717</span><span class="stat-label">атк</span></div></div></div>
-<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🛡️</span><div class="stat-value-container"><span class="stat-value" data-key="armor">212</span><span class="stat-label">брн</span></div></div></div>
-<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">💪</span><div class="stat-value-container"><span class="stat-value" data-key="str">403</span><span class="stat-label">сил</span></div></div></div>
-<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">👐</span><div class="stat-value-container"><span class="stat-value" data-key="agi">861</span><span class="stat-label">лвк</span></div></div></div>
-<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">❤️</span><div class="stat-value-container"><span class="stat-value" data-key="vit">602</span><span class="stat-label">внс</span></div></div></div>
-<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🍀</span><div class="stat-value-container"><span class="stat-value" data-key="luck">57</span><span class="stat-label">удч</span></div></div></div>
-<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🎯</span><div class="stat-value-container"><span class="stat-value" data-key="acc">112</span><span class="stat-label">тчн</span></div></div></div>
-<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🌀</span><div class="stat-value-container"><span class="stat-value" data-key="conc">64</span><span class="stat-label">кц</span></div></div></div>
-<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">📜</span><div class="stat-value-container"><span class="stat-value" data-key="class_lvl">50</span><span class="stat-label">ур. кл.</span></div></div></div>
-<div class="stat-cell" onclick="editStatByCell(this, true)"><div class="stat-row"><span class="stat-icon">🔰</span><div class="stat-value-container"><span class="stat-value" data-key="resist">0%</span><span class="stat-label">сопр</span></div></div></div>
-<div class="stat-cell" onclick="editStatByCell(this, false, true)"><div class="stat-row"><span class="stat-icon" id="karma-icon">😐</span><div class="stat-value-container"><span class="stat-value" data-key="karma">0</span><span class="stat-label">карма</span></div></div></div>
+<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🕯️</span><div class="stat-value-container"><span class="stat-value" data-key="lvl">207</span></div><span class="stat-label">ур</span></div></div>
+<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">⚔️</span><div class="stat-value-container"><span class="stat-value" data-key="atk">717</span></div><span class="stat-label">атк</span></div></div>
+<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🛡️</span><div class="stat-value-container"><span class="stat-value" data-key="armor">212</span></div><span class="stat-label">брн</span></div></div>
+<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">💪</span><div class="stat-value-container"><span class="stat-value" data-key="str">403</span></div><span class="stat-label">сил</span></div></div>
+<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">👐</span><div class="stat-value-container"><span class="stat-value" data-key="agi">861</span></div><span class="stat-label">лвк</span></div></div>
+<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">❤️</span><div class="stat-value-container"><span class="stat-value" data-key="vit">602</span></div><span class="stat-label">внс</span></div></div>
+<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🍀</span><div class="stat-value-container"><span class="stat-value" data-key="luck">57</span></div><span class="stat-label">удч</span></div></div>
+<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🎯</span><div class="stat-value-container"><span class="stat-value" data-key="acc">112</span></div><span class="stat-label">тчн</span></div></div>
+<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🌀</span><div class="stat-value-container"><span class="stat-value" data-key="conc">64</span></div><span class="stat-label">кц</span></div></div>
+<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">📜</span><div class="stat-value-container"><span class="stat-value" data-key="class_lvl">50</span></div><span class="stat-label">ур. кл.</span></div></div>
+<div class="stat-cell" onclick="editStatByCell(this, true)"><div class="stat-row"><span class="stat-icon">🔰</span><div class="stat-value-container"><span class="stat-value" data-key="resist">0%</span></div><span class="stat-label">сопр</span></div></div>
+<div class="stat-cell" onclick="editStatByCell(this, false, true)"><div class="stat-row"><span class="stat-icon" id="karma-icon">😐</span><div class="stat-value-container"><span class="stat-value" data-key="karma">0</span></div><span class="stat-label">карма</span></div></div>
 </div>
 <div class="class-result-box">
 <div class="result-card">
@@ -1687,11 +1681,10 @@ updateClassResult();
 updateKarmaIcon();
 }
 
-// Функция для редактирования статов в профиле - С ОГРАНИЧЕНИЕМ 5 СИМВОЛОВ
+// Функция для редактирования статов в профиле - С ОГРАНИЧЕНИЕМ 99999
 window.editStatByCell = function(cellElement, isResist = false, isKarma = false) {
 const valueContainer = cellElement.querySelector('.stat-value-container');
 const valueSpan = valueContainer.querySelector('.stat-value');
-const labelSpan = valueContainer.querySelector('.stat-label');
 let currentVal = valueSpan.textContent;
 const key = valueSpan.dataset.key;
 let cleanVal = currentVal;
@@ -1701,11 +1694,11 @@ input.type = 'number';
 input.value = cleanVal === '0' ? '' : cleanVal;
 input.className = 'stat-input';
 
-// ⬇️ ОГРАНИЧЕНИЕ НА 5 СИМВОЛОВ ⬇️
+// ⬇️ ОГРАНИЧЕНИЕ НА 5 СИМВОЛОВ / 99999 ⬇️
 input.maxLength = 5;
 input.max = '99999';
 
-// ⬇️ БЛОКИРОВКА ВВОДА БОЛЕЕ 5 СИМВОЛОВ ⬇️
+// Блокировка ввода более 5 символов
 input.addEventListener('input', function() {
     if (this.value.length > 5) {
         this.value = this.value.slice(0, 5);
@@ -1713,7 +1706,6 @@ input.addEventListener('input', function() {
 });
 
 valueSpan.style.visibility = 'hidden';
-if (labelSpan) labelSpan.style.visibility = 'hidden';
 valueContainer.appendChild(input);
 input.focus();
 input.select();
@@ -1724,7 +1716,6 @@ const finish = () => {
 let newVal = input.value;
 if (newVal === '') newVal = '0';
 let finalValue = newVal;
-// Ограничение до 99999
 const num = parseFloat(newVal);
 if (!isNaN(num)) {
 if (num > 99999) finalValue = '99999';
@@ -1744,7 +1735,6 @@ if (key === 'class_lvl' && parseInt(finalValue) < 1) finalValue = '1';
 }
 valueSpan.textContent = finalValue;
 valueSpan.style.visibility = 'visible';
-if (labelSpan) labelSpan.style.visibility = 'visible';
 input.remove();
 if (isKarma) updateKarmaIcon();
 saveStats();
