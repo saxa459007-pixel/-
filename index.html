@@ -477,7 +477,7 @@
             flex-shrink: 1;
         }
         
-        /* УРОВЕНЬ КНИГ - ИЗМЕНЕНО: ВПРИТЫК К ЧИСЛУ */
+        /* УРОВЕНЬ КНИГ - ВПРИТЫК К ЧИСЛУ */
         .book-level-wrapper {
             display: flex;
             align-items: center;
@@ -515,6 +515,8 @@
             font-size: 13px;
             white-space: nowrap;
             flex-shrink: 0;
+            margin: 0;
+            padding: 0;
             margin-left: -2px;
         }
         
@@ -533,7 +535,7 @@
             margin-left: auto;
         }
 
-        /* ПОДВАЛ */
+        /* Стили для подвала */
         .app-footer {
             width: 100%;
             max-width: 500px;
@@ -774,6 +776,22 @@
         let passiveSortByAlphabet = false;
         let activeSortByAlphabet = false;
 
+        // Функция для измерения ширины текста
+        function measureTextWidth(text, font, padding = 0) {
+            const span = document.createElement('span');
+            span.style.font = font;
+            span.style.visibility = 'hidden';
+            span.style.position = 'absolute';
+            span.style.whiteSpace = 'nowrap';
+            span.style.fontSize = '14px';
+            span.style.fontWeight = '700';
+            span.textContent = text || '1';
+            document.body.appendChild(span);
+            const width = span.offsetWidth;
+            document.body.removeChild(span);
+            return width + padding;
+        }
+
         function getKarmaIcon(value) {
             const num = parseInt(value);
             if (num < 0) return '😈';
@@ -988,6 +1006,7 @@
             }
         }
 
+        // Функция для редактирования статов в активных книгах
         window.editActiveStat = function(event, element, statKey) {
             event.preventDefault();
             event.stopPropagation();
@@ -1007,6 +1026,23 @@
             element.appendChild(input);
             input.focus();
             input.select();
+            
+            // Функция обновления ширины поля
+            const updateInputWidth = function() {
+                const font = window.getComputedStyle(this).font;
+                const displayValue = this.value || '0';
+                const width = measureTextWidth(displayValue, font, 0);
+                this.style.width = (width + 20) + 'px';
+            };
+            
+            input.addEventListener('input', updateInputWidth);
+            
+            // Устанавливаем начальную ширину
+            setTimeout(() => {
+                const font = window.getComputedStyle(input).font;
+                const width = measureTextWidth(input.value || '0', font, 0);
+                input.style.width = (width + 20) + 'px';
+            }, 0);
             
             const finish = () => {
                 let newVal = input.value;
@@ -1257,6 +1293,15 @@
                 levelInput.setAttribute('autocorrect', 'off');
                 levelInput.setAttribute('spellcheck', 'false');
                 
+                // Функция для обновления ширины поля
+                const updateInputWidth = function() {
+                    const font = window.getComputedStyle(this).font;
+                    const width = measureTextWidth(this.value || '1', font, 2);
+                    this.style.width = (width + 2) + 'px';
+                };
+                
+                levelInput.addEventListener('input', updateInputWidth);
+                
                 levelInput.addEventListener('keydown', function(event) {
                     if (event.key === 'Enter') {
                         event.preventDefault();
@@ -1286,6 +1331,13 @@
                 levelInput.addEventListener('blur', function() {
                     updatePassiveBookLevel(name, this.value);
                 });
+                
+                // Устанавливаем начальную ширину
+                setTimeout(() => {
+                    const font = window.getComputedStyle(levelInput).font;
+                    const width = measureTextWidth(levelInput.value || '1', font, 2);
+                    levelInput.style.width = (width + 2) + 'px';
+                }, 0);
                 
                 const levelUnit = document.createElement('span');
                 levelUnit.className = 'book-level-unit';
@@ -1373,6 +1425,11 @@
                     const input = item.querySelector('.book-level-input');
                     if (input && parseInt(input.value) !== newLevel) {
                         input.value = newLevel;
+                        
+                        // Обновляем ширину поля
+                        const font = window.getComputedStyle(input).font;
+                        const width = measureTextWidth(input.value || '1', font, 2);
+                        input.style.width = (width + 2) + 'px';
                     }
                     
                     updatePassiveBookDescription(item, name, newLevel);
@@ -1528,6 +1585,15 @@
                 levelInput.setAttribute('autocorrect', 'off');
                 levelInput.setAttribute('spellcheck', 'false');
                 
+                // Функция для обновления ширины поля
+                const updateInputWidth = function() {
+                    const font = window.getComputedStyle(this).font;
+                    const width = measureTextWidth(this.value || '1', font, 2);
+                    this.style.width = (width + 2) + 'px';
+                };
+                
+                levelInput.addEventListener('input', updateInputWidth);
+                
                 levelInput.addEventListener('keydown', function(event) {
                     if (event.key === 'Enter') {
                         event.preventDefault();
@@ -1557,6 +1623,13 @@
                 levelInput.addEventListener('blur', function() {
                     updateActiveBookLevel(name, this.value);
                 });
+                
+                // Устанавливаем начальную ширину
+                setTimeout(() => {
+                    const font = window.getComputedStyle(levelInput).font;
+                    const width = measureTextWidth(levelInput.value || '1', font, 2);
+                    levelInput.style.width = (width + 2) + 'px';
+                }, 0);
                 
                 const levelUnit = document.createElement('span');
                 levelUnit.className = 'book-level-unit';
@@ -1647,6 +1720,11 @@
                     const input = item.querySelector('.book-level-input');
                     if (input && parseInt(input.value) !== newLevel) {
                         input.value = newLevel;
+                        
+                        // Обновляем ширину поля
+                        const font = window.getComputedStyle(input).font;
+                        const width = measureTextWidth(input.value || '1', font, 2);
+                        input.style.width = (width + 2) + 'px';
                     }
                     
                     updateActiveBookDescription(item, name, newLevel);
@@ -1773,6 +1851,7 @@
             updateKarmaIcon();
         }
 
+        // Функция для редактирования статов в профиле
         window.editStatByCell = function(cellElement, isResist = false, isKarma = false) {
             const valueContainer = cellElement.querySelector('.stat-value-container');
             const valueSpan = valueContainer.querySelector('.stat-value');
@@ -1789,6 +1868,22 @@
             valueContainer.appendChild(input);
             input.focus();
             input.select();
+            
+            // Функция обновления ширины поля
+            const updateInputWidth = function() {
+                const font = window.getComputedStyle(this).font;
+                const width = measureTextWidth(this.value || '0', font, 0);
+                this.style.width = width + 'px';
+            };
+            
+            input.addEventListener('input', updateInputWidth);
+            
+            // Устанавливаем начальную ширину
+            setTimeout(() => {
+                const font = window.getComputedStyle(input).font;
+                const width = measureTextWidth(input.value || '0', font, 0);
+                input.style.width = width + 'px';
+            }, 0);
             
             const finish = () => {
                 let newVal = input.value;
@@ -1827,7 +1922,7 @@
                 }
             };
             input.onclick = e => e.stopPropagation();
-        };
+        }
 
         window.onload = () => {
             checkReset();
