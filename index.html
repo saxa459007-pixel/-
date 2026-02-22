@@ -1,1815 +1,1857 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>RPG Stats & Books</title>
-<script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
-<style>
-:root {
---bg-color: #34383d;
---card-bg: #3f444b;
---nav-bg: #2b2e33;
---text-main: #ffffff;
---text-secondary: #b0b3b8;
---accent: #5865F2;
---input-bg: #4a5059;
---separator-color: #4a5057;
---gold: #ffd700;
-}
-body {
-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-background-color: var(--bg-color);
-color: var(--text-main);
-margin: 0;
-padding: 0;
-display: flex;
-flex-direction: column;
-align-items: center;
-user-select: none;
-min-height: 100vh;
--webkit-tap-highlight-color: transparent;
-}
-.top-nav {
-width: 100%;
-max-width: 500px;
-height: 54px;
-background-color: var(--nav-bg);
-display: flex;
-justify-content: space-around;
-align-items: center;
-position: sticky;
-top: 0;
-z-index: 100;
-border-bottom: 1px solid rgba(0,0,0,0.2);
-box-sizing: border-box;
-}
-.nav-item {
-flex: 1;
-height: 40px;
-display: flex;
-align-items: center;
-justify-content: center;
-cursor: pointer;
-border-radius: 8px;
-transition: background 0.2s, color 0.2s;
-color: #72767d;
-}
-.nav-item:hover { background-color: rgba(255,255,255,0.05); color: var(--text-main); }
-.nav-item.active { color: var(--text-main); background-color: rgba(255,255,255,0.1); }
-.nav-icon {
-width: 26px;
-height: 26px;
-fill: currentColor;
-pointer-events: none;
-}
-.nav-item span {
-font-size: 24px;
-line-height: 1;
-display: flex;
-align-items: center;
-justify-content: center;
-pointer-events: none;
-}
-.content-container {
-width: 100%;
-max-width: 500px;
-display: flex;
-flex-direction: column;
-align-items: center;
-padding-bottom: 20px;
-box-sizing: border-box;
-flex: 1;
-}
-.page { display: none; width: 100%; animation: fadeIn 0.3s; }
-.page.active { display: block; }
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-.profile-card { width: 100%; background-color: var(--card-bg); border-radius: 8px; margin-top: 15px; overflow: visible; box-shadow: 0 4px 6px rgba(0,0,0,0.1); box-sizing: border-box; position: relative; }
-.profile-header { padding: 15px; display: flex; align-items: flex-start; border-bottom: 1px solid var(--separator-color); position: relative; z-index: 10; }
-.avatar { width: 50px; height: 50px; border-radius: 50%; margin-right: 12px; object-fit: cover; border: 2px solid var(--separator-color); flex-shrink: 0; background-color: #000; }
-.info { flex: 1; overflow: visible; position: relative; }
-.player-name { font-size: 17px; margin: 0 0 5px 0; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text-main); }
-.class-wrapper { position: relative; width: 100%; z-index: 50; }
-.class-trigger { background: none; border: none; color: var(--text-secondary); font-size: 12px; padding: 4px 8px; margin: 0; cursor: pointer; text-transform: lowercase; font-family: inherit; display: inline-flex; align-items: center; gap: 4px; outline: none; text-align: left; border-radius: 4px; transition: background 0.2s; width: auto; }
-.class-trigger:hover { background-color: rgba(255,255,255,0.05); color: var(--text-main); }
-.class-trigger::after { content: '▼'; font-size: 8px; transition: transform 0.2s; display: inline-block; }
-.class-trigger.open::after { transform: rotate(180deg); }
-.class-list {
-display: none;
-position: absolute;
-top: 100%;
-left: 0;
-margin-top: 5px;
-background-color: var(--input-bg);
-border-radius: 4px;
-overflow: hidden;
-width: 100%;
-max-height: 200px;
-overflow-y: auto;
-border: 1px solid var(--separator-color);
-box-shadow: 0 8px 24px rgba(0,0,0,0.6);
-z-index: 1000;
-}
-.class-list.show { display: block; animation: fadeIn 0.2s; }
-.class-item { padding: 10px 12px; font-size: 13px; color: var(--text-main); text-transform: lowercase; cursor: pointer; border-bottom: 1px solid var(--separator-color); transition: background 0.1s; user-select: none; }
-.class-item:last-child { border-bottom: none; }
-.class-item:hover { background-color: rgba(255, 255, 255, 0.1); }
-.class-item.active { color: var(--accent); font-weight: 600; background-color: rgba(88, 101, 242, 0.15); }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>RPG Stats & Books</title>
+    <script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
+    
+    <style>
+        :root {
+            --bg-color: #34383d;
+            --card-bg: #3f444b;
+            --nav-bg: #2b2e33;
+            --text-main: #ffffff;
+            --text-secondary: #b0b3b8;
+            --accent: #5865F2;
+            --input-bg: #4a5059;
+            --separator-color: #4a5057;
+            --gold: #ffd700;
+        }
 
-/* === ИСПРАВЛЕННАЯ СЕТКА СТАТОВ === */
-.stats-grid {
-width: 100%;
-display: grid;
-grid-template-columns: repeat(3, 1fr);
-gap: 8px;
-padding: 15px;
-box-sizing: border-box;
-}
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            user-select: none;
+            min-height: 100vh;
+            -webkit-tap-highlight-color: transparent;
+        }
 
-.stat-cell {
-background-color: transparent;
-border: none;
-border-radius: 0;
-padding: 8px 4px;
-display: flex;
-align-items: center;
-justify-content: flex-start;
-cursor: pointer;
-position: relative;
-min-width: 0;
-}
+        .top-nav {
+            width: 100%;
+            max-width: 500px;
+            height: 54px;
+            background-color: var(--nav-bg);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(0,0,0,0.2);
+            box-sizing: border-box;
+        }
 
-.stat-cell:active, .stat-cell:hover { background-color: transparent; }
+        .nav-item {
+            flex: 1;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background 0.2s, color 0.2s;
+            color: #72767d;
+        }
+        .nav-item:hover { background-color: rgba(255,255,255,0.05); color: var(--text-main); }
+        .nav-item.active { color: var(--text-main); background-color: rgba(255,255,255,0.1); }
+        
+        /* Стили для иконок в навигации */
+        .nav-icon {
+            width: 26px;
+            height: 26px;
+            fill: currentColor;
+            pointer-events: none;
+        }
+        
+        .nav-item span {
+            font-size: 24px;
+            line-height: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+        }
 
-.stat-row {
-display: inline-flex;
-align-items: center;
-gap: 4px;
-pointer-events: none;
-width: auto;
-justify-content: flex-start;
-flex-wrap: nowrap;
-}
+        .content-container { 
+            width: 100%; 
+            max-width: 500px; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            padding-bottom: 20px; 
+            box-sizing: border-box; 
+            flex: 1;
+        }
+        
+        .page { display: none; width: 100%; animation: fadeIn 0.3s; }
+        .page.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-.stat-icon {
-font-size: 18px;
-line-height: 1;
-flex-shrink: 0;
-text-align: center;
-width: 20px;
-}
+        .profile-card { width: 100%; background-color: var(--card-bg); border-radius: 8px; margin-top: 15px; overflow: visible; box-shadow: 0 4px 6px rgba(0,0,0,0.1); box-sizing: border-box; position: relative; }
+        .profile-header { padding: 15px; display: flex; align-items: flex-start; border-bottom: 1px solid var(--separator-color); position: relative; z-index: 10; }
+        .avatar { width: 50px; height: 50px; border-radius: 50%; margin-right: 12px; object-fit: cover; border: 2px solid var(--separator-color); flex-shrink: 0; background-color: #000; }
+        .info { flex: 1; overflow: visible; position: relative; }
+        .player-name { font-size: 17px; margin: 0 0 5px 0; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text-main); }
+        
+        .class-wrapper { position: relative; width: 100%; z-index: 50; }
+        .class-trigger { background: none; border: none; color: var(--text-secondary); font-size: 12px; padding: 4px 8px; margin: 0; cursor: pointer; text-transform: lowercase; font-family: inherit; display: inline-flex; align-items: center; gap: 4px; outline: none; text-align: left; border-radius: 4px; transition: background 0.2s; width: auto; }
+        .class-trigger:hover { background-color: rgba(255,255,255,0.05); color: var(--text-main); }
+        .class-trigger::after { content: '▼'; font-size: 8px; transition: transform 0.2s; display: inline-block; }
+        .class-trigger.open::after { transform: rotate(180deg); }
+        
+        .class-list { 
+            display: none; 
+            position: absolute; 
+            top: 100%; 
+            left: 0; 
+            margin-top: 5px; 
+            background-color: var(--input-bg); 
+            border-radius: 4px; 
+            overflow: hidden; 
+            width: 100%; 
+            max-height: 200px; 
+            overflow-y: auto; 
+            border: 1px solid var(--separator-color); 
+            box-shadow: 0 8px 24px rgba(0,0,0,0.6); 
+            z-index: 1000; 
+        }
+        .class-list.show { display: block; animation: fadeIn 0.2s; }
+        
+        .class-item { padding: 10px 12px; font-size: 13px; color: var(--text-main); text-transform: lowercase; cursor: pointer; border-bottom: 1px solid var(--separator-color); transition: background 0.1s; user-select: none; }
+        .class-item:last-child { border-bottom: none; }
+        .class-item:hover { background-color: rgba(255, 255, 255, 0.1); }
+        .class-item.active { color: var(--accent); font-weight: 600; background-color: rgba(88, 101, 242, 0.15); }
 
-.stat-value-container {
-position: relative;
-display: inline-flex;
-justify-content: flex-start;
-align-items: center;
-flex-shrink: 0;
-min-width: 0;
-}
+        .stats-grid { width: 100%; display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 15px; box-sizing: border-box; }
+        .stat-cell { background-color: transparent; border: none; border-radius: 0; padding: 8px 4px; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative; }
+        .stat-cell:active, .stat-cell:hover { background-color: transparent; }
+        .stat-row { display: flex; align-items: center; gap: 6px; pointer-events: none; width: 100%; justify-content: center; }
+        .stat-icon { font-size: 18px; line-height: 1; flex-shrink: 0; text-align: center; width: 20px; }
+        .stat-value-container { position: relative; min-width: 34px; display: flex; justify-content: center; align-items: center; }
+        .stat-value { font-size: 14px; font-weight: 700; color: var(--text-main); padding: 0 2px; text-align: center; white-space: nowrap; line-height: 1.4; }
+        .stat-label { font-size: 11px; color: var(--text-secondary); text-transform: lowercase; flex-shrink: 0; }
+        
+        /* УБРАНА РАМКА У ПОЛЯ ВВОДА В ПРОФИЛЕ */
+        .stat-input {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--input-bg);
+            border: none;
+            color: white;
+            font-size: 14px;
+            font-weight: 700;
+            font-family: inherit;
+            padding: 0;
+            margin: 0;
+            border-radius: 0;
+            outline: none;
+            text-align: center;
+            line-height: 1.4;
+            z-index: 20;
+            box-sizing: border-box;
+            appearance: none;
+            -webkit-appearance: none;
+        }
+        .stat-input[type=number] { -moz-appearance: textfield; }
+        .stat-input::-webkit-outer-spin-button, 
+        .stat-input::-webkit-inner-spin-button { 
+            -webkit-appearance: none; 
+            margin: 0; 
+        }
 
-.stat-value {
-font-size: 14px;
-font-weight: 700;
-color: var(--text-main);
-padding: 0 2px;
-text-align: left;
-white-space: nowrap;
-line-height: 1.4;
-}
+        .class-result-box { width: 100%; padding: 0 15px; box-sizing: border-box; margin-bottom: 15px; }
+        .result-card { background-color: transparent; border: none; border-radius: 0; padding: 12px 0 10px 0; display: flex; align-items: center; box-shadow: none; border-top: 1px solid var(--separator-color); margin-top: 5px; }
+        .result-description { font-size: 13px; color: var(--text-secondary); line-height: 1.4; width: 100%; }
+        .highlight-class { color: var(--text-main); font-weight: 700; font-size: 13px; margin-right: 4px; }
+        .highlight-val { color: var(--text-secondary); font-weight: 600; }
 
-.stat-label {
-font-size: 11px;
-color: var(--text-secondary);
-text-transform: lowercase;
-flex-shrink: 0;
-white-space: nowrap;
-margin-left: 2px;
-}
+        /* --- СТИЛИ ДЛЯ ПОИСКА И СОРТИРОВКИ --- */
+        .search-container {
+            width: 100%;
+            padding: 15px 15px 10px 15px;
+            box-sizing: border-box;
+            background-color: var(--bg-color);
+            position: sticky;
+            top: 54px;
+            z-index: 90;
+        }
 
-/* === ПОЛЕ ВВОДА В ПРОФИЛЕ (под 6 цифр) === */
-.stat-input {
-position: absolute;
-top: 0;
-left: 0;
-width: 100%;
-height: 100%;
-background: transparent;
-border: none;
-color: white;
-font-size: 14px;
-font-weight: 700;
-font-family: inherit;
-padding: 0;
-margin: 0;
-border-radius: 0;
-outline: none;
-text-align: left;
-line-height: 1.4;
-z-index: 20;
-box-sizing: border-box;
-appearance: none;
--webkit-appearance: none;
--moz-appearance: textfield;
-min-width: 60px;
-}
+        .search-controls {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
 
-.stat-input::-webkit-outer-spin-button,
-.stat-input::-webkit-inner-spin-button {
--webkit-appearance: none;
-margin: 0;
-}
+        .search-input-wrapper {
+            position: relative;
+            flex: 1;
+        }
 
-.stat-input[type=number] { -moz-appearance: textfield; }
+        .search-input {
+            width: 100%;
+            background-color: var(--input-bg);
+            border: 1px solid var(--separator-color);
+            color: var(--text-main);
+            font-size: 14px;
+            padding: 10px 40px 10px 38px;
+            border-radius: 6px;
+            outline: none;
+            transition: border-color 0.2s;
+            box-sizing: border-box;
+            font-family: inherit;
+        }
 
-.class-result-box { width: 100%; padding: 0 15px; box-sizing: border-box; margin-bottom: 15px; }
-.result-card { background-color: transparent; border: none; border-radius: 0; padding: 12px 0 10px 0; display: flex; align-items: center; box-shadow: none; border-top: 1px solid var(--separator-color); margin-top: 5px; }
-.result-description { font-size: 13px; color: var(--text-secondary); line-height: 1.4; width: 100%; }
-.highlight-class { color: var(--text-main); font-weight: 700; font-size: 13px; margin-right: 4px; }
-.highlight-val { color: var(--text-secondary); font-weight: 600; }
+        /* УБРАНА ПОДСВЕТКА У ПОЛЯ ПОИСКА */
+        .search-input:focus {
+            border-color: var(--separator-color);
+        }
 
-/* === ПОИСК И СОРТИРОВКА === */
-.search-container {
-width: 100%;
-padding: 15px 15px 10px 15px;
-box-sizing: border-box;
-background-color: var(--bg-color);
-position: sticky;
-top: 54px;
-z-index: 90;
-}
+        .search-input::placeholder {
+            color: var(--text-secondary);
+            opacity: 0.6;
+        }
 
-.search-controls {
-display: flex;
-gap: 8px;
-align-items: center;
-}
+        .search-icon {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 18px;
+            height: 18px;
+            fill: var(--text-secondary);
+            pointer-events: none;
+        }
 
-.search-input-wrapper {
-position: relative;
-flex: 1;
-}
+        .clear-btn {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 24px;
+            height: 24px;
+            background: transparent;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            transition: background 0.2s;
+            z-index: 10;
+        }
 
-.search-input {
-width: 100%;
-background-color: var(--input-bg);
-border: 1px solid var(--separator-color);
-color: var(--text-main);
-font-size: 14px;
-padding: 10px 40px 10px 38px;
-border-radius: 6px;
-outline: none;
-transition: border-color 0.2s;
-box-sizing: border-box;
-font-family: inherit;
-}
+        .clear-btn.visible {
+            display: flex;
+        }
 
-.search-input:focus { border-color: var(--separator-color); }
-.search-input::placeholder { color: var(--text-secondary); opacity: 0.6; }
+        .clear-btn:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
 
-.search-icon {
-position: absolute;
-left: 10px;
-top: 50%;
-transform: translateY(-50%);
-width: 18px;
-height: 18px;
-fill: var(--text-secondary);
-pointer-events: none;
-}
+        .clear-btn svg {
+            width: 14px;
+            height: 14px;
+            fill: var(--text-secondary);
+        }
 
-.clear-btn {
-position: absolute;
-right: 8px;
-top: 50%;
-transform: translateY(-50%);
-width: 24px;
-height: 24px;
-background: transparent;
-border: none;
-border-radius: 50%;
-cursor: pointer;
-display: none;
-align-items: center;
-justify-content: center;
-padding: 0;
-transition: background 0.2s;
-z-index: 10;
-}
+        .clear-btn:hover svg {
+            fill: var(--text-main);
+        }
 
-.clear-btn.visible { display: flex; }
-.clear-btn:hover { background-color: rgba(255, 255, 255, 0.1); }
-.clear-btn svg { width: 14px; height: 14px; fill: var(--text-secondary); }
-.clear-btn:hover svg { fill: var(--text-main); }
+        .sort-btn {
+            background-color: var(--input-bg);
+            border: 1px solid var(--separator-color);
+            color: var(--text-secondary);
+            font-size: 13px;
+            padding: 10px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+            white-space: nowrap;
+            font-family: inherit;
+        }
 
-.sort-btn {
-background-color: var(--input-bg);
-border: 1px solid var(--separator-color);
-color: var(--text-secondary);
-font-size: 13px;
-padding: 10px 12px;
-border-radius: 6px;
-cursor: pointer;
-display: flex;
-align-items: center;
-gap: 6px;
-transition: all 0.2s;
-white-space: nowrap;
-font-family: inherit;
-}
+        .sort-btn:hover {
+            background-color: rgba(255,255,255,0.05);
+            color: var(--text-main);
+        }
 
-.sort-btn:hover { background-color: rgba(255,255,255,0.05); color: var(--text-main); }
-.sort-btn svg { width: 20px; height: 20px; fill: currentColor; }
+        .sort-btn svg {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+        }
 
-.no-results {
-text-align: center;
-color: var(--text-secondary);
-padding: 20px;
-font-size: 14px;
-display: none;
-}
+        .no-results {
+            text-align: center;
+            color: var(--text-secondary);
+            padding: 20px;
+            font-size: 14px;
+            display: none;
+        }
 
-/* === СПИСОК КНИГ === */
-.books-list {
-width: 100%;
-padding: 0;
-box-sizing: border-box;
-}
+        .books-list { 
+            width: 100%; 
+            padding: 0; 
+            box-sizing: border-box; 
+        }
 
-.book-item {
-background-color: transparent;
-border: none;
-border-radius: 0;
-padding: 12px 15px;
-margin-bottom: 0;
-display: flex;
-flex-direction: column;
-gap: 6px;
-border-bottom: 1px solid var(--separator-color);
-}
+        .book-item { 
+            background-color: transparent;
+            border: none; 
+            border-radius: 0;
+            padding: 12px 15px;  /* Отступы слева и справа */
+            margin-bottom: 0; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 6px; 
+            border-bottom: 1px solid var(--separator-color);  /* Сплошная линия */
+        }
 
-.book-item:last-child { border-bottom: none; }
+        .book-item:last-child {
+            border-bottom: none;
+        }
 
-.book-header {
-display: flex;
-justify-content: space-between;
-align-items: center;
-margin-bottom: 2px;
-}
+        .book-header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            margin-bottom: 2px;
+        }
+        .book-name { 
+            font-size: 15px; 
+            font-weight: 700; 
+            color: var(--text-main); 
+            text-transform: none;
+        }
+        
+        /* Стили для отображения статов в активных умениях */
+        .stats-row {
+            display: flex;
+            gap: 12px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+            flex-wrap: wrap;
+        }
+        
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            cursor: pointer;
+            padding: 2px 4px;
+            border-radius: 4px;
+            transition: background 0.2s;
+            position: relative;
+        }
+        
+        .stat-item:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        
+        .stat-icon-small {
+            font-size: 14px;
+            pointer-events: none;
+        }
+        
+        /* ИЗМЕНЕНО: цвет статов с синего на белый */
+        .stat-value-small {
+            color: var(--text-main);
+            font-weight: 600;
+            pointer-events: none;
+        }
+        
+        /* УБРАНА РАМКА У ПОЛЯ ВВОДА В АКТИВКАХ */
+        .stat-input-small {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--input-bg);
+            border: none;
+            color: white;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 2px 4px;
+            border-radius: 4px;
+            text-align: center;
+            outline: none;
+            z-index: 20;
+            box-sizing: border-box;
+        }
+        
+        .book-desc { 
+            font-size: 13px; 
+            color: var(--text-secondary); 
+            line-height: 1.4; 
+            white-space: pre-line;
+            margin-bottom: 4px;
+            padding-right: 10px;
+        }
+        .book-val { 
+            color: var(--text-main); 
+            font-weight: 600; 
+        }
+        
+        .book-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 2px;
+            padding-top: 6px;
+        }
+        
+        .left-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .book-level-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        /* ИЗМЕНЕНО: поле ввода прозрачное (Вариант 1) */
+        .book-level-input {
+            background: transparent;
+            border: none;
+            color: var(--text-main);
+            font-size: 13px;
+            font-weight: 700;
+            padding: 4px 0;
+            width: 70px;  /* Увеличено для длинных чисел */
+            text-align: center;
+            outline: none;
+            -moz-appearance: textfield;
+        }
+        
+        .book-level-input::-webkit-outer-spin-button,
+        .book-level-input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        
+        .book-level-unit {
+            color: var(--text-secondary);
+            font-size: 13px;
+        }
+        
+        .book-percent {
+            color: var(--text-secondary);
+            font-size: 12px;
+        }
+        
+        .book-price { 
+            color: var(--gold); 
+            font-weight: 500;
+            font-size: 13px;
+        }
 
-.book-name {
-font-size: 15px;
-font-weight: 700;
-color: var(--text-main);
-text-transform: none;
-}
+        /* Стили для подвала */
+        .app-footer {
+            width: 100%;
+            max-width: 500px;
+            padding: 20px 15px;
+            margin-top: 20px;
+            border-top: 1px solid var(--separator-color);
+            text-align: center;
+            box-sizing: border-box;
+            background-color: var(--bg-color);
+        }
 
-.stats-row {
-display: flex;
-gap: 12px;
-font-size: 12px;
-color: var(--text-secondary);
-margin-bottom: 4px;
-flex-wrap: wrap;
-}
+        .footer-text {
+            font-size: 12px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
 
-.stat-item {
-display: inline-flex;
-align-items: center;
-gap: 3px;
-cursor: pointer;
-padding: 2px 4px;
-border-radius: 4px;
-transition: background 0.2s;
-position: relative;
-min-width: 0;
-}
+        /* ИЗМЕНЕНО: ссылки белые, при наведении синие */
+        .footer-link {
+            color: var(--text-main);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
 
-.stat-item:hover { background-color: rgba(255, 255, 255, 0.05); }
+        .footer-link:hover {
+            color: var(--accent);
+            text-decoration: underline;
+        }
 
-.stat-icon-small {
-font-size: 14px;
-pointer-events: none;
-flex-shrink: 0;
-width: 16px;
-text-align: center;
-}
-
-.stat-value-small {
-color: var(--text-main);
-font-weight: 600;
-pointer-events: none;
-min-width: 20px;
-display: inline-block;
-text-align: left;
-}
-
-/* === ПОЛЕ ВВОДА В АКТИВНЫХ УМЕНИЯХ (только цифра, без иконки) === */
-.stat-input-small {
-position: absolute;
-top: 0;
-left: 0;
-width: 100%;
-height: 100%;
-background: transparent;
-border: none;
-color: white;
-font-size: 12px;
-font-weight: 700;
-padding: 2px 4px;
-border-radius: 4px;
-text-align: left;
-outline: none;
-z-index: 20;
-box-sizing: border-box;
--moz-appearance: textfield;
-min-width: 30px;
-}
-
-.stat-input-small::-webkit-outer-spin-button,
-.stat-input-small::-webkit-inner-spin-button {
--webkit-appearance: none;
-margin: 0;
-}
-
-.book-desc {
-font-size: 13px;
-color: var(--text-secondary);
-line-height: 1.4;
-white-space: pre-line;
-margin-bottom: 4px;
-padding-right: 10px;
-word-wrap: break-word;
-overflow-wrap: break-word;
-}
-
-.book-val { color: var(--text-main); font-weight: 600; }
-
-/* === ИСПРАВЛЕННЫЙ ФУТЕР КНИГИ === */
-.book-footer {
-display: flex;
-justify-content: space-between;
-align-items: center;
-margin-top: 2px;
-padding-top: 6px;
-padding-left: 0;
-padding-right: 0;
-}
-
-.left-group {
-display: flex;
-align-items: center;
-gap: 6px;
-flex-shrink: 0;
-margin: 0;
-padding: 0;
-}
-
-.book-level-wrapper {
-display: inline-flex;
-align-items: baseline;
-gap: 2px;
-flex-shrink: 0;
-margin: 0;
-padding: 0;
-}
-
-/* === ПОЛЕ ВВОДА УРОВНЯ — ИСПРАВЛЕННОЕ === */
-.book-level-input {
-background: transparent;
-border: none;
-color: var(--text-main);
-font-size: 13px;
-font-weight: 700;
-padding: 4px 0;
-width: auto;
-min-width: 20px;
-max-width: 100px;
-text-align: right;
-outline: none;
--moz-appearance: textfield;
-letter-spacing: 0.5px;
-margin: 0;
-padding-left: 0;
-}
-
-.book-level-input::-webkit-outer-spin-button,
-.book-level-input::-webkit-inner-spin-button {
--webkit-appearance: none;
-margin: 0;
-}
-
-.book-level-unit {
-color: var(--text-secondary);
-font-size: 13px;
-white-space: nowrap;
-flex-shrink: 0;
-margin-left: 1px;
-}
-
-.book-percent {
-color: var(--text-secondary);
-font-size: 12px;
-white-space: nowrap;
-flex-shrink: 0;
-margin-left: 4px;
-}
-
-.book-price {
-color: var(--gold);
-font-weight: 500;
-font-size: 13px;
-white-space: nowrap;
-flex-shrink: 0;
-text-align: right;
-margin: 0;
-padding: 0;
-}
-
-/* === ПОДВАЛ === */
-.app-footer {
-width: 100%;
-max-width: 500px;
-padding: 20px 15px;
-margin-top: 20px;
-border-top: 1px solid var(--separator-color);
-text-align: center;
-box-sizing: border-box;
-background-color: var(--bg-color);
-}
-
-.footer-text {
-font-size: 12px;
-color: var(--text-secondary);
-line-height: 1.6;
-}
-
-.footer-link {
-color: var(--text-main);
-text-decoration: none;
-font-weight: 500;
-transition: color 0.2s;
-}
-
-.footer-link:hover {
-color: var(--accent);
-text-decoration: underline;
-}
-
-.hidden { display: none !important; }
-</style>
+        /* Класс для скрытия элементов */
+        .hidden {
+            display: none !important;
+        }
+    </style>
 </head>
 <body>
 
-<div class="top-nav">
-<div class="nav-item active" onclick="switchPage('profile')" id="nav-profile">
-<svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-</div>
-<div class="nav-item" onclick="switchPage('active')" id="nav-active">
-<span>📕</span>
-</div>
-<div class="nav-item" onclick="switchPage('passive')" id="nav-passive">
-<span>📘</span>
-</div>
-</div>
-
-<div class="content-container">
-
-<!-- СТРАНИЦА ПРОФИЛЯ -->
-<div id="page-profile" class="page active">
-<div class="profile-card">
-<div class="profile-header">
-<img src="https://via.placeholder.com/50" alt="Avatar" class="avatar" id="user-avatar">
-<div class="info">
-<h1 class="player-name" id="user-name">Загрузка...</h1>
-<div class="class-wrapper">
-<button class="class-trigger" id="classTrigger" onclick="toggleClassList()">жнец душ</button>
-<div class="class-list" id="classList"></div>
-</div>
-</div>
-</div>
-
-<div class="stats-grid">
-<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🕯️</span><div class="stat-value-container"><span class="stat-value" data-key="lvl">207</span></div><span class="stat-label">ур</span></div></div>
-<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">⚔️</span><div class="stat-value-container"><span class="stat-value" data-key="atk">717</span></div><span class="stat-label">атк</span></div></div>
-<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🛡️</span><div class="stat-value-container"><span class="stat-value" data-key="armor">212</span></div><span class="stat-label">брн</span></div></div>
-<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">💪</span><div class="stat-value-container"><span class="stat-value" data-key="str">403</span></div><span class="stat-label">сил</span></div></div>
-<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">👐</span><div class="stat-value-container"><span class="stat-value" data-key="agi">861</span></div><span class="stat-label">лвк</span></div></div>
-<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">❤️</span><div class="stat-value-container"><span class="stat-value" data-key="vit">602</span></div><span class="stat-label">внс</span></div></div>
-<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🍀</span><div class="stat-value-container"><span class="stat-value" data-key="luck">57</span></div><span class="stat-label">удч</span></div></div>
-<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🎯</span><div class="stat-value-container"><span class="stat-value" data-key="acc">112</span></div><span class="stat-label">тчн</span></div></div>
-<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🌀</span><div class="stat-value-container"><span class="stat-value" data-key="conc">64</span></div><span class="stat-label">кц</span></div></div>
-<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">📜</span><div class="stat-value-container"><span class="stat-value" data-key="class_lvl">50</span></div><span class="stat-label">ур. кл.</span></div></div>
-<div class="stat-cell" onclick="editStatByCell(this, true)"><div class="stat-row"><span class="stat-icon">🔰</span><div class="stat-value-container"><span class="stat-value" data-key="resist">0%</span></div><span class="stat-label">сопр</span></div></div>
-<div class="stat-cell" onclick="editStatByCell(this, false, true)"><div class="stat-row"><span class="stat-icon" id="karma-icon">😐</span><div class="stat-value-container"><span class="stat-value" data-key="karma">0</span></div><span class="stat-label">карма</span></div></div>
-</div>
-
-<div class="class-result-box">
-<div class="result-card">
-<div class="result-description" id="res-class-desc"></div>
-</div>
-</div>
-</div>
-</div>
-
-<!-- СТРАНИЦА АКТИВНЫХ УМЕНИЙ -->
-<div id="page-active" class="page">
-<div class="search-container">
-<div class="search-controls">
-<div class="search-input-wrapper">
-<svg class="search-icon" viewBox="0 0 24 24">
-<path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
-</svg>
-<input type="text" class="search-input" id="activeSearchInput" placeholder="Поиск по активкам..." oninput="handleActiveSearch()">
-<button class="clear-btn" id="clearActiveSearchBtn" onclick="clearActiveSearch()" aria-label="Очистить поиск">
-<svg viewBox="0 0 24 24">
-<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
-</svg>
-</button>
-</div>
-
-<button class="sort-btn" onclick="toggleActiveSort()" id="activeSortBtn" title="Сортировка">
-<svg id="activeSortIconList" viewBox="0 0 24 24">
-<path d="M3 18h6v-2H3v2zM3 6v2h18V6H3zm0 7h12v-2H3v2z"/>
-</svg>
-<svg id="activeSortIconAZ" viewBox="0 0 20 20" style="display: none;">
-<path d="M8,11 C8.2821,11 8.54033,11.1583 8.66834,11.4097 C8.79635,11.661 8.77247,11.963 8.60656,12.1911 L5.47283,16.5 L8,16.5 C8.41422,16.5 8.75,16.8358 8.75,17.25 C8.75,17.6642 8.41422,18 8,18 L4,18 C3.71791,18 3.45967,17.8417 3.33167,17.5903 C3.20366,17.339 3.22753,17.037 3.39345,16.8089 L6.52718,12.5 L4,12.5 C3.58579,12.5 3.25,12.1642 3.25,11.75 C3.25,11.3358 3.58579,11 4,11 L8,11 Z M13.5000006,2 C13.9142,2 14.25,2.33579 14.25,2.75 L14.25,15.5241 L16.7383,13.2017 C17.0411,12.9191 17.5157,12.9355 17.7983,13.2383 C18.0809,13.5411 18.0646,14.0157 17.7617,14.2983 L14.0117,17.7983 C13.7236,18.0672 13.2764,18.0672 12.9883,17.7983 L9.23826,14.2983 C8.93545,14.0157 8.91909,13.5411 9.20171,13.2383 C9.48434,12.9355 9.95893,12.9191 10.2617,13.2017 L12.75,15.5241 L12.75,2.75 C12.75,2.33579 13.0858,2 13.5000006,2 Z M6.00002,2 C6.31967,2 6.6042,2.2026 6.70876,2.50467 L8.95876,9.00467 C9.09425,9.39609 8.88678,9.82325 8.49535,9.95874 C8.10393,10.0942 7.67677,9.88676 7.54128,9.49533 L7.19674,8.5 L4.8033,8.5 L4.45876,9.49533 C4.32327,9.88676 3.89611,10.0942 3.50469,9.95874 C3.11326,9.82325 2.90579,9.39609 3.04128,9.00467 L5.29128,2.50467 C5.39584,2.2026 5.68037,2 6.00002,2 Z M6.00002,5.0428 L5.32253,7 L6.67751,7 L6.00002,5.0428 Z"/>
-</svg>
-</button>
-</div>
-</div>
-<div class="books-list" id="activeBooksContainer"></div>
-<div class="no-results" id="activeNoResultsMsg">Активные умения не найдены</div>
-</div>
-
-<!-- СТРАНИЦА ПАССИВНЫХ КНИГ -->
-<div id="page-passive" class="page">
-<div class="search-container">
-<div class="search-controls">
-<div class="search-input-wrapper">
-<svg class="search-icon" viewBox="0 0 24 24">
-<path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
-</svg>
-<input type="text" class="search-input" id="passiveSearchInput" placeholder="Поиск по пассивкам..." oninput="handlePassiveSearch()">
-<button class="clear-btn" id="clearPassiveSearchBtn" onclick="clearPassiveSearch()" aria-label="Очистить поиск">
-<svg viewBox="0 0 24 24">
-<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
-</svg>
-</button>
-</div>
-
-<button class="sort-btn" onclick="togglePassiveSort()" id="passiveSortBtn" title="Сортировка">
-<svg id="passiveSortIconList" viewBox="0 0 24 24">
-<path d="M3 18h6v-2H3v2zM3 6v2h18V6H3zm0 7h12v-2H3v2z"/>
-</svg>
-<svg id="passiveSortIconAZ" viewBox="0 0 20 20" style="display: none;">
-<path d="M8,11 C8.2821,11 8.54033,11.1583 8.66834,11.4097 C8.79635,11.661 8.77247,11.963 8.60656,12.1911 L5.47283,16.5 L8,16.5 C8.41422,16.5 8.75,16.8358 8.75,17.25 C8.75,17.6642 8.41422,18 8,18 L4,18 C3.71791,18 3.45967,17.8417 3.33167,17.5903 C3.20366,17.339 3.22753,17.037 3.39345,16.8089 L6.52718,12.5 L4,12.5 C3.58579,12.5 3.25,12.1642 3.25,11.75 C3.25,11.3358 3.58579,11 4,11 L8,11 Z M13.5000006,2 C13.9142,2 14.25,2.33579 14.25,2.75 L14.25,15.5241 L16.7383,13.2017 C17.0411,12.9191 17.5157,12.9355 17.7983,13.2383 C18.0809,13.5411 18.0646,14.0157 17.7617,14.2983 L14.0117,17.7983 C13.7236,18.0672 13.2764,18.0672 12.9883,17.7983 L9.23826,14.2983 C8.93545,14.0157 8.91909,13.5411 9.20171,13.2383 C9.48434,12.9355 9.95893,12.9191 10.2617,13.2017 L12.75,15.5241 L12.75,2.75 C12.75,2.33579 13.0858,2 13.5000006,2 Z M6.00002,2 C6.31967,2 6.6042,2.2026 6.70876,2.50467 L8.95876,9.00467 C9.09425,9.39609 8.88678,9.82325 8.49535,9.95874 C8.10393,10.0942 7.67677,9.88676 7.54128,9.49533 L7.19674,8.5 L4.8033,8.5 L4.45876,9.49533 C4.32327,9.88676 3.89611,10.0942 3.50469,9.95874 C3.11326,9.82325 2.90579,9.39609 3.04128,9.00467 L5.29128,2.50467 C5.39584,2.2026 5.68037,2 6.00002,2 Z M6.00002,5.0428 L5.32253,7 L6.67751,7 L6.00002,5.0428 Z"/>
-</svg>
-</button>
-</div>
-</div>
-<div class="books-list" id="passiveBooksContainer"></div>
-<div class="no-results" id="passiveNoResultsMsg">Пассивные книги не найдены</div>
-</div>
-</div>
-
-<div class="app-footer">
-<div class="footer-text">
-Приложение сообщества
-<a href="https://vk.com/guardian_of_knowledge" target="_blank" rel="noopener noreferrer" class="footer-link">Хранитель знаний</a>
-</div>
-<div class="footer-text">
-Разработчик
-<a href="https://vk.com/r_i_d_l_e" target="_blank" rel="noopener noreferrer" class="footer-link">Александр Кулаковский</a>
-</div>
-</div>
-
-<script src="passives.js"></script>
-<script src="actives.js"></script>
-<script src="prices.js"></script>
-
-<script>
-const CLASS_CONFIG = {
-"жнец душ": { type: "warlock", name: "Чернокнижник", desc: "<span class='highlight-class'>Чернокнижник</span>: Доп. снижение концентрации противника на <span class='highlight-val'>{val}%</span>" },
-"повелитель мрака": { type: "warlock", name: "Чернокнижник", desc: "<span class='highlight-class'>Чернокнижник</span>: Доп. снижение концентрации противника на <span class='highlight-val'>{val}%</span>" },
-"отрекшийся": { type: "vampire", name: "Кровопийца", desc: "<span class='highlight-class'>Кровопийца</span>: Восстанавливает здоровье в размере <span class='highlight-val'>{val}%</span> от урона простыми атаками" },
-"прокаженный": { type: "vampire", name: "Кровопийца", desc: "<span class='highlight-class'>Кровопийца</span>: Восстанавливает здоровье в размере <span class='highlight-val'>{val}%</span> от урона простыми атаками" },
-"крестоносец": { type: "paladin", name: "Паладин", desc: "<span class='highlight-class'>Паладин</span>: Шанс <span class='highlight-val'>{val}%</span>, что полученный урон от обычной атаки отразится в противника (не добивает в PvP)" },
-"воплощение света": { type: "paladin", name: "Паладин", desc: "<span class='highlight-class'>Паладин</span>: Шанс <span class='highlight-val'>{val}%</span>, что полученный урон от обычной атаки отразится в противника (не добивает в PvP)" },
-"клинок тьмы": { type: "assassin", name: "Ассасин", desc: "<span class='highlight-class'>Ассасин</span>: Дополнительные <span class='highlight-val'>{val}%</span> шанса уклониться от атаки" },
-"королевский убийца": { type: "assassin", name: "Ассасин", desc: "<span class='highlight-class'>Ассасин</span>: Дополнительные <span class='highlight-val'>{val}%</span> шанса уклониться от атаки" },
-"берсеркер": { type: "executioner", name: "Палач", desc: "<span class='highlight-class'>Палач</span>: Если у врага < {val}% НР — 50% шанс казни без возрождения" },
-"потрошитель": { type: "executioner", name: "Палач", desc: "<span class='highlight-class'>Палач</span>: Если у врага < {val}% НР — 50% шанс казни без возрождения" },
-"апостол": { type: "secret_keeper", name: "Хранитель тайн", desc: "<span class='highlight-class'>Хранитель тайн</span>: Шанс {val}% на повторное срабатывание умения (-30% при доп. действии)" },
-"верховный маг": { type: "secret_keeper", name: "Хранитель тайн", desc: "<span class='highlight-class'>Хранитель тайн</span>: Шанс {val}% на повторное срабатывание умения (-30% при доп. действии)" }
-};
-
-const DB_KEY = 'rpg_stats_final_verified_v8';
-const DATE_KEY = 'rpg_date_final_verified_v8';
-const CLASS_KEY = 'rpg_class_final_verified_v8';
-const BOOKS_LVL_KEY = 'rpg_books_levels_final_verified_v8';
-const ACTIVE_BOOKS_LVL_KEY = 'rpg_active_books_levels_final_verified_v8';
-
-const PASSIVE_ORDER = [
-"Барьер", "Быстрое восстановление", "Мародер", "Внимательность", "Инициативность",
-"Исследователь", "Ведьмак", "Собиратель", "Запасливость", "Охотник за головами",
-"Подвижность", "Упорность", "Регенерация", "Расчетливость", "Презрение к боли",
-"Ошеломление", "Рыбак", "Неуязвимый", "Колющий удар", "Бесстрашие", "Режущий удар",
-"Феникс", "Непоколебимый", "Суеверность", "Гладиатор", "Воздаяние", "Ученик",
-"Прочность", "Расторопность", "Устрашение", "Контратака", "Дробящий удар",
-"Защитная стойка", "Стойка сосредоточения", "Водохлеб", "Картограф", "Браконьер",
-"Парирование", "Ловкость рук", "Незаметность", "Атлетика", "Устойчивость",
-"Угроза", "Знания древних", "Еретик"
-];
-
-const triggerBtn = document.getElementById('classTrigger');
-const listDiv = document.getElementById('classList');
-const karmaIconSpan = document.getElementById('karma-icon');
-
-let passiveSortByAlphabet = false;
-let activeSortByAlphabet = false;
-
-function getKarmaIcon(value) {
-const num = parseInt(value);
-if (num < 0) return '😈';
-if (num === 0) return '😐';
-return '😇';
-}
-
-function updateKarmaIcon() {
-const karmaVal = document.querySelector('.stat-value[data-key="karma"]');
-if (karmaVal) {
-const val = parseInt(karmaVal.textContent) || 0;
-let displayVal = val;
-if (displayVal < -20) displayVal = -20;
-if (displayVal > 20) displayVal = 20;
-karmaIconSpan.textContent = getKarmaIcon(displayVal);
-if (val !== displayVal) karmaVal.textContent = displayVal;
-}
-}
-
-function calculateRunesResist(runesCount) {
-if (runesCount < 0) runesCount = 0;
-if (runesCount === 0) return 0;
-let resist = 10.0 * Math.pow(runesCount, 0.25);
-return Math.min(100, Math.floor(resist));
-}
-
-function calculateClassEffect(type, level) {
-if (level < 1) level = 1;
-let coefficient = 5.0;
-let maxCap = 30.0;
-if (type === 'warlock' || type === 'vampire') {
-coefficient = 10.0;
-maxCap = 50.0;
-}
-let effect = coefficient * Math.sqrt(level / 1000.0) + 10.0;
-effect = Math.floor(effect * 10) / 10;
-return Math.min(maxCap, effect);
-}
-
-function updateClassResult() {
-const className = triggerBtn.textContent.trim();
-const classLvlInput = document.querySelector('.stat-value[data-key="class_lvl"]').textContent;
-const classLvl = parseInt(classLvlInput) || 1;
-const config = CLASS_CONFIG[className];
-
-if (!config) {
-document.getElementById('res-class-desc').innerHTML = "Класс не определен";
-return;
-}
-
-const bonus = calculateClassEffect(config.type, classLvl);
-document.getElementById('res-class-desc').innerHTML = config.desc.replace('{val}', bonus.toFixed(1));
-}
-
-window.toggleClassList = function() {
-const isShown = listDiv.classList.contains('show');
-if (isShown) {
-listDiv.classList.remove('show');
-triggerBtn.classList.remove('open');
-} else {
-listDiv.classList.add('show');
-triggerBtn.classList.add('open');
-}
-};
-
-window.selectClass = function(cls) {
-localStorage.setItem(CLASS_KEY, cls);
-localStorage.setItem(DATE_KEY, Date.now().toString());
-triggerBtn.textContent = cls;
-
-const items = listDiv.querySelectorAll('.class-item');
-items.forEach(item => {
-item.classList.toggle('active', item.textContent === cls);
-});
-
-listDiv.classList.remove('show');
-triggerBtn.classList.remove('open');
-
-updateClassResult();
-};
-
-function initClassList() {
-const saved = localStorage.getItem(CLASS_KEY) || "жнец душ";
-triggerBtn.textContent = saved;
-listDiv.innerHTML = '';
-
-Object.keys(CLASS_CONFIG).forEach(cls => {
-const div = document.createElement('div');
-div.className = 'class-item';
-if (cls === saved) div.classList.add('active');
-div.textContent = cls;
-
-div.onclick = function(e) {
-e.stopPropagation();
-selectClass(cls);
-};
-
-listDiv.appendChild(div);
-});
-
-updateClassResult();
-}
-
-document.addEventListener('click', function(e) {
-if (!listDiv.contains(e.target) && e.target !== triggerBtn) {
-listDiv.classList.remove('show');
-triggerBtn.classList.remove('open');
-}
-});
-
-async function loadVKUserData() {
-try {
-const user = await vkBridge.send('VKWebAppGetUserInfo');
-
-const avatar = document.getElementById('user-avatar');
-if (user.photo_200) {
-avatar.src = user.photo_200;
-} else if (user.photo_100) {
-avatar.src = user.photo_100;
-} else if (user.photo_50) {
-avatar.src = user.photo_50;
-}
-
-const nameElement = document.getElementById('user-name');
-nameElement.textContent = `${user.first_name} ${user.last_name}`;
-
-} catch (error) {
-console.log('Не удалось загрузить данные пользователя VK', error);
-document.getElementById('user-name').textContent = 'Тестовый пользователь';
-}
-}
-
-document.addEventListener('submit', function(event) {
-event.preventDefault();
-event.stopPropagation();
-return false;
-}, true);
-
-function getStatsFromProfile() {
-const stats = {};
-document.querySelectorAll('.stat-value').forEach(el => {
-let value = el.textContent;
-if (el.dataset.key === 'resist') {
-value = value.replace('%', '');
-}
-stats[el.dataset.key] = value;
-});
-return {
-lvl: parseInt(stats.lvl) || 0,
-atk: parseInt(stats.atk) || 0,
-armor: parseInt(stats.armor) || 0,
-str: parseInt(stats.str) || 0,
-agi: parseInt(stats.agi) || 0,
-vit: parseInt(stats.vit) || 0,
-luck: parseInt(stats.luck) || 0,
-acc: parseInt(stats.acc) || 0,
-conc: parseInt(stats.conc) || 0,
-class_lvl: parseInt(stats.class_lvl) || 0,
-resist: parseInt(stats.resist) || 0,
-karma: parseInt(stats.karma) || 0
-};
-}
-
-function calculateActiveDamage(skillName, level, stats) {
-const skill = ACTIVE_SKILLS[skillName];
-if (!skill) return '?';
-
-try {
-if (!skill.calc_damage) {
-if (skill.calc) {
-return skill.calc(level);
-}
-return '?';
-}
-
-const params = skill.params || [];
-
-if (params.length === 1) {
-const param = params[0];
-const value = stats[param] || 0;
-return skill.calc_damage(level, value);
-} else if (params.length === 2) {
-const param1 = params[0];
-const param2 = params[1];
-const value1 = stats[param1] || 0;
-const value2 = stats[param2] || 0;
-return skill.calc_damage(level, value1, value2);
-}
-
-switch(skillName) {
-case "Грязный удар": return skill.calc_damage(level, stats.agi, stats.str);
-case "Слабое исцеление": return skill.calc_damage(level, stats.vit);
-case "Удар вампира": return skill.calc_damage(level, stats.agi, stats.vit);
-case "Мощный удар": return skill.calc_damage(level, stats.str, stats.atk);
-case "Сила теней": return skill.calc_damage(level, stats.lvl);
-case "Расправа": return skill.calc_damage(level, stats.lvl);
-case "Рассечение": return skill.calc_damage(level, stats.atk, stats.agi);
-case "Таран": return skill.calc_damage(level, stats.armor);
-case "Огонек надежды": return skill.calc_damage(level, stats.vit);
-case "Кровотечение": return skill.calc_damage(level, stats.atk, stats.agi);
-case "Заражение": return skill.calc_damage(level, stats.vit);
-case "Раскол": return skill.calc_damage(level, stats.agi);
-default: return skill.calc ? skill.calc(level) : '?';
-}
-} catch (e) {
-console.log('Ошибка расчета для', skillName, e);
-return '?';
-}
-}
-
-window.editActiveStat = function(event, element, statKey) {
-event.preventDefault();
-event.stopPropagation();
-
-const valueSpan = element.querySelector('.stat-value-small');
-if (!valueSpan) return;
-
-let currentVal = valueSpan.textContent;
-const key = statKey;
-
-const input = document.createElement('input');
-input.type = 'number';
-input.value = currentVal === '0' ? '' : currentVal;
-input.className = 'stat-input-small';
-
-valueSpan.style.visibility = 'hidden';
-
-valueSpan.style.position = 'relative';
-valueSpan.appendChild(input);
-input.focus();
-input.select();
-
-const finish = () => {
-let newVal = input.value;
-if (newVal === '') newVal = '0';
-let finalValue = newVal;
-
-const num = parseInt(newVal);
-if (!isNaN(num)) finalValue = num.toString();
-
-valueSpan.textContent = finalValue;
-valueSpan.style.visibility = 'visible';
-input.remove();
-
-const profileStat = document.querySelector(`.stat-value[data-key="${key}"]`);
-if (profileStat) {
-profileStat.textContent = finalValue;
-}
-
-saveStats();
-
-const items = document.querySelectorAll('#activeBooksContainer .book-item');
-const stats = getStatsFromProfile();
-
-items.forEach(item => {
-const bookName = item.querySelector('.book-name').textContent;
-const level = parseInt(item.querySelector('.book-level-input').value) || 1;
-
-const descDiv = item.querySelector('.book-desc');
-if (descDiv) {
-descDiv.innerHTML = getSkillDescription(bookName, level, stats);
-}
-
-const statsDiv = item.querySelector('.stats-row');
-if (statsDiv) {
-statsDiv.innerHTML = getStatsString(bookName, stats);
-}
-
-const percentSpan = item.querySelector('.book-percent');
-const skill = ACTIVE_SKILLS[bookName];
-if (percentSpan && skill && skill.calc) {
-const effectPercent = skill.calc(level);
-percentSpan.textContent = `(${effectPercent}%)`;
-}
-
-updateActiveBookPrice(item, bookName, level);
-});
-};
-
-input.onblur = finish;
-input.onkeydown = e => {
-if(e.key === 'Enter') {
-e.preventDefault();
-e.stopPropagation();
-input.blur();
-return false;
-}
-};
-input.onclick = e => e.stopPropagation();
-};
-
-function getStatsString(skillName, stats) {
-switch(skillName) {
-case "Грязный удар":
-return `<div class="stat-item" onclick="editActiveStat(event, this, 'agi')"><span class="stat-icon-small">👐</span><span class="stat-value-small">${stats.agi}</span></div><div class="stat-item" onclick="editActiveStat(event, this, 'str')"><span class="stat-icon-small">💪</span><span class="stat-value-small">${stats.str}</span></div>`;
-case "Слабое исцеление":
-return `<div class="stat-item" onclick="editActiveStat(event, this, 'vit')"><span class="stat-icon-small">❤️</span><span class="stat-value-small">${stats.vit}</span></div>`;
-case "Удар вампира":
-return `<div class="stat-item" onclick="editActiveStat(event, this, 'agi')"><span class="stat-icon-small">👐</span><span class="stat-value-small">${stats.agi}</span></div><div class="stat-item" onclick="editActiveStat(event, this, 'vit')"><span class="stat-icon-small">❤️</span><span class="stat-value-small">${stats.vit}</span></div>`;
-case "Мощный удар":
-return `<div class="stat-item" onclick="editActiveStat(event, this, 'str')"><span class="stat-icon-small">💪</span><span class="stat-value-small">${stats.str}</span></div><div class="stat-item" onclick="editActiveStat(event, this, 'atk')"><span class="stat-icon-small">⚔️</span><span class="stat-value-small">${stats.atk}</span></div>`;
-case "Сила теней":
-return `<div class="stat-item" onclick="editActiveStat(event, this, 'lvl')"><span class="stat-icon-small">🕯️</span><span class="stat-value-small">${stats.lvl}</span></div>`;
-case "Расправа":
-return `<div class="stat-item" onclick="editActiveStat(event, this, 'lvl')"><span class="stat-icon-small">🕯️</span><span class="stat-value-small">${stats.lvl}</span></div>`;
-case "Слепота":
-return `<span class="stat-item">не требует статов</span>`;
-case "Рассечение":
-return `<div class="stat-item" onclick="editActiveStat(event, this, 'atk')"><span class="stat-icon-small">⚔️</span><span class="stat-value-small">${stats.atk}</span></div><div class="stat-item" onclick="editActiveStat(event, this, 'agi')"><span class="stat-icon-small">👐</span><span class="stat-value-small">${stats.agi}</span></div>`;
-case "Берсеркер":
-return `<span class="stat-item">не требует статов</span>`;
-case "Таран":
-return `<div class="stat-item" onclick="editActiveStat(event, this, 'armor')"><span class="stat-icon-small">🛡️</span><span class="stat-value-small">${stats.armor}</span></div>`;
-case "Проклятие тьмы":
-return `<div class="stat-item" onclick="editActiveStat(event, this, 'lvl')"><span class="stat-icon-small">🕯️</span><span class="stat-value-small">${stats.lvl}</span></div>`;
-case "Огонек надежды":
-return `<div class="stat-item" onclick="editActiveStat(event, this, 'vit')"><span class="stat-icon-small">❤️</span><span class="stat-value-small">${stats.vit}</span></div>`;
-case "Целебный огонь":
-return `<div class="stat-item" onclick="editActiveStat(event, this, 'lvl')"><span class="stat-icon-small">🕯️</span><span class="stat-value-small">${stats.lvl}</span></div>`;
-case "Кровотечение":
-return `<div class="stat-item" onclick="editActiveStat(event, this, 'atk')"><span class="stat-icon-small">⚔️</span><span class="stat-value-small">${stats.atk}</span></div><div class="stat-item" onclick="editActiveStat(event, this, 'agi')"><span class="stat-icon-small">👐</span><span class="stat-value-small">${stats.agi}</span></div>`;
-case "Заражение":
-return `<div class="stat-item" onclick="editActiveStat(event, this, 'vit')"><span class="stat-icon-small">❤️</span><span class="stat-value-small">${stats.vit}</span></div>`;
-case "Раскол":
-return `<div class="stat-item" onclick="editActiveStat(event, this, 'agi')"><span class="stat-icon-small">👐</span><span class="stat-value-small">${stats.agi}</span></div>`;
-default:
-return '';
-}
-}
-
-function getSkillDescription(skillName, level, stats) {
-const skill = ACTIVE_SKILLS[skillName];
-if (!skill) return skillName;
-
-let desc = skill.desc;
-const damage = calculateActiveDamage(skillName, level, stats);
-const mult = skill.calc ? skill.calc(level) : 0;
-
-switch(skillName) {
-case "Расправа":
-const inner = Math.sqrt(level*10)/100 + 1;
-const rounded = Math.floor(inner * 100) / 100;
-const x_percent = Math.floor(rounded * 50);
-const max_damage = stats.lvl * 50;
-desc = desc.replace('{x_percent}', `<span class="book-val">${x_percent}</span>`)
-.replace('{max_damage}', `<span class="book-val">${max_damage}</span>`)
-.replace('{damage}', `<span class="book-val">${damage}</span>`);
-break;
-case "Слабое исцеление":
-const heal_percent = Math.floor(mult / 4);
-const accuracy_reduce = Math.floor(heal_percent / 5);
-desc = desc.replace('{heal_percent}', `<span class="book-val">${heal_percent}</span>`)
-.replace('{accuracy_reduce}', `<span class="book-val">${accuracy_reduce}</span>`)
-.replace('{damage}', `<span class="book-val">${damage}</span>`);
-break;
-case "Удар вампира":
-const regen = Math.ceil(damage / 15);
-desc = desc.replace('{regen}', `<span class="book-val">${regen}</span>`)
-.replace('{damage}', `<span class="book-val">${damage}</span>`);
-break;
-case "Берсеркер":
-const berserk_percent = Math.floor((Math.sqrt(level*10)/100*1 + 1) * 50);
-desc = desc.replace('{berserk_percent}', `<span class="book-val">${berserk_percent}</span>`);
-break;
-case "Проклятие тьмы":
-const min_reduce = Math.floor(mult / 20);
-const max_reduce = Math.floor(mult * 3 / 20);
-const max_units = stats.lvl * 10;
-desc = desc.replace('{min_reduce}', `<span class="book-val">${min_reduce}</span>`)
-.replace('{max_reduce}', `<span class="book-val">${max_reduce}</span>`)
-.replace('{max_units}', `<span class="book-val">${max_units}</span>`);
-break;
-case "Целебный огонь":
-const heal_percent_fire = Math.floor((Math.sqrt(level*10)/100*0.5 + 1) * 20);
-const max_heal = stats.lvl * 50;
-desc = desc.replace(/{heal_percent}/g, `<span class="book-val">${heal_percent_fire}</span>`)
-.replace('{max_heal}', `<span class="book-val">${max_heal}</span>`);
-break;
-case "Слепота":
-desc = desc.replace('{damage}', `<span class="book-val">${mult}</span>`);
-break;
-case "Раскол":
-const armor_reduce = Math.floor((Math.sqrt(level*10)/100*0.5 + 1) * 30);
-desc = desc.replace('{armor_reduce}', `<span class="book-val">${armor_reduce}</span>`)
-.replace('{damage}', `<span class="book-val">${damage}</span>`);
-break;
-default:
-desc = desc.replace('{damage}', `<span class="book-val">${damage}</span>`);
-}
-
-return desc;
-}
-
-async function renderPassiveBooks() {
-const savedLevels = JSON.parse(localStorage.getItem(BOOKS_LVL_KEY) || '{}');
-const container = document.getElementById('passiveBooksContainer');
-container.innerHTML = '';
-
-let booksArray = [];
-
-if (passiveSortByAlphabet) {
-booksArray = Object.entries(PASSIVE_SKILLS).sort((a, b) => a[0].localeCompare(b[0], 'ru'));
-} else {
-for (const bookName of PASSIVE_ORDER) {
-if (PASSIVE_SKILLS[bookName]) {
-booksArray.push([bookName, PASSIVE_SKILLS[bookName]]);
-}
-}
-const existingBooks = new Set(booksArray.map(([name]) => name));
-for (const [name, data] of Object.entries(PASSIVE_SKILLS)) {
-if (!existingBooks.has(name)) {
-booksArray.push([name, data]);
-}
-}
-}
-
-for (const [name, data] of booksArray) {
-const lvl = savedLevels[name] || 1;
-let result = data.calc(lvl);
-let formatData;
-
-if (data.format) {
-if (typeof data.format === 'function') {
-formatData = data.format(result, lvl);
-} else {
-formatData = data.format;
-}
-} else {
-formatData = { result: result };
-}
-
-let desc = data.desc;
-
-for (const [key, val] of Object.entries(formatData)) {
-const regex = new RegExp(`\\{${key}(?::\\.2f)?\\}`, 'g');
-desc = desc.replace(regex, `<span class="book-val">${val}</span>`);
-}
-
-const item = document.createElement('div');
-item.className = 'book-item';
-item.dataset.bookName = name.toLowerCase();
-
-let priceText = '0';
-
-try {
-const bookPrice = await getBookPrice(name);
-if (bookPrice && bookPrice > 0) {
-const totalCost = calculateUpgradeCost(lvl, bookPrice);
-if (totalCost) {
-priceText = formatGold(totalCost);
-}
-}
-} catch (e) {
-console.log('Ошибка получения цены для', name);
-}
-
-const headerDiv = document.createElement('div');
-headerDiv.className = 'book-header';
-const nameDiv = document.createElement('div');
-nameDiv.className = 'book-name';
-nameDiv.textContent = name;
-headerDiv.appendChild(nameDiv);
-
-const descDiv = document.createElement('div');
-descDiv.className = 'book-desc';
-descDiv.innerHTML = desc;
-
-const footerDiv = document.createElement('div');
-footerDiv.className = 'book-footer';
-
-const levelWrapper = document.createElement('div');
-levelWrapper.className = 'book-level-wrapper';
-
-const levelInput = document.createElement('input');
-levelInput.type = 'number';
-levelInput.className = 'book-level-input';
-levelInput.value = lvl;
-levelInput.min = '1';
-
-levelInput.setAttribute('form', 'off');
-levelInput.setAttribute('autocomplete', 'off');
-levelInput.setAttribute('autocorrect', 'off');
-levelInput.setAttribute('spellcheck', 'false');
-
-levelInput.addEventListener('keydown', function(event) {
-if (event.key === 'Enter') {
-event.preventDefault();
-event.stopPropagation();
-event.stopImmediatePropagation();
-this.blur();
-return false;
-}
-}, true);
-
-levelInput.addEventListener('keypress', function(event) {
-if (event.key === 'Enter') {
-event.preventDefault();
-event.stopPropagation();
-return false;
-}
-}, true);
-
-levelInput.addEventListener('keyup', function(event) {
-if (event.key === 'Enter') {
-event.preventDefault();
-event.stopPropagation();
-return false;
-}
-}, true);
-
-levelInput.addEventListener('blur', function() {
-updatePassiveBookLevel(name, this.value);
-});
-
-const levelUnit = document.createElement('span');
-levelUnit.className = 'book-level-unit';
-levelUnit.textContent = 'ур.';
-
-levelWrapper.appendChild(levelInput);
-levelWrapper.appendChild(levelUnit);
-
-const priceDiv = document.createElement('div');
-priceDiv.className = 'book-price';
-priceDiv.innerHTML = `🌕 ${priceText}`;
-
-footerDiv.appendChild(levelWrapper);
-footerDiv.appendChild(priceDiv);
-
-item.appendChild(headerDiv);
-item.appendChild(descDiv);
-item.appendChild(footerDiv);
-
-container.appendChild(item);
-}
-
-handlePassiveSearch();
-}
-
-function updatePassiveBookDescription(bookElement, bookName, level) {
-const data = PASSIVE_SKILLS[bookName];
-if (!data) return;
-
-let result = data.calc(level);
-let formatData;
-
-if (data.format) {
-if (typeof data.format === 'function') {
-formatData = data.format(result, level);
-} else {
-formatData = data.format;
-}
-} else {
-formatData = { result: result };
-}
-
-let desc = data.desc;
-
-for (const [key, val] of Object.entries(formatData)) {
-const regex = new RegExp(`\\{${key}(?::\\.2f)?\\}`, 'g');
-desc = desc.replace(regex, `<span class="book-val">${val}</span>`);
-}
-
-const descDiv = bookElement.querySelector('.book-desc');
-if (descDiv) {
-descDiv.innerHTML = desc;
-}
-}
-
-async function updatePassiveBookPrice(bookElement, bookName, level) {
-try {
-const bookPrice = await getBookPrice(bookName);
-if (bookPrice && bookPrice > 0) {
-const totalCost = calculateUpgradeCost(level, bookPrice);
-if (totalCost) {
-const priceDiv = bookElement.querySelector('.book-price');
-if (priceDiv) {
-priceDiv.innerHTML = `🌕 ${formatGold(totalCost)}`;
-}
-}
-}
-} catch (e) {
-console.log('Ошибка обновления цены для', bookName);
-}
-}
-
-window.updatePassiveBookLevel = function(name, value) {
-const savedLevels = JSON.parse(localStorage.getItem(BOOKS_LVL_KEY) || '{}');
-const newLevel = parseInt(value) || 1;
-
-if (savedLevels[name] === newLevel) return;
-
-savedLevels[name] = newLevel;
-localStorage.setItem(BOOKS_LVL_KEY, JSON.stringify(savedLevels));
-
-const items = document.querySelectorAll('#passiveBooksContainer .book-item');
-for (const item of items) {
-if (item.dataset.bookName === name.toLowerCase()) {
-const input = item.querySelector('.book-level-input');
-if (input && parseInt(input.value) !== newLevel) {
-input.value = newLevel;
-}
-
-updatePassiveBookDescription(item, name, newLevel);
-updatePassiveBookPrice(item, name, newLevel);
-break;
-}
-}
-};
-
-window.togglePassiveSort = function() {
-passiveSortByAlphabet = !passiveSortByAlphabet;
-
-const iconList = document.getElementById('passiveSortIconList');
-const iconAZ = document.getElementById('passiveSortIconAZ');
-
-if (passiveSortByAlphabet) {
-iconList.style.display = 'none';
-iconAZ.style.display = 'block';
-} else {
-iconList.style.display = 'block';
-iconAZ.style.display = 'none';
-}
-
-const searchInput = document.getElementById('passiveSearchInput');
-const currentQuery = searchInput ? searchInput.value : '';
-
-renderPassiveBooks().then(() => {
-if (searchInput) {
-searchInput.value = currentQuery;
-filterPassiveBooks();
-}
-});
-};
-
-window.handlePassiveSearch = function() {
-const input = document.getElementById('passiveSearchInput');
-const clearBtn = document.getElementById('clearPassiveSearchBtn');
-
-if (input.value.length > 0) {
-clearBtn.classList.add('visible');
-} else {
-clearBtn.classList.remove('visible');
-}
-
-filterPassiveBooks();
-};
-
-window.clearPassiveSearch = function() {
-const input = document.getElementById('passiveSearchInput');
-const clearBtn = document.getElementById('clearPassiveSearchBtn');
-
-input.value = '';
-clearBtn.classList.remove('visible');
-input.focus();
-
-filterPassiveBooks();
-};
-
-window.filterPassiveBooks = function() {
-const input = document.getElementById('passiveSearchInput');
-const query = input.value.toLowerCase().trim();
-
-const items = document.querySelectorAll('#passiveBooksContainer .book-item');
-let visibleCount = 0;
-
-items.forEach(item => {
-const name = item.dataset.bookName;
-
-if (name.startsWith(query)) {
-item.style.display = 'flex';
-visibleCount++;
-} else {
-item.style.display = 'none';
-}
-});
-
-const noResultsMsg = document.getElementById('passiveNoResultsMsg');
-if (visibleCount === 0) {
-noResultsMsg.style.display = 'block';
-} else {
-noResultsMsg.style.display = 'none';
-}
-};
-
-async function renderActiveBooks() {
-const savedLevels = JSON.parse(localStorage.getItem(ACTIVE_BOOKS_LVL_KEY) || '{}');
-const container = document.getElementById('activeBooksContainer');
-container.innerHTML = '';
-
-let booksArray = Object.entries(ACTIVE_SKILLS);
-
-if (activeSortByAlphabet) {
-booksArray.sort((a, b) => a[0].localeCompare(b[0], 'ru'));
-}
-
-const stats = getStatsFromProfile();
-
-for (const [name, data] of booksArray) {
-const lvl = savedLevels[name] || 1;
-
-const desc = getSkillDescription(name, lvl, stats);
-const statsString = getStatsString(name, stats);
-const effectPercent = data.calc ? data.calc(lvl) : 0;
-
-const item = document.createElement('div');
-item.className = 'book-item';
-item.dataset.bookName = name.toLowerCase();
-
-let priceText = '0';
-
-try {
-const bookPrice = await getBookPrice(name);
-if (bookPrice && bookPrice > 0) {
-const totalCost = calculateUpgradeCost(lvl, bookPrice);
-if (totalCost) {
-priceText = formatGold(totalCost);
-}
-}
-} catch (e) {
-console.log('Ошибка получения цены для', name);
-}
-
-const headerDiv = document.createElement('div');
-headerDiv.className = 'book-header';
-const nameDiv = document.createElement('div');
-nameDiv.className = 'book-name';
-nameDiv.textContent = name;
-headerDiv.appendChild(nameDiv);
-
-const descDiv = document.createElement('div');
-descDiv.className = 'book-desc';
-descDiv.innerHTML = desc;
-
-const statsDiv = document.createElement('div');
-statsDiv.className = 'stats-row';
-statsDiv.innerHTML = statsString;
-
-const footerDiv = document.createElement('div');
-footerDiv.className = 'book-footer';
-
-const leftGroup = document.createElement('div');
-leftGroup.className = 'left-group';
-
-const levelWrapper = document.createElement('div');
-levelWrapper.className = 'book-level-wrapper';
-
-const levelInput = document.createElement('input');
-levelInput.type = 'number';
-levelInput.className = 'book-level-input';
-levelInput.value = lvl;
-levelInput.min = '1';
-
-levelInput.setAttribute('form', 'off');
-levelInput.setAttribute('autocomplete', 'off');
-levelInput.setAttribute('autocorrect', 'off');
-levelInput.setAttribute('spellcheck', 'false');
-
-levelInput.addEventListener('keydown', function(event) {
-if (event.key === 'Enter') {
-event.preventDefault();
-event.stopPropagation();
-event.stopImmediatePropagation();
-this.blur();
-return false;
-}
-}, true);
-
-levelInput.addEventListener('keypress', function(event) {
-if (event.key === 'Enter') {
-event.preventDefault();
-event.stopPropagation();
-return false;
-}
-}, true);
-
-levelInput.addEventListener('keyup', function(event) {
-if (event.key === 'Enter') {
-event.preventDefault();
-event.stopPropagation();
-return false;
-}
-}, true);
-
-levelInput.addEventListener('blur', function() {
-updateActiveBookLevel(name, this.value);
-});
-
-const levelUnit = document.createElement('span');
-levelUnit.className = 'book-level-unit';
-levelUnit.textContent = 'ур.';
-
-levelWrapper.appendChild(levelInput);
-levelWrapper.appendChild(levelUnit);
-
-const percentSpan = document.createElement('span');
-percentSpan.className = 'book-percent';
-percentSpan.textContent = `(${effectPercent}%)`;
-
-leftGroup.appendChild(levelWrapper);
-leftGroup.appendChild(percentSpan);
-
-const priceDiv = document.createElement('div');
-priceDiv.className = 'book-price';
-priceDiv.innerHTML = `🌕 ${priceText}`;
-
-footerDiv.appendChild(leftGroup);
-footerDiv.appendChild(priceDiv);
-
-item.appendChild(headerDiv);
-item.appendChild(descDiv);
-if (statsString) {
-item.appendChild(statsDiv);
-}
-item.appendChild(footerDiv);
-
-container.appendChild(item);
-}
-
-handleActiveSearch();
-}
-
-function updateActiveBookDescription(bookElement, bookName, level) {
-const stats = getStatsFromProfile();
-const desc = getSkillDescription(bookName, level, stats);
-const statsString = getStatsString(bookName, stats);
-
-const percentSpan = bookElement.querySelector('.book-percent');
-const skill = ACTIVE_SKILLS[bookName];
-if (percentSpan && skill && skill.calc) {
-const effectPercent = skill.calc(level);
-percentSpan.textContent = `(${effectPercent}%)`;
-}
-
-const descDiv = bookElement.querySelector('.book-desc');
-if (descDiv) {
-descDiv.innerHTML = desc;
-}
-
-const statsDiv = bookElement.querySelector('.stats-row');
-if (statsDiv) {
-statsDiv.innerHTML = statsString;
-}
-}
-
-async function updateActiveBookPrice(bookElement, bookName, level) {
-try {
-const bookPrice = await getBookPrice(bookName);
-if (bookPrice && bookPrice > 0) {
-const totalCost = calculateUpgradeCost(level, bookPrice);
-if (totalCost) {
-const priceDiv = bookElement.querySelector('.book-price');
-if (priceDiv) {
-priceDiv.innerHTML = `🌕 ${formatGold(totalCost)}`;
-}
-}
-}
-} catch (e) {
-console.log('Ошибка обновления цены для', bookName);
-}
-}
-
-window.updateActiveBookLevel = function(name, value) {
-const savedLevels = JSON.parse(localStorage.getItem(ACTIVE_BOOKS_LVL_KEY) || '{}');
-const newLevel = parseInt(value) || 1;
-
-if (savedLevels[name] === newLevel) return;
-
-savedLevels[name] = newLevel;
-localStorage.setItem(ACTIVE_BOOKS_LVL_KEY, JSON.stringify(savedLevels));
-
-const items = document.querySelectorAll('#activeBooksContainer .book-item');
-for (const item of items) {
-if (item.dataset.bookName === name.toLowerCase()) {
-const input = item.querySelector('.book-level-input');
-if (input && parseInt(input.value) !== newLevel) {
-input.value = newLevel;
-}
-
-updateActiveBookDescription(item, name, newLevel);
-updateActiveBookPrice(item, name, newLevel);
-break;
-}
-}
-};
-
-window.toggleActiveSort = function() {
-activeSortByAlphabet = !activeSortByAlphabet;
-
-const iconList = document.getElementById('activeSortIconList');
-const iconAZ = document.getElementById('activeSortIconAZ');
-
-if (activeSortByAlphabet) {
-iconList.style.display = 'none';
-iconAZ.style.display = 'block';
-} else {
-iconList.style.display = 'block';
-iconAZ.style.display = 'none';
-}
-
-const searchInput = document.getElementById('activeSearchInput');
-const currentQuery = searchInput ? searchInput.value : '';
-
-renderActiveBooks().then(() => {
-if (searchInput) {
-searchInput.value = currentQuery;
-filterActiveBooks();
-}
-});
-};
-
-window.handleActiveSearch = function() {
-const input = document.getElementById('activeSearchInput');
-const clearBtn = document.getElementById('clearActiveSearchBtn');
-
-if (input.value.length > 0) {
-clearBtn.classList.add('visible');
-} else {
-clearBtn.classList.remove('visible');
-}
-
-filterActiveBooks();
-};
-
-window.clearActiveSearch = function() {
-const input = document.getElementById('activeSearchInput');
-const clearBtn = document.getElementById('clearActiveSearchBtn');
-
-input.value = '';
-clearBtn.classList.remove('visible');
-input.focus();
-
-filterActiveBooks();
-};
-
-window.filterActiveBooks = function() {
-const input = document.getElementById('activeSearchInput');
-const query = input.value.toLowerCase().trim();
-
-const items = document.querySelectorAll('#activeBooksContainer .book-item');
-let visibleCount = 0;
-
-items.forEach(item => {
-const name = item.dataset.bookName;
-
-if (name.startsWith(query)) {
-item.style.display = 'flex';
-visibleCount++;
-} else {
-item.style.display = 'none';
-}
-});
-
-const noResultsMsg = document.getElementById('activeNoResultsMsg');
-if (visibleCount === 0) {
-noResultsMsg.style.display = 'block';
-} else {
-noResultsMsg.style.display = 'none';
-}
-};
-
-window.switchPage = function(pageName) {
-document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-document.getElementById(`page-${pageName}`).classList.add('active');
-document.getElementById(`nav-${pageName}`).classList.add('active');
-
-if (pageName === 'passive') {
-renderPassiveBooks();
-} else if (pageName === 'active') {
-renderActiveBooks();
-}
-};
-
-function checkReset() {
-const last = localStorage.getItem(DATE_KEY);
-if (last && (Date.now() - parseInt(last) > 7 * 24 * 60 * 60 * 1000)) {
-localStorage.removeItem(DB_KEY);
-localStorage.removeItem(DATE_KEY);
-localStorage.removeItem(CLASS_KEY);
-localStorage.removeItem(BOOKS_LVL_KEY);
-localStorage.removeItem(ACTIVE_BOOKS_LVL_KEY);
-location.reload();
-}
-}
-
-function saveStats() {
-const data = {};
-document.querySelectorAll('.stat-value').forEach(el => data[el.dataset.key] = el.textContent);
-localStorage.setItem(DB_KEY, JSON.stringify(data));
-localStorage.setItem(DATE_KEY, Date.now().toString());
-updateClassResult();
-updateKarmaIcon();
-}
-
-function loadStats() {
-const raw = localStorage.getItem(DB_KEY);
-if (!raw) return;
-const data = JSON.parse(raw);
-document.querySelectorAll('.stat-value').forEach(el => {
-if (data[el.dataset.key]) el.textContent = data[el.dataset.key];
-});
-updateClassResult();
-updateKarmaIcon();
-}
-
-window.editStatByCell = function(cellElement, isResist = false, isKarma = false) {
-const valueContainer = cellElement.querySelector('.stat-value-container');
-const valueSpan = valueContainer.querySelector('.stat-value');
-let currentVal = valueSpan.textContent;
-const key = valueSpan.dataset.key;
-let cleanVal = currentVal;
-if (isResist) cleanVal = currentVal.replace('%', '');
-
-const input = document.createElement('input');
-input.type = 'number';
-input.value = cleanVal === '0' ? '' : cleanVal;
-input.className = 'stat-input';
-valueSpan.style.visibility = 'hidden';
-valueContainer.appendChild(input);
-input.focus();
-input.select();
-
-const finish = () => {
-let newVal = input.value;
-if (newVal === '') newVal = '0';
-let finalValue = newVal;
-
-if (isResist) {
-const runes = parseFloat(newVal);
-const percent = calculateRunesResist(runes);
-finalValue = percent + '%';
-} else if (isKarma) {
-let num = parseInt(newVal);
-if (num < -20) num = -20;
-if (num > 20) num = 20;
-finalValue = num.toString();
-} else {
-const num = parseFloat(newVal);
-if (!isNaN(num)) finalValue = Math.floor(num).toString();
-if (key === 'class_lvl' && parseInt(finalValue) < 1) finalValue = '1';
-}
-
-valueSpan.textContent = finalValue;
-valueSpan.style.visibility = 'visible';
-input.remove();
-if (isKarma) updateKarmaIcon();
-saveStats();
-};
-
-input.onblur = finish;
-input.onkeydown = e => {
-if(e.key === 'Enter') {
-e.preventDefault();
-e.stopPropagation();
-input.blur();
-return false;
-}
-};
-input.onclick = e => e.stopPropagation();
-}
-
-window.onload = () => {
-checkReset();
-loadStats();
-initClassList();
-
-try {
-vkBridge.send('VKWebAppInit')
-.then(() => {
-console.log('VK Bridge инициализирован успешно');
-loadVKUserData();
-})
-.catch(error => {
-console.log('Ошибка инициализации VK Bridge:', error);
-document.getElementById('user-name').textContent = 'Тестовый пользователь';
-});
-} catch (e) {
-console.log('VK Bridge не доступен (возможно, запуск вне VK)');
-document.getElementById('user-name').textContent = 'Тестовый пользователь';
-}
-};
-</script>
+    <div class="top-nav">
+        <!-- ПРОФИЛЬ (1) -->
+        <div class="nav-item active" onclick="switchPage('profile')" id="nav-profile">
+            <svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+        </div>
+        <!-- АКТИВНЫЕ (2) - 📕 -->
+        <div class="nav-item" onclick="switchPage('active')" id="nav-active">
+            <span>📕</span>
+        </div>
+        <!-- ПАССИВНЫЕ (3) - 📘 -->
+        <div class="nav-item" onclick="switchPage('passive')" id="nav-passive">
+            <span>📘</span>
+        </div>
+    </div>
+
+    <div class="content-container">
+        
+        <!-- СТРАНИЦА ПРОФИЛЯ -->
+        <div id="page-profile" class="page active">
+            <div class="profile-card">
+                <div class="profile-header">
+                    <img src="https://via.placeholder.com/50" alt="Avatar" class="avatar" id="user-avatar">
+                    <div class="info">
+                        <h1 class="player-name" id="user-name">Загрузка...</h1>
+                        <div class="class-wrapper">
+                            <button class="class-trigger" id="classTrigger" onclick="toggleClassList()">жнец душ</button>
+                            <div class="class-list" id="classList"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🕯️</span><div class="stat-value-container"><span class="stat-value" data-key="lvl">207</span></div><span class="stat-label">ур</span></div></div>
+                    <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">⚔️</span><div class="stat-value-container"><span class="stat-value" data-key="atk">717</span></div><span class="stat-label">атк</span></div></div>
+                    <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🛡️</span><div class="stat-value-container"><span class="stat-value" data-key="armor">212</span></div><span class="stat-label">брн</span></div></div>
+                    <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">💪</span><div class="stat-value-container"><span class="stat-value" data-key="str">403</span></div><span class="stat-label">сил</span></div></div>
+                    <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">👐</span><div class="stat-value-container"><span class="stat-value" data-key="agi">861</span></div><span class="stat-label">лвк</span></div></div>
+                    <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">❤️</span><div class="stat-value-container"><span class="stat-value" data-key="vit">602</span></div><span class="stat-label">внс</span></div></div>
+                    <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🍀</span><div class="stat-value-container"><span class="stat-value" data-key="luck">57</span></div><span class="stat-label">удч</span></div></div>
+                    <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🎯</span><div class="stat-value-container"><span class="stat-value" data-key="acc">112</span></div><span class="stat-label">тчн</span></div></div>
+                    <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🌀</span><div class="stat-value-container"><span class="stat-value" data-key="conc">64</span></div><span class="stat-label">кц</span></div></div>
+                    <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">📜</span><div class="stat-value-container"><span class="stat-value" data-key="class_lvl">50</span></div><span class="stat-label">ур. кл.</span></div></div>
+                    <div class="stat-cell" onclick="editStatByCell(this, true)"><div class="stat-row"><span class="stat-icon">🔰</span><div class="stat-value-container"><span class="stat-value" data-key="resist">0%</span></div><span class="stat-label">сопр</span></div></div>
+                    <div class="stat-cell" onclick="editStatByCell(this, false, true)"><div class="stat-row"><span class="stat-icon" id="karma-icon">😐</span><div class="stat-value-container"><span class="stat-value" data-key="karma">0</span></div><span class="stat-label">карма</span></div></div>
+                </div>
+
+                <div class="class-result-box">
+                    <div class="result-card">
+                        <div class="result-description" id="res-class-desc"></div>
+                    </div>
+                </div>
+            </div>
+            <!-- Кнопка сброса удалена -->
+        </div>
+
+        <!-- СТРАНИЦА АКТИВНЫХ УМЕНИЙ -->
+        <div id="page-active" class="page">
+            <div class="search-container">
+                <div class="search-controls">
+                    <div class="search-input-wrapper">
+                        <svg class="search-icon" viewBox="0 0 24 24">
+                            <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                        </svg>
+                        <input type="text" class="search-input" id="activeSearchInput" placeholder="Поиск по активкам..." oninput="handleActiveSearch()">
+                        <button class="clear-btn" id="clearActiveSearchBtn" onclick="clearActiveSearch()" aria-label="Очистить поиск">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                            </svg>
+                        </button>
+                    </div>
+                    
+                    <button class="sort-btn" onclick="toggleActiveSort()" id="activeSortBtn" title="Сортировка">
+                        <svg id="activeSortIconList" viewBox="0 0 24 24">
+                            <path d="M3 18h6v-2H3v2zM3 6v2h18V6H3zm0 7h12v-2H3v2z"/>
+                        </svg>
+                        <svg id="activeSortIconAZ" viewBox="0 0 20 20" style="display: none;">
+                            <path d="M8,11 C8.2821,11 8.54033,11.1583 8.66834,11.4097 C8.79635,11.661 8.77247,11.963 8.60656,12.1911 L5.47283,16.5 L8,16.5 C8.41422,16.5 8.75,16.8358 8.75,17.25 C8.75,17.6642 8.41422,18 8,18 L4,18 C3.71791,18 3.45967,17.8417 3.33167,17.5903 C3.20366,17.339 3.22753,17.037 3.39345,16.8089 L6.52718,12.5 L4,12.5 C3.58579,12.5 3.25,12.1642 3.25,11.75 C3.25,11.3358 3.58579,11 4,11 L8,11 Z M13.5000006,2 C13.9142,2 14.25,2.33579 14.25,2.75 L14.25,15.5241 L16.7383,13.2017 C17.0411,12.9191 17.5157,12.9355 17.7983,13.2383 C18.0809,13.5411 18.0646,14.0157 17.7617,14.2983 L14.0117,17.7983 C13.7236,18.0672 13.2764,18.0672 12.9883,17.7983 L9.23826,14.2983 C8.93545,14.0157 8.91909,13.5411 9.20171,13.2383 C9.48434,12.9355 9.95893,12.9191 10.2617,13.2017 L12.75,15.5241 L12.75,2.75 C12.75,2.33579 13.0858,2 13.5000006,2 Z M6.00002,2 C6.31967,2 6.6042,2.2026 6.70876,2.50467 L8.95876,9.00467 C9.09425,9.39609 8.88678,9.82325 8.49535,9.95874 C8.10393,10.0942 7.67677,9.88676 7.54128,9.49533 L7.19674,8.5 L4.8033,8.5 L4.45876,9.49533 C4.32327,9.88676 3.89611,10.0942 3.50469,9.95874 C3.11326,9.82325 2.90579,9.39609 3.04128,9.00467 L5.29128,2.50467 C5.39584,2.2026 5.68037,2 6.00002,2 Z M6.00002,5.0428 L5.32253,7 L6.67751,7 L6.00002,5.0428 Z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div class="books-list" id="activeBooksContainer"></div>
+            <div class="no-results" id="activeNoResultsMsg">Активные умения не найдены</div>
+        </div>
+
+        <!-- СТРАНИЦА ПАССИВНЫХ КНИГ -->
+        <div id="page-passive" class="page">
+            <div class="search-container">
+                <div class="search-controls">
+                    <div class="search-input-wrapper">
+                        <svg class="search-icon" viewBox="0 0 24 24">
+                            <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                        </svg>
+                        <input type="text" class="search-input" id="passiveSearchInput" placeholder="Поиск по пассивкам..." oninput="handlePassiveSearch()">
+                        <button class="clear-btn" id="clearPassiveSearchBtn" onclick="clearPassiveSearch()" aria-label="Очистить поиск">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                            </svg>
+                        </button>
+                    </div>
+                    
+                    <button class="sort-btn" onclick="togglePassiveSort()" id="passiveSortBtn" title="Сортировка">
+                        <svg id="passiveSortIconList" viewBox="0 0 24 24">
+                            <path d="M3 18h6v-2H3v2zM3 6v2h18V6H3zm0 7h12v-2H3v2z"/>
+                        </svg>
+                        <svg id="passiveSortIconAZ" viewBox="0 0 20 20" style="display: none;">
+                            <path d="M8,11 C8.2821,11 8.54033,11.1583 8.66834,11.4097 C8.79635,11.661 8.77247,11.963 8.60656,12.1911 L5.47283,16.5 L8,16.5 C8.41422,16.5 8.75,16.8358 8.75,17.25 C8.75,17.6642 8.41422,18 8,18 L4,18 C3.71791,18 3.45967,17.8417 3.33167,17.5903 C3.20366,17.339 3.22753,17.037 3.39345,16.8089 L6.52718,12.5 L4,12.5 C3.58579,12.5 3.25,12.1642 3.25,11.75 C3.25,11.3358 3.58579,11 4,11 L8,11 Z M13.5000006,2 C13.9142,2 14.25,2.33579 14.25,2.75 L14.25,15.5241 L16.7383,13.2017 C17.0411,12.9191 17.5157,12.9355 17.7983,13.2383 C18.0809,13.5411 18.0646,14.0157 17.7617,14.2983 L14.0117,17.7983 C13.7236,18.0672 13.2764,18.0672 12.9883,17.7983 L9.23826,14.2983 C8.93545,14.0157 8.91909,13.5411 9.20171,13.2383 C9.48434,12.9355 9.95893,12.9191 10.2617,13.2017 L12.75,15.5241 L12.75,2.75 C12.75,2.33579 13.0858,2 13.5000006,2 Z M6.00002,2 C6.31967,2 6.6042,2.2026 6.70876,2.50467 L8.95876,9.00467 C9.09425,9.39609 8.88678,9.82325 8.49535,9.95874 C8.10393,10.0942 7.67677,9.88676 7.54128,9.49533 L7.19674,8.5 L4.8033,8.5 L4.45876,9.49533 C4.32327,9.88676 3.89611,10.0942 3.50469,9.95874 C3.11326,9.82325 2.90579,9.39609 3.04128,9.00467 L5.29128,2.50467 C5.39584,2.2026 5.68037,2 6.00002,2 Z M6.00002,5.0428 L5.32253,7 L6.67751,7 L6.00002,5.0428 Z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div class="books-list" id="passiveBooksContainer"></div>
+            <div class="no-results" id="passiveNoResultsMsg">Пассивные книги не найдены</div>
+        </div>
+    </div>
+
+    <!-- ПОДВАЛ С ССЫЛКАМИ -->
+    <div class="app-footer">
+        <div class="footer-text">
+            Приложение сообщества 
+            <a href="https://vk.com/guardian_of_knowledge" target="_blank" rel="noopener noreferrer" class="footer-link">Хранитель знаний</a>
+        </div>
+        <div class="footer-text">
+            Разработчик 
+            <a href="https://vk.com/r_i_d_l_e" target="_blank" rel="noopener noreferrer" class="footer-link">Александр Кулаковский</a>
+        </div>
+    </div>
+
+    <script src="passives.js"></script>
+    <script src="actives.js"></script>
+    <script src="prices.js"></script>
+
+    <script>
+        const CLASS_CONFIG = {
+            "жнец душ": { type: "warlock", name: "Чернокнижник", desc: "<span class='highlight-class'>Чернокнижник</span>: Доп. снижение концентрации противника на <span class='highlight-val'>{val}%</span>" },
+            "повелитель мрака": { type: "warlock", name: "Чернокнижник", desc: "<span class='highlight-class'>Чернокнижник</span>: Доп. снижение концентрации противника на <span class='highlight-val'>{val}%</span>" },
+            "отрекшийся": { type: "vampire", name: "Кровопийца", desc: "<span class='highlight-class'>Кровопийца</span>: Восстанавливает здоровье в размере <span class='highlight-val'>{val}%</span> от урона простыми атаками" },
+            "прокаженный": { type: "vampire", name: "Кровопийца", desc: "<span class='highlight-class'>Кровопийца</span>: Восстанавливает здоровье в размере <span class='highlight-val'>{val}%</span> от урона простыми атаками" },
+            "крестоносец": { type: "paladin", name: "Паладин", desc: "<span class='highlight-class'>Паладин</span>: Шанс <span class='highlight-val'>{val}%</span>, что полученный урон от обычной атаки отразится в противника (не добивает в PvP)" },
+            "воплощение света": { type: "paladin", name: "Паладин", desc: "<span class='highlight-class'>Паладин</span>: Шанс <span class='highlight-val'>{val}%</span>, что полученный урон от обычной атаки отразится в противника (не добивает в PvP)" },
+            "клинок тьмы": { type: "assassin", name: "Ассасин", desc: "<span class='highlight-class'>Ассасин</span>: Дополнительные <span class='highlight-val'>{val}%</span> шанса уклониться от атаки" },
+            "королевский убийца": { type: "assassin", name: "Ассасин", desc: "<span class='highlight-class'>Ассасин</span>: Дополнительные <span class='highlight-val'>{val}%</span> шанса уклониться от атаки" },
+            "берсеркер": { type: "executioner", name: "Палач", desc: "<span class='highlight-class'>Палач</span>: Если у врага < {val}% НР — 50% шанс казни без возрождения" },
+            "потрошитель": { type: "executioner", name: "Палач", desc: "<span class='highlight-class'>Палач</span>: Если у врага < {val}% НР — 50% шанс казни без возрождения" },
+            "апостол": { type: "secret_keeper", name: "Хранитель тайн", desc: "<span class='highlight-class'>Хранитель тайн</span>: Шанс {val}% на повторное срабатывание умения (-30% при доп. действии)" },
+            "верховный маг": { type: "secret_keeper", name: "Хранитель тайн", desc: "<span class='highlight-class'>Хранитель тайн</span>: Шанс {val}% на повторное срабатывание умения (-30% при доп. действии)" }
+        };
+
+        const DB_KEY = 'rpg_stats_final_verified_v8';
+        const DATE_KEY = 'rpg_date_final_verified_v8';
+        const CLASS_KEY = 'rpg_class_final_verified_v8';
+        const BOOKS_LVL_KEY = 'rpg_books_levels_final_verified_v8';
+        const ACTIVE_BOOKS_LVL_KEY = 'rpg_active_books_levels_final_verified_v8';
+
+        // Новый порядок пассивных книг
+        const PASSIVE_ORDER = [
+            "Барьер",
+            "Быстрое восстановление",
+            "Мародер",
+            "Внимательность",
+            "Инициативность",
+            "Исследователь",
+            "Ведьмак",
+            "Собиратель",
+            "Запасливость",
+            "Охотник за головами",
+            "Подвижность",
+            "Упорность",
+            "Регенерация",
+            "Расчетливость",
+            "Презрение к боли",
+            "Ошеломление",
+            "Рыбак",
+            "Неуязвимый",
+            "Колющий удар",
+            "Бесстрашие",
+            "Режущий удар",
+            "Феникс",
+            "Непоколебимый",
+            "Суеверность",
+            "Гладиатор",
+            "Воздаяние",
+            "Ученик",
+            "Прочность",
+            "Расторопность",
+            "Устрашение",
+            "Контратака",
+            "Дробящий удар",
+            "Защитная стойка",
+            "Стойка сосредоточения",
+            "Водохлеб",
+            "Картограф",
+            "Браконьер",
+            "Парирование",
+            "Ловкость рук",
+            "Незаметность",
+            "Атлетика",
+            "Устойчивость",
+            "Угроза",
+            "Знания древних",
+            "Еретик"
+        ];
+
+        const triggerBtn = document.getElementById('classTrigger');
+        const listDiv = document.getElementById('classList');
+        const karmaIconSpan = document.getElementById('karma-icon');
+
+        let passiveSortByAlphabet = false;
+        let activeSortByAlphabet = false;
+
+        function getKarmaIcon(value) {
+            const num = parseInt(value);
+            if (num < 0) return '😈';
+            if (num === 0) return '😐';
+            return '😇';
+        }
+        
+        function updateKarmaIcon() {
+            const karmaVal = document.querySelector('.stat-value[data-key="karma"]');
+            if (karmaVal) {
+                const val = parseInt(karmaVal.textContent) || 0;
+                let displayVal = val;
+                if (displayVal < -20) displayVal = -20;
+                if (displayVal > 20) displayVal = 20;
+                karmaIconSpan.textContent = getKarmaIcon(displayVal);
+                if (val !== displayVal) karmaVal.textContent = displayVal;
+            }
+        }
+
+        // ИСПРАВЛЕННАЯ ФУНКЦИЯ - теперь максимум 100%
+        function calculateRunesResist(runesCount) {
+            if (runesCount < 0) runesCount = 0;
+            if (runesCount === 0) return 0;
+            let resist = 10.0 * Math.pow(runesCount, 0.25);
+            // Ограничиваем максимум 100%
+            return Math.min(100, Math.floor(resist));
+        }
+
+        function calculateClassEffect(type, level) {
+            if (level < 1) level = 1;
+            let coefficient = 5.0;
+            let maxCap = 30.0;
+            if (type === 'warlock' || type === 'vampire') {
+                coefficient = 10.0;
+                maxCap = 50.0;
+            }
+            let effect = coefficient * Math.sqrt(level / 1000.0) + 10.0;
+            effect = Math.floor(effect * 10) / 10;
+            return Math.min(maxCap, effect);
+        }
+
+        function updateClassResult() {
+            const className = triggerBtn.textContent.trim();
+            const classLvlInput = document.querySelector('.stat-value[data-key="class_lvl"]').textContent;
+            const classLvl = parseInt(classLvlInput) || 1;
+            const config = CLASS_CONFIG[className];
+            
+            if (!config) {
+                document.getElementById('res-class-desc').innerHTML = "Класс не определен";
+                return;
+            }
+
+            const bonus = calculateClassEffect(config.type, classLvl);
+            document.getElementById('res-class-desc').innerHTML = config.desc.replace('{val}', bonus.toFixed(1));
+        }
+
+        window.toggleClassList = function() {
+            const isShown = listDiv.classList.contains('show');
+            if (isShown) {
+                listDiv.classList.remove('show');
+                triggerBtn.classList.remove('open');
+            } else {
+                listDiv.classList.add('show');
+                triggerBtn.classList.add('open');
+            }
+        };
+
+        window.selectClass = function(cls) {
+            localStorage.setItem(CLASS_KEY, cls);
+            localStorage.setItem(DATE_KEY, Date.now().toString());
+            triggerBtn.textContent = cls;
+            
+            const items = listDiv.querySelectorAll('.class-item');
+            items.forEach(item => {
+                item.classList.toggle('active', item.textContent === cls);
+            });
+
+            listDiv.classList.remove('show');
+            triggerBtn.classList.remove('open');
+            
+            updateClassResult();
+        };
+
+        function initClassList() {
+            const saved = localStorage.getItem(CLASS_KEY) || "жнец душ";
+            triggerBtn.textContent = saved;
+            listDiv.innerHTML = '';
+
+            Object.keys(CLASS_CONFIG).forEach(cls => {
+                const div = document.createElement('div');
+                div.className = 'class-item';
+                if (cls === saved) div.classList.add('active');
+                div.textContent = cls;
+                
+                div.onclick = function(e) {
+                    e.stopPropagation();
+                    selectClass(cls);
+                };
+                
+                listDiv.appendChild(div);
+            });
+            
+            updateClassResult();
+        }
+
+        document.addEventListener('click', function(e) {
+            if (!listDiv.contains(e.target) && e.target !== triggerBtn) {
+                listDiv.classList.remove('show');
+                triggerBtn.classList.remove('open');
+            }
+        });
+
+        async function loadVKUserData() {
+            try {
+                const user = await vkBridge.send('VKWebAppGetUserInfo');
+                
+                const avatar = document.getElementById('user-avatar');
+                if (user.photo_200) {
+                    avatar.src = user.photo_200;
+                } else if (user.photo_100) {
+                    avatar.src = user.photo_100;
+                } else if (user.photo_50) {
+                    avatar.src = user.photo_50;
+                }
+                
+                const nameElement = document.getElementById('user-name');
+                nameElement.textContent = `${user.first_name} ${user.last_name}`;
+                
+            } catch (error) {
+                console.log('Не удалось загрузить данные пользователя VK', error);
+                document.getElementById('user-name').textContent = 'Тестовый пользователь';
+            }
+        }
+
+        // Глобальный перехват отправки форм
+        document.addEventListener('submit', function(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            return false;
+        }, true);
+
+        // --- ФУНКЦИЯ ДЛЯ ПОЛУЧЕНИЯ СТАТОВ ИЗ ПРОФИЛЯ ---
+        function getStatsFromProfile() {
+            const stats = {};
+            document.querySelectorAll('.stat-value').forEach(el => {
+                let value = el.textContent;
+                // Для сопротивления убираем % перед парсингом
+                if (el.dataset.key === 'resist') {
+                    value = value.replace('%', '');
+                }
+                stats[el.dataset.key] = value;
+            });
+            return {
+                lvl: parseInt(stats.lvl) || 0,
+                atk: parseInt(stats.atk) || 0,
+                armor: parseInt(stats.armor) || 0,
+                str: parseInt(stats.str) || 0,
+                agi: parseInt(stats.agi) || 0,
+                vit: parseInt(stats.vit) || 0,
+                luck: parseInt(stats.luck) || 0,
+                acc: parseInt(stats.acc) || 0,
+                conc: parseInt(stats.conc) || 0,
+                class_lvl: parseInt(stats.class_lvl) || 0,
+                resist: parseInt(stats.resist) || 0,
+                karma: parseInt(stats.karma) || 0
+            };
+        }
+
+        // --- ФУНКЦИЯ ДЛЯ РАСЧЕТА УРОНА АКТИВНОГО УМЕНИЯ ---
+        function calculateActiveDamage(skillName, level, stats) {
+            const skill = ACTIVE_SKILLS[skillName];
+            if (!skill) return '?';
+            
+            try {
+                // Если у умения нет calc_damage, возвращаем множитель
+                if (!skill.calc_damage) {
+                    if (skill.calc) {
+                        return skill.calc(level);
+                    }
+                    return '?';
+                }
+                
+                // Расчет по параметрам из skill.params
+                const params = skill.params || [];
+                
+                if (params.length === 1) {
+                    const param = params[0];
+                    const value = stats[param] || 0;
+                    return skill.calc_damage(level, value);
+                } else if (params.length === 2) {
+                    const param1 = params[0];
+                    const param2 = params[1];
+                    const value1 = stats[param1] || 0;
+                    const value2 = stats[param2] || 0;
+                    return skill.calc_damage(level, value1, value2);
+                }
+                
+                // Fallback на switch если params не заданы
+                switch(skillName) {
+                    case "Грязный удар":
+                        return skill.calc_damage(level, stats.agi, stats.str);
+                    case "Слабое исцеление":
+                        return skill.calc_damage(level, stats.vit);
+                    case "Удар вампира":
+                        return skill.calc_damage(level, stats.agi, stats.vit);
+                    case "Мощный удар":
+                        return skill.calc_damage(level, stats.str, stats.atk);
+                    case "Сила теней":
+                        return skill.calc_damage(level, stats.lvl);
+                    case "Расправа":
+                        return skill.calc_damage(level, stats.lvl);
+                    case "Рассечение":
+                        return skill.calc_damage(level, stats.atk, stats.agi);
+                    case "Таран":
+                        return skill.calc_damage(level, stats.armor);
+                    case "Огонек надежды":
+                        return skill.calc_damage(level, stats.vit);
+                    case "Кровотечение":
+                        return skill.calc_damage(level, stats.atk, stats.agi);
+                    case "Заражение":
+                        return skill.calc_damage(level, stats.vit);
+                    case "Раскол":
+                        return skill.calc_damage(level, stats.agi);
+                    default:
+                        return skill.calc ? skill.calc(level) : '?';
+                }
+            } catch (e) {
+                console.log('Ошибка расчета для', skillName, e);
+                return '?';
+            }
+        }
+
+        // --- ФУНКЦИЯ ДЛЯ РЕДАКТИРОВАНИЯ СТАТОВ В АКТИВНЫХ УМЕНИЯХ (БЕЗ ПЕРЕМОТКИ) ---
+        window.editActiveStat = function(event, element, statKey) {
+            // Предотвращаем всплытие и стандартное поведение
+            event.preventDefault();
+            event.stopPropagation();
+            
+            const valueSpan = element.querySelector('.stat-value-small');
+            if (!valueSpan) return;
+            
+            let currentVal = valueSpan.textContent;
+            const key = statKey;
+            
+            const input = document.createElement('input');
+            input.type = 'number';
+            input.value = currentVal === '0' ? '' : currentVal;
+            input.className = 'stat-input-small';
+            valueSpan.style.visibility = 'hidden'; 
+            
+            element.style.position = 'relative';
+            element.appendChild(input);
+            input.focus();
+            input.select();
+            
+            const finish = () => {
+                let newVal = input.value;
+                if (newVal === '') newVal = '0';
+                let finalValue = newVal;
+                
+                const num = parseInt(newVal);
+                if (!isNaN(num)) finalValue = num.toString();
+                
+                // Обновляем значение в DOM
+                valueSpan.textContent = finalValue;
+                valueSpan.style.visibility = 'visible';
+                input.remove();
+                
+                // Обновляем значение в профиле
+                const profileStat = document.querySelector(`.stat-value[data-key="${key}"]`);
+                if (profileStat) {
+                    profileStat.textContent = finalValue;
+                }
+                
+                // Сохраняем все статы
+                saveStats();
+                
+                // Обновляем все активные книги без перерисовки всего DOM
+                const items = document.querySelectorAll('#activeBooksContainer .book-item');
+                const stats = getStatsFromProfile();
+                
+                items.forEach(item => {
+                    const bookName = item.querySelector('.book-name').textContent;
+                    const level = parseInt(item.querySelector('.book-level-input').value) || 1;
+                    
+                    // Обновляем описание
+                    const descDiv = item.querySelector('.book-desc');
+                    if (descDiv) {
+                        descDiv.innerHTML = getSkillDescription(bookName, level, stats);
+                    }
+                    
+                    // Обновляем строку со статами
+                    const statsDiv = item.querySelector('.stats-row');
+                    if (statsDiv) {
+                        statsDiv.innerHTML = getStatsString(bookName, stats);
+                    }
+                    
+                    // Обновляем процент эффекта
+                    const percentSpan = item.querySelector('.book-percent');
+                    const skill = ACTIVE_SKILLS[bookName];
+                    if (percentSpan && skill && skill.calc) {
+                        const effectPercent = skill.calc(level);
+                        percentSpan.textContent = `(${effectPercent}%)`;
+                    }
+                    
+                    // Обновляем цену (асинхронно)
+                    updateActiveBookPrice(item, bookName, level);
+                });
+            };
+            
+            input.onblur = finish;
+            input.onkeydown = e => { 
+                if(e.key === 'Enter') {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    input.blur(); // Потеря фокуса вызовет finish
+                    return false;
+                }
+            };
+            input.onclick = e => e.stopPropagation();
+        };
+
+        // --- ФУНКЦИЯ ДЛЯ ПОЛУЧЕНИЯ СТРОКИ СО СТАТАМИ (КЛИКАБЕЛЬНО, БЕЗ ПЕРЕМОТКИ) ---
+        function getStatsString(skillName, stats) {
+            switch(skillName) {
+                case "Грязный удар":
+                    return `<div class="stat-item" onclick="editActiveStat(event, this, 'agi')"><span class="stat-icon-small">👐</span> <span class="stat-value-small">${stats.agi}</span></div><div class="stat-item" onclick="editActiveStat(event, this, 'str')"><span class="stat-icon-small">💪</span> <span class="stat-value-small">${stats.str}</span></div>`;
+                case "Слабое исцеление":
+                    return `<div class="stat-item" onclick="editActiveStat(event, this, 'vit')"><span class="stat-icon-small">❤️</span> <span class="stat-value-small">${stats.vit}</span></div>`;
+                case "Удар вампира":
+                    return `<div class="stat-item" onclick="editActiveStat(event, this, 'agi')"><span class="stat-icon-small">👐</span> <span class="stat-value-small">${stats.agi}</span></div><div class="stat-item" onclick="editActiveStat(event, this, 'vit')"><span class="stat-icon-small">❤️</span> <span class="stat-value-small">${stats.vit}</span></div>`;
+                case "Мощный удар":
+                    return `<div class="stat-item" onclick="editActiveStat(event, this, 'str')"><span class="stat-icon-small">💪</span> <span class="stat-value-small">${stats.str}</span></div><div class="stat-item" onclick="editActiveStat(event, this, 'atk')"><span class="stat-icon-small">⚔️</span> <span class="stat-value-small">${stats.atk}</span></div>`;
+                case "Сила теней":
+                    return `<div class="stat-item" onclick="editActiveStat(event, this, 'lvl')"><span class="stat-icon-small">🕯️</span> <span class="stat-value-small">${stats.lvl}</span></div>`;
+                case "Расправа":
+                    return `<div class="stat-item" onclick="editActiveStat(event, this, 'lvl')"><span class="stat-icon-small">🕯️</span> <span class="stat-value-small">${stats.lvl}</span></div>`;
+                case "Слепота":
+                    return `<span class="stat-item">не требует статов</span>`;
+                case "Рассечение":
+                    return `<div class="stat-item" onclick="editActiveStat(event, this, 'atk')"><span class="stat-icon-small">⚔️</span> <span class="stat-value-small">${stats.atk}</span></div><div class="stat-item" onclick="editActiveStat(event, this, 'agi')"><span class="stat-icon-small">👐</span> <span class="stat-value-small">${stats.agi}</span></div>`;
+                case "Берсеркер":
+                    return `<span class="stat-item">не требует статов</span>`;
+                case "Таран":
+                    return `<div class="stat-item" onclick="editActiveStat(event, this, 'armor')"><span class="stat-icon-small">🛡️</span> <span class="stat-value-small">${stats.armor}</span></div>`;
+                case "Проклятие тьмы":
+                    return `<div class="stat-item" onclick="editActiveStat(event, this, 'lvl')"><span class="stat-icon-small">🕯️</span> <span class="stat-value-small">${stats.lvl}</span></div>`;
+                case "Огонек надежды":
+                    return `<div class="stat-item" onclick="editActiveStat(event, this, 'vit')"><span class="stat-icon-small">❤️</span> <span class="stat-value-small">${stats.vit}</span></div>`;
+                case "Целебный огонь":
+                    return `<div class="stat-item" onclick="editActiveStat(event, this, 'lvl')"><span class="stat-icon-small">🕯️</span> <span class="stat-value-small">${stats.lvl}</span></div>`;
+                case "Кровотечение":
+                    return `<div class="stat-item" onclick="editActiveStat(event, this, 'atk')"><span class="stat-icon-small">⚔️</span> <span class="stat-value-small">${stats.atk}</span></div><div class="stat-item" onclick="editActiveStat(event, this, 'agi')"><span class="stat-icon-small">👐</span> <span class="stat-value-small">${stats.agi}</span></div>`;
+                case "Заражение":
+                    return `<div class="stat-item" onclick="editActiveStat(event, this, 'vit')"><span class="stat-icon-small">❤️</span> <span class="stat-value-small">${stats.vit}</span></div>`;
+                case "Раскол":
+                    return `<div class="stat-item" onclick="editActiveStat(event, this, 'agi')"><span class="stat-icon-small">👐</span> <span class="stat-value-small">${stats.agi}</span></div>`;
+                default:
+                    return '';
+            }
+        }
+
+        // --- ФУНКЦИЯ ДЛЯ ПОЛУЧЕНИЯ ОПИСАНИЯ ---
+        function getSkillDescription(skillName, level, stats) {
+            const skill = ACTIVE_SKILLS[skillName];
+            if (!skill) return skillName;
+            
+            let desc = skill.desc;
+            const damage = calculateActiveDamage(skillName, level, stats);
+            const mult = skill.calc ? skill.calc(level) : 0;
+            
+            // Специальные случаи из commands.py (обрабатываем ДО общей замены damage)
+            switch(skillName) {
+                case "Расправа":
+                    const inner = Math.sqrt(level*10)/100 + 1;
+                    const rounded = Math.floor(inner * 100) / 100;
+                    const x_percent = Math.floor(rounded * 50);
+                    const max_damage = stats.lvl * 50;
+                    desc = desc.replace('{x_percent}', `<span class="book-val">${x_percent}</span>`)
+                               .replace('{max_damage}', `<span class="book-val">${max_damage}</span>`)
+                               .replace('{damage}', `<span class="book-val">${damage}</span>`);
+                    break;
+                    
+                case "Слабое исцеление":
+                    const heal_percent = Math.floor(mult / 4);
+                    const accuracy_reduce = Math.floor(heal_percent / 5);
+                    desc = desc.replace('{heal_percent}', `<span class="book-val">${heal_percent}</span>`)
+                               .replace('{accuracy_reduce}', `<span class="book-val">${accuracy_reduce}</span>`)
+                               .replace('{damage}', `<span class="book-val">${damage}</span>`);
+                    break;
+                    
+                case "Удар вампира":
+                    const regen = Math.ceil(damage / 15);
+                    desc = desc.replace('{regen}', `<span class="book-val">${regen}</span>`)
+                               .replace('{damage}', `<span class="book-val">${damage}</span>`);
+                    break;
+                    
+                case "Берсеркер":
+                    const berserk_percent = Math.floor((Math.sqrt(level*10)/100*1 + 1) * 50);
+                    desc = desc.replace('{berserk_percent}', `<span class="book-val">${berserk_percent}</span>`);
+                    break;
+                    
+                case "Проклятие тьмы":
+                    const min_reduce = Math.floor(mult / 20);
+                    const max_reduce = Math.floor(mult * 3 / 20);
+                    const max_units = stats.lvl * 10;
+                    desc = desc.replace('{min_reduce}', `<span class="book-val">${min_reduce}</span>`)
+                               .replace('{max_reduce}', `<span class="book-val">${max_reduce}</span>`)
+                               .replace('{max_units}', `<span class="book-val">${max_units}</span>`);
+                    break;
+                    
+                case "Целебный огонь":
+                    const heal_percent_fire = Math.floor((Math.sqrt(level*10)/100*0.5 + 1) * 20);
+                    const max_heal = stats.lvl * 50;
+                    // Заменяем оба плейсхолдера: {heal_percent} и {max_heal}
+                    desc = desc.replace(/{heal_percent}/g, `<span class="book-val">${heal_percent_fire}</span>`)
+                               .replace('{max_heal}', `<span class="book-val">${max_heal}</span>`);
+                    break;
+                    
+                case "Слепота":
+                    desc = desc.replace('{damage}', `<span class="book-val">${mult}</span>`);
+                    break;
+                    
+                case "Раскол":
+                    const armor_reduce = Math.floor((Math.sqrt(level*10)/100*0.5 + 1) * 30);
+                    desc = desc.replace('{armor_reduce}', `<span class="book-val">${armor_reduce}</span>`)
+                               .replace('{damage}', `<span class="book-val">${damage}</span>`);
+                    break;
+                    
+                default:
+                    // Для всех остальных умений просто заменяем {damage}
+                    desc = desc.replace('{damage}', `<span class="book-val">${damage}</span>`);
+            }
+            
+            return desc;
+        }
+
+        // --- ФУНКЦИИ ДЛЯ ПАССИВНЫХ КНИГ ---
+        async function renderPassiveBooks() {
+            const savedLevels = JSON.parse(localStorage.getItem(BOOKS_LVL_KEY) || '{}');
+            const container = document.getElementById('passiveBooksContainer');
+            container.innerHTML = '';
+            
+            // Сортируем книги согласно новому порядку
+            let booksArray = [];
+            
+            if (passiveSortByAlphabet) {
+                // Если включена сортировка по алфавиту, игнорируем кастомный порядок
+                booksArray = Object.entries(PASSIVE_SKILLS).sort((a, b) => a[0].localeCompare(b[0], 'ru'));
+            } else {
+                // Используем кастомный порядок из PASSIVE_ORDER
+                for (const bookName of PASSIVE_ORDER) {
+                    if (PASSIVE_SKILLS[bookName]) {
+                        booksArray.push([bookName, PASSIVE_SKILLS[bookName]]);
+                    }
+                }
+                // Добавляем книги, которых нет в списке (на всякий случай)
+                const existingBooks = new Set(booksArray.map(([name]) => name));
+                for (const [name, data] of Object.entries(PASSIVE_SKILLS)) {
+                    if (!existingBooks.has(name)) {
+                        booksArray.push([name, data]);
+                    }
+                }
+            }
+            
+            for (const [name, data] of booksArray) {
+                const lvl = savedLevels[name] || 1;
+                let result = data.calc(lvl);
+                let formatData;
+                
+                if (data.format) {
+                    if (typeof data.format === 'function') {
+                        formatData = data.format(result, lvl);
+                    } else {
+                        formatData = data.format;
+                    }
+                } else {
+                    formatData = { result: result };
+                }
+                
+                let desc = data.desc;
+                
+                for (const [key, val] of Object.entries(formatData)) {
+                    const regex = new RegExp(`\\{${key}(?::\\.2f)?\\}`, 'g');
+                    desc = desc.replace(regex, `<span class="book-val">${val}</span>`);
+                }
+                
+                const item = document.createElement('div');
+                item.className = 'book-item';
+                item.dataset.bookName = name.toLowerCase();
+                
+                let priceText = '0';
+                
+                try {
+                    const bookPrice = await getBookPrice(name);
+                    if (bookPrice && bookPrice > 0) {
+                        const totalCost = calculateUpgradeCost(lvl, bookPrice);
+                        if (totalCost) {
+                            priceText = formatGold(totalCost);
+                        }
+                    }
+                } catch (e) {
+                    console.log('Ошибка получения цены для', name);
+                }
+                
+                const headerDiv = document.createElement('div');
+                headerDiv.className = 'book-header';
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'book-name';
+                nameDiv.textContent = name;
+                headerDiv.appendChild(nameDiv);
+                
+                const descDiv = document.createElement('div');
+                descDiv.className = 'book-desc';
+                descDiv.innerHTML = desc;
+                
+                const footerDiv = document.createElement('div');
+                footerDiv.className = 'book-footer';
+                
+                const levelWrapper = document.createElement('div');
+                levelWrapper.className = 'book-level-wrapper';
+                
+                const levelInput = document.createElement('input');
+                levelInput.type = 'number';
+                levelInput.className = 'book-level-input';
+                levelInput.value = lvl;
+                levelInput.min = '1';
+                
+                levelInput.setAttribute('form', 'off');
+                levelInput.setAttribute('autocomplete', 'off');
+                levelInput.setAttribute('autocorrect', 'off');
+                levelInput.setAttribute('spellcheck', 'false');
+                
+                levelInput.addEventListener('keydown', function(event) {
+                    if (event.key === 'Enter') {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        event.stopImmediatePropagation();
+                        this.blur();
+                        return false;
+                    }
+                }, true);
+                
+                levelInput.addEventListener('keypress', function(event) {
+                    if (event.key === 'Enter') {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        return false;
+                    }
+                }, true);
+                
+                levelInput.addEventListener('keyup', function(event) {
+                    if (event.key === 'Enter') {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        return false;
+                    }
+                }, true);
+                
+                levelInput.addEventListener('blur', function() {
+                    updatePassiveBookLevel(name, this.value);
+                });
+                
+                const levelUnit = document.createElement('span');
+                levelUnit.className = 'book-level-unit';
+                levelUnit.textContent = 'ур.';
+                
+                levelWrapper.appendChild(levelInput);
+                levelWrapper.appendChild(levelUnit);
+                
+                const priceDiv = document.createElement('div');
+                priceDiv.className = 'book-price';
+                priceDiv.innerHTML = `🌕 ${priceText}`;
+                
+                footerDiv.appendChild(levelWrapper);
+                footerDiv.appendChild(priceDiv);
+                
+                item.appendChild(headerDiv);
+                item.appendChild(descDiv);
+                item.appendChild(footerDiv);
+                
+                container.appendChild(item);
+            }
+            
+            // Применяем поиск после отрисовки
+            handlePassiveSearch();
+        }
+
+        function updatePassiveBookDescription(bookElement, bookName, level) {
+            const data = PASSIVE_SKILLS[bookName];
+            if (!data) return;
+            
+            let result = data.calc(level);
+            let formatData;
+            
+            if (data.format) {
+                if (typeof data.format === 'function') {
+                    formatData = data.format(result, level);
+                } else {
+                    formatData = data.format;
+                }
+            } else {
+                formatData = { result: result };
+            }
+            
+            let desc = data.desc;
+            
+            for (const [key, val] of Object.entries(formatData)) {
+                const regex = new RegExp(`\\{${key}(?::\\.2f)?\\}`, 'g');
+                desc = desc.replace(regex, `<span class="book-val">${val}</span>`);
+            }
+            
+            const descDiv = bookElement.querySelector('.book-desc');
+            if (descDiv) {
+                descDiv.innerHTML = desc;
+            }
+        }
+
+        async function updatePassiveBookPrice(bookElement, bookName, level) {
+            try {
+                const bookPrice = await getBookPrice(bookName);
+                if (bookPrice && bookPrice > 0) {
+                    const totalCost = calculateUpgradeCost(level, bookPrice);
+                    if (totalCost) {
+                        const priceDiv = bookElement.querySelector('.book-price');
+                        if (priceDiv) {
+                            priceDiv.innerHTML = `🌕 ${formatGold(totalCost)}`;
+                        }
+                    }
+                }
+            } catch (e) {
+                console.log('Ошибка обновления цены для', bookName);
+            }
+        }
+
+        window.updatePassiveBookLevel = function(name, value) {
+            const savedLevels = JSON.parse(localStorage.getItem(BOOKS_LVL_KEY) || '{}');
+            const newLevel = parseInt(value) || 1;
+            
+            if (savedLevels[name] === newLevel) return;
+            
+            savedLevels[name] = newLevel;
+            localStorage.setItem(BOOKS_LVL_KEY, JSON.stringify(savedLevels));
+            
+            const items = document.querySelectorAll('#passiveBooksContainer .book-item');
+            for (const item of items) {
+                if (item.dataset.bookName === name.toLowerCase()) {
+                    const input = item.querySelector('.book-level-input');
+                    if (input && parseInt(input.value) !== newLevel) {
+                        input.value = newLevel;
+                    }
+                    
+                    updatePassiveBookDescription(item, name, newLevel);
+                    updatePassiveBookPrice(item, name, newLevel);
+                    break;
+                }
+            }
+        };
+
+        window.togglePassiveSort = function() {
+            passiveSortByAlphabet = !passiveSortByAlphabet;
+            
+            const iconList = document.getElementById('passiveSortIconList');
+            const iconAZ = document.getElementById('passiveSortIconAZ');
+            
+            if (passiveSortByAlphabet) {
+                iconList.style.display = 'none';
+                iconAZ.style.display = 'block';
+            } else {
+                iconList.style.display = 'block';
+                iconAZ.style.display = 'none';
+            }
+            
+            const searchInput = document.getElementById('passiveSearchInput');
+            const currentQuery = searchInput ? searchInput.value : '';
+            
+            renderPassiveBooks().then(() => {
+                if (searchInput) {
+                    searchInput.value = currentQuery;
+                    filterPassiveBooks();
+                }
+            });
+        };
+
+        window.handlePassiveSearch = function() {
+            const input = document.getElementById('passiveSearchInput');
+            const clearBtn = document.getElementById('clearPassiveSearchBtn');
+            
+            if (input.value.length > 0) {
+                clearBtn.classList.add('visible');
+            } else {
+                clearBtn.classList.remove('visible');
+            }
+            
+            filterPassiveBooks();
+        };
+
+        window.clearPassiveSearch = function() {
+            const input = document.getElementById('passiveSearchInput');
+            const clearBtn = document.getElementById('clearPassiveSearchBtn');
+            
+            input.value = '';
+            clearBtn.classList.remove('visible');
+            input.focus();
+            
+            filterPassiveBooks();
+        };
+
+        window.filterPassiveBooks = function() {
+            const input = document.getElementById('passiveSearchInput');
+            const query = input.value.toLowerCase().trim();
+            
+            const items = document.querySelectorAll('#passiveBooksContainer .book-item');
+            let visibleCount = 0;
+
+            items.forEach(item => {
+                const name = item.dataset.bookName;
+                
+                if (name.startsWith(query)) {
+                    item.style.display = 'flex';
+                    visibleCount++;
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+
+            const noResultsMsg = document.getElementById('passiveNoResultsMsg');
+            if (visibleCount === 0) {
+                noResultsMsg.style.display = 'block';
+            } else {
+                noResultsMsg.style.display = 'none';
+            }
+        };
+
+        // --- ФУНКЦИИ ДЛЯ АКТИВНЫХ УМЕНИЙ ---
+        async function renderActiveBooks() {
+            const savedLevels = JSON.parse(localStorage.getItem(ACTIVE_BOOKS_LVL_KEY) || '{}');
+            const container = document.getElementById('activeBooksContainer');
+            container.innerHTML = '';
+            
+            let booksArray = Object.entries(ACTIVE_SKILLS);
+            
+            if (activeSortByAlphabet) {
+                booksArray.sort((a, b) => a[0].localeCompare(b[0], 'ru'));
+            }
+            
+            const stats = getStatsFromProfile();
+            
+            for (const [name, data] of booksArray) {
+                const lvl = savedLevels[name] || 1;
+                
+                const desc = getSkillDescription(name, lvl, stats);
+                const statsString = getStatsString(name, stats);
+                
+                // Получаем процент эффекта
+                const effectPercent = data.calc ? data.calc(lvl) : 0;
+                
+                const item = document.createElement('div');
+                item.className = 'book-item';
+                item.dataset.bookName = name.toLowerCase();
+                
+                let priceText = '0';
+                
+                try {
+                    const bookPrice = await getBookPrice(name);
+                    if (bookPrice && bookPrice > 0) {
+                        const totalCost = calculateUpgradeCost(lvl, bookPrice);
+                        if (totalCost) {
+                            priceText = formatGold(totalCost);
+                        }
+                    }
+                } catch (e) {
+                    console.log('Ошибка получения цены для', name);
+                }
+                
+                const headerDiv = document.createElement('div');
+                headerDiv.className = 'book-header';
+                const nameDiv = document.createElement('div');
+                nameDiv.className = 'book-name';
+                nameDiv.textContent = name;
+                headerDiv.appendChild(nameDiv);
+                
+                const descDiv = document.createElement('div');
+                descDiv.className = 'book-desc';
+                descDiv.innerHTML = desc;
+                
+                const statsDiv = document.createElement('div');
+                statsDiv.className = 'stats-row';
+                statsDiv.innerHTML = statsString;
+                
+                const footerDiv = document.createElement('div');
+                footerDiv.className = 'book-footer';
+                
+                const leftGroup = document.createElement('div');
+                leftGroup.className = 'left-group';
+                
+                const levelWrapper = document.createElement('div');
+                levelWrapper.className = 'book-level-wrapper';
+                
+                const levelInput = document.createElement('input');
+                levelInput.type = 'number';
+                levelInput.className = 'book-level-input';
+                levelInput.value = lvl;
+                levelInput.min = '1';
+                
+                levelInput.setAttribute('form', 'off');
+                levelInput.setAttribute('autocomplete', 'off');
+                levelInput.setAttribute('autocorrect', 'off');
+                levelInput.setAttribute('spellcheck', 'false');
+                
+                levelInput.addEventListener('keydown', function(event) {
+                    if (event.key === 'Enter') {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        event.stopImmediatePropagation();
+                        this.blur();
+                        return false;
+                    }
+                }, true);
+                
+                levelInput.addEventListener('keypress', function(event) {
+                    if (event.key === 'Enter') {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        return false;
+                    }
+                }, true);
+                
+                levelInput.addEventListener('keyup', function(event) {
+                    if (event.key === 'Enter') {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        return false;
+                    }
+                }, true);
+                
+                levelInput.addEventListener('blur', function() {
+                    updateActiveBookLevel(name, this.value);
+                });
+                
+                const levelUnit = document.createElement('span');
+                levelUnit.className = 'book-level-unit';
+                levelUnit.textContent = 'ур.';
+                
+                levelWrapper.appendChild(levelInput);
+                levelWrapper.appendChild(levelUnit);
+                
+                const percentSpan = document.createElement('span');
+                percentSpan.className = 'book-percent';
+                percentSpan.textContent = `(${effectPercent}%)`;
+                
+                leftGroup.appendChild(levelWrapper);
+                leftGroup.appendChild(percentSpan);
+                
+                const priceDiv = document.createElement('div');
+                priceDiv.className = 'book-price';
+                priceDiv.innerHTML = `🌕 ${priceText}`;
+                
+                footerDiv.appendChild(leftGroup);
+                footerDiv.appendChild(priceDiv);
+                
+                item.appendChild(headerDiv);
+                item.appendChild(descDiv);
+                if (statsString) {
+                    item.appendChild(statsDiv);
+                }
+                item.appendChild(footerDiv);
+                
+                container.appendChild(item);
+            }
+            
+            // Применяем поиск после отрисовки
+            handleActiveSearch();
+        }
+
+        function updateActiveBookDescription(bookElement, bookName, level) {
+            const stats = getStatsFromProfile();
+            const desc = getSkillDescription(bookName, level, stats);
+            const statsString = getStatsString(bookName, stats);
+            
+            // Обновляем процент эффекта
+            const percentSpan = bookElement.querySelector('.book-percent');
+            const skill = ACTIVE_SKILLS[bookName];
+            if (percentSpan && skill && skill.calc) {
+                const effectPercent = skill.calc(level);
+                percentSpan.textContent = `(${effectPercent}%)`;
+            }
+            
+            const descDiv = bookElement.querySelector('.book-desc');
+            if (descDiv) {
+                descDiv.innerHTML = desc;
+            }
+            
+            const statsDiv = bookElement.querySelector('.stats-row');
+            if (statsDiv) {
+                statsDiv.innerHTML = statsString;
+            }
+        }
+
+        async function updateActiveBookPrice(bookElement, bookName, level) {
+            try {
+                const bookPrice = await getBookPrice(bookName);
+                if (bookPrice && bookPrice > 0) {
+                    const totalCost = calculateUpgradeCost(level, bookPrice);
+                    if (totalCost) {
+                        const priceDiv = bookElement.querySelector('.book-price');
+                        if (priceDiv) {
+                            priceDiv.innerHTML = `🌕 ${formatGold(totalCost)}`;
+                        }
+                    }
+                }
+            } catch (e) {
+                console.log('Ошибка обновления цены для', bookName);
+            }
+        }
+
+        window.updateActiveBookLevel = function(name, value) {
+            const savedLevels = JSON.parse(localStorage.getItem(ACTIVE_BOOKS_LVL_KEY) || '{}');
+            const newLevel = parseInt(value) || 1;
+            
+            if (savedLevels[name] === newLevel) return;
+            
+            savedLevels[name] = newLevel;
+            localStorage.setItem(ACTIVE_BOOKS_LVL_KEY, JSON.stringify(savedLevels));
+            
+            const items = document.querySelectorAll('#activeBooksContainer .book-item');
+            for (const item of items) {
+                if (item.dataset.bookName === name.toLowerCase()) {
+                    const input = item.querySelector('.book-level-input');
+                    if (input && parseInt(input.value) !== newLevel) {
+                        input.value = newLevel;
+                    }
+                    
+                    updateActiveBookDescription(item, name, newLevel);
+                    updateActiveBookPrice(item, name, newLevel);
+                    break;
+                }
+            }
+        };
+
+        window.toggleActiveSort = function() {
+            activeSortByAlphabet = !activeSortByAlphabet;
+            
+            const iconList = document.getElementById('activeSortIconList');
+            const iconAZ = document.getElementById('activeSortIconAZ');
+            
+            if (activeSortByAlphabet) {
+                iconList.style.display = 'none';
+                iconAZ.style.display = 'block';
+            } else {
+                iconList.style.display = 'block';
+                iconAZ.style.display = 'none';
+            }
+            
+            const searchInput = document.getElementById('activeSearchInput');
+            const currentQuery = searchInput ? searchInput.value : '';
+            
+            renderActiveBooks().then(() => {
+                if (searchInput) {
+                    searchInput.value = currentQuery;
+                    filterActiveBooks();
+                }
+            });
+        };
+
+        window.handleActiveSearch = function() {
+            const input = document.getElementById('activeSearchInput');
+            const clearBtn = document.getElementById('clearActiveSearchBtn');
+            
+            if (input.value.length > 0) {
+                clearBtn.classList.add('visible');
+            } else {
+                clearBtn.classList.remove('visible');
+            }
+            
+            filterActiveBooks();
+        };
+
+        window.clearActiveSearch = function() {
+            const input = document.getElementById('activeSearchInput');
+            const clearBtn = document.getElementById('clearActiveSearchBtn');
+            
+            input.value = '';
+            clearBtn.classList.remove('visible');
+            input.focus();
+            
+            filterActiveBooks();
+        };
+
+        window.filterActiveBooks = function() {
+            const input = document.getElementById('activeSearchInput');
+            const query = input.value.toLowerCase().trim();
+            
+            const items = document.querySelectorAll('#activeBooksContainer .book-item');
+            let visibleCount = 0;
+
+            items.forEach(item => {
+                const name = item.dataset.bookName;
+                
+                if (name.startsWith(query)) {
+                    item.style.display = 'flex';
+                    visibleCount++;
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+
+            const noResultsMsg = document.getElementById('activeNoResultsMsg');
+            if (visibleCount === 0) {
+                noResultsMsg.style.display = 'block';
+            } else {
+                noResultsMsg.style.display = 'none';
+            }
+        };
+
+        // --- НАВИГАЦИЯ ---
+        window.switchPage = function(pageName) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.getElementById(`page-${pageName}`).classList.add('active');
+            document.getElementById(`nav-${pageName}`).classList.add('active');
+            
+            if (pageName === 'passive') {
+                renderPassiveBooks();
+            } else if (pageName === 'active') {
+                renderActiveBooks();
+            }
+        };
+
+        function checkReset() {
+            const last = localStorage.getItem(DATE_KEY);
+            if (last && (Date.now() - parseInt(last) > 7 * 24 * 60 * 60 * 1000)) {
+                // Автоматический сброс раз в неделю
+                localStorage.removeItem(DB_KEY);
+                localStorage.removeItem(DATE_KEY);
+                localStorage.removeItem(CLASS_KEY);
+                localStorage.removeItem(BOOKS_LVL_KEY);
+                localStorage.removeItem(ACTIVE_BOOKS_LVL_KEY);
+                location.reload();
+            }
+        }
+
+        function saveStats() {
+            const data = {};
+            document.querySelectorAll('.stat-value').forEach(el => data[el.dataset.key] = el.textContent);
+            localStorage.setItem(DB_KEY, JSON.stringify(data));
+            localStorage.setItem(DATE_KEY, Date.now().toString());
+            updateClassResult();
+            updateKarmaIcon();
+        }
+
+        function loadStats() {
+            const raw = localStorage.getItem(DB_KEY);
+            if (!raw) return;
+            const data = JSON.parse(raw);
+            document.querySelectorAll('.stat-value').forEach(el => {
+                if (data[el.dataset.key]) el.textContent = data[el.dataset.key];
+            });
+            updateClassResult();
+            updateKarmaIcon();
+        }
+
+        window.editStatByCell = function(cellElement, isResist = false, isKarma = false) {
+            const valueContainer = cellElement.querySelector('.stat-value-container');
+            const valueSpan = valueContainer.querySelector('.stat-value');
+            let currentVal = valueSpan.textContent;
+            const key = valueSpan.dataset.key;
+            let cleanVal = currentVal;
+            if (isResist) cleanVal = currentVal.replace('%', '');
+            
+            const input = document.createElement('input');
+            input.type = 'number';
+            input.value = cleanVal === '0' ? '' : cleanVal;
+            input.className = 'stat-input';
+            valueSpan.style.visibility = 'hidden'; 
+            valueContainer.appendChild(input);
+            input.focus();
+            input.select();
+            
+            const finish = () => {
+                let newVal = input.value;
+                if (newVal === '') newVal = '0';
+                let finalValue = newVal;
+                
+                if (isResist) {
+                    const runes = parseFloat(newVal);
+                    const percent = calculateRunesResist(runes);
+                    finalValue = percent + '%';
+                } else if (isKarma) {
+                    let num = parseInt(newVal);
+                    if (num < -20) num = -20;
+                    if (num > 20) num = 20;
+                    finalValue = num.toString();
+                } else {
+                    const num = parseFloat(newVal);
+                    if (!isNaN(num)) finalValue = Math.floor(num).toString();
+                    if (key === 'class_lvl' && parseInt(finalValue) < 1) finalValue = '1';
+                }
+                
+                valueSpan.textContent = finalValue;
+                valueSpan.style.visibility = 'visible';
+                input.remove();
+                if (isKarma) updateKarmaIcon();
+                saveStats();
+            };
+            
+            input.onblur = finish;
+            input.onkeydown = e => { 
+                if(e.key === 'Enter') {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    input.blur(); 
+                    return false;
+                }
+            };
+            input.onclick = e => e.stopPropagation();
+        }
+
+        window.onload = () => {
+            checkReset();
+            loadStats();
+            initClassList();
+            
+            try {
+                vkBridge.send('VKWebAppInit')
+                    .then(() => {
+                        console.log('VK Bridge инициализирован успешно');
+                        loadVKUserData();
+                    })
+                    .catch(error => {
+                        console.log('Ошибка инициализации VK Bridge:', error);
+                        document.getElementById('user-name').textContent = 'Тестовый пользователь';
+                    });
+            } catch (e) {
+                console.log('VK Bridge не доступен (возможно, запуск вне VK)');
+                document.getElementById('user-name').textContent = 'Тестовый пользователь';
+            }
+        };
+    </script>
 </body>
 </html>
