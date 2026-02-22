@@ -135,12 +135,11 @@
         .stat-row { 
             display: flex; 
             align-items: center; 
-            gap: 2px; 
+            gap: 6px; 
             pointer-events: none; 
             width: 100%; 
-            justify-content: flex-start;
+            justify-content: center;
             direction: ltr;
-            white-space: nowrap;
         }
         .stat-icon { 
             font-size: 18px; 
@@ -150,7 +149,7 @@
         }
         .stat-value-container { 
             position: relative; 
-            min-width: 20px; 
+            min-width: 40px; 
             display: flex; 
             justify-content: flex-start; 
             align-items: center; 
@@ -159,18 +158,16 @@
             font-size: 14px; 
             font-weight: 700; 
             color: var(--text-main); 
-            padding: 0; 
+            padding: 0 2px; 
             text-align: left; 
             white-space: nowrap; 
             direction: ltr;
-            display: inline-block;
         }
         .stat-label { 
             font-size: 11px; 
             color: var(--text-secondary); 
             text-transform: lowercase; 
             white-space: nowrap;
-            flex-shrink: 0;
         }
         
         /* ПОЛЕ ВВОДА В ПРОФИЛЕ */
@@ -196,8 +193,6 @@
             box-sizing: border-box;
             appearance: none;
             -webkit-appearance: none;
-            width: auto;
-            min-width: 20px;
         }
         .stat-input[type=number] { -moz-appearance: textfield; }
         .stat-input::-webkit-outer-spin-button, 
@@ -378,25 +373,23 @@
         /* СТАТЫ В АКТИВНЫХ КНИГАХ */
         .stats-row {
             display: flex;
-            gap: 8px;
+            gap: 12px;
             font-size: 12px;
             color: var(--text-secondary);
             margin-bottom: 4px;
             flex-wrap: wrap;
-            align-items: center;
         }
         
         .stat-item {
             display: flex;
             align-items: center;
-            gap: 2px;
+            gap: 4px;
             cursor: pointer;
             padding: 2px 4px;
             border-radius: 4px;
             transition: background 0.2s;
             position: relative;
             direction: ltr;
-            white-space: nowrap;
         }
         
         .stat-item:hover {
@@ -415,11 +408,10 @@
             color: var(--text-main);
             font-weight: 600;
             pointer-events: none;
-            min-width: 16px;
+            min-width: 20px;
             display: inline-block;
             text-align: left;
             direction: ltr;
-            padding: 0;
         }
         
         /* ПОЛЕ ВВОДА В АКТИВКАХ */
@@ -434,7 +426,7 @@
             color: var(--text-main);
             font-size: 12px;
             font-weight: 700;
-            padding: 2px 4px 2px 18px;
+            padding: 2px 4px 2px 20px;
             border-radius: 0;
             text-align: left;
             direction: ltr;
@@ -485,7 +477,7 @@
             flex-shrink: 1;
         }
         
-        /* УРОВЕНЬ КНИГ - ВПРИТЫК */
+        /* УРОВЕНЬ КНИГ - ВПРИТЫК К ЧИСЛУ */
         .book-level-wrapper {
             display: flex;
             align-items: center;
@@ -525,7 +517,7 @@
             flex-shrink: 0;
             margin: 0;
             padding: 0;
-            margin-left: -4px;
+            margin-left: -2px;
         }
         
         .book-percent {
@@ -543,7 +535,7 @@
             margin-left: auto;
         }
 
-        /* ПОДВАЛ */
+        /* Стили для подвала */
         .app-footer {
             width: 100%;
             max-width: 500px;
@@ -1014,6 +1006,7 @@
             }
         }
 
+        // Функция для редактирования статов в активных книгах
         window.editActiveStat = function(event, element, statKey) {
             event.preventDefault();
             event.stopPropagation();
@@ -1034,19 +1027,21 @@
             input.focus();
             input.select();
             
+            // Функция обновления ширины поля
             const updateInputWidth = function() {
                 const font = window.getComputedStyle(this).font;
                 const displayValue = this.value || '0';
                 const width = measureTextWidth(displayValue, font, 0);
-                this.style.width = (width + 18) + 'px';
+                this.style.width = (width + 20) + 'px';
             };
             
             input.addEventListener('input', updateInputWidth);
             
+            // Устанавливаем начальную ширину
             setTimeout(() => {
                 const font = window.getComputedStyle(input).font;
                 const width = measureTextWidth(input.value || '0', font, 0);
-                input.style.width = (width + 18) + 'px';
+                input.style.width = (width + 20) + 'px';
             }, 0);
             
             const finish = () => {
@@ -1298,6 +1293,7 @@
                 levelInput.setAttribute('autocorrect', 'off');
                 levelInput.setAttribute('spellcheck', 'false');
                 
+                // Функция для обновления ширины поля
                 const updateInputWidth = function() {
                     const font = window.getComputedStyle(this).font;
                     const width = measureTextWidth(this.value || '1', font, 2);
@@ -1336,6 +1332,7 @@
                     updatePassiveBookLevel(name, this.value);
                 });
                 
+                // Устанавливаем начальную ширину
                 setTimeout(() => {
                     const font = window.getComputedStyle(levelInput).font;
                     const width = measureTextWidth(levelInput.value || '1', font, 2);
@@ -1429,6 +1426,7 @@
                     if (input && parseInt(input.value) !== newLevel) {
                         input.value = newLevel;
                         
+                        // Обновляем ширину поля
                         const font = window.getComputedStyle(input).font;
                         const width = measureTextWidth(input.value || '1', font, 2);
                         input.style.width = (width + 2) + 'px';
@@ -1587,6 +1585,7 @@
                 levelInput.setAttribute('autocorrect', 'off');
                 levelInput.setAttribute('spellcheck', 'false');
                 
+                // Функция для обновления ширины поля
                 const updateInputWidth = function() {
                     const font = window.getComputedStyle(this).font;
                     const width = measureTextWidth(this.value || '1', font, 2);
@@ -1625,6 +1624,7 @@
                     updateActiveBookLevel(name, this.value);
                 });
                 
+                // Устанавливаем начальную ширину
                 setTimeout(() => {
                     const font = window.getComputedStyle(levelInput).font;
                     const width = measureTextWidth(levelInput.value || '1', font, 2);
@@ -1721,6 +1721,7 @@
                     if (input && parseInt(input.value) !== newLevel) {
                         input.value = newLevel;
                         
+                        // Обновляем ширину поля
                         const font = window.getComputedStyle(input).font;
                         const width = measureTextWidth(input.value || '1', font, 2);
                         input.style.width = (width + 2) + 'px';
@@ -1850,6 +1851,7 @@
             updateKarmaIcon();
         }
 
+        // Функция для редактирования статов в профиле
         window.editStatByCell = function(cellElement, isResist = false, isKarma = false) {
             const valueContainer = cellElement.querySelector('.stat-value-container');
             const valueSpan = valueContainer.querySelector('.stat-value');
@@ -1867,6 +1869,7 @@
             input.focus();
             input.select();
             
+            // Функция обновления ширины поля
             const updateInputWidth = function() {
                 const font = window.getComputedStyle(this).font;
                 const width = measureTextWidth(this.value || '0', font, 0);
@@ -1875,6 +1878,7 @@
             
             input.addEventListener('input', updateInputWidth);
             
+            // Устанавливаем начальную ширину
             setTimeout(() => {
                 const font = window.getComputedStyle(input).font;
                 const width = measureTextWidth(input.value || '0', font, 0);
