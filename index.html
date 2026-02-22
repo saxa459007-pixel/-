@@ -408,7 +408,7 @@
             color: var(--text-main);
             font-weight: 600;
             pointer-events: none;
-            min-width: 25px;
+            min-width: 20px;
             display: inline-block;
             text-align: left;
             direction: ltr;
@@ -481,7 +481,7 @@
         .book-level-wrapper {
             display: flex;
             align-items: center;
-            gap: 2px;
+            gap: 2px;  /* Минимальный отступ между числом и "ур." */
             max-width: 100%;
             flex-wrap: nowrap;
         }
@@ -494,7 +494,7 @@
             font-weight: 700;
             padding: 4px 0;
             width: auto;
-            min-width: 25px;
+            min-width: 18px;  /* Минимальная ширина для одной цифры */
             max-width: 150px;
             text-align: left;
             outline: none;
@@ -515,6 +515,7 @@
             font-size: 13px;
             white-space: nowrap;
             flex-shrink: 0;
+            margin-left: 0;
         }
         
         .book-percent {
@@ -792,7 +793,7 @@
             }
         }
 
-        // Функция для измерения ширины текста
+        // Функция для точного измерения ширины текста
         function measureTextWidth(text, font) {
             const span = document.createElement('span');
             span.style.font = font;
@@ -1274,7 +1275,7 @@
                 const updateInputWidth = function() {
                     const font = window.getComputedStyle(this).font;
                     const width = measureTextWidth(this.value || '1', font);
-                    this.style.width = (width + 5) + 'px';
+                    this.style.width = (width + 2) + 'px';  // +2px для небольшого запаса
                 };
                 
                 levelInput.addEventListener('input', updateInputWidth);
@@ -1313,7 +1314,7 @@
                 setTimeout(() => {
                     const font = window.getComputedStyle(levelInput).font;
                     const width = measureTextWidth(levelInput.value || '1', font);
-                    levelInput.style.width = (width + 5) + 'px';
+                    levelInput.style.width = (width + 2) + 'px';
                 }, 0);
                 
                 const levelUnit = document.createElement('span');
@@ -1406,7 +1407,7 @@
                         // Обновляем ширину поля
                         const font = window.getComputedStyle(input).font;
                         const width = measureTextWidth(input.value || '1', font);
-                        input.style.width = (width + 5) + 'px';
+                        input.style.width = (width + 2) + 'px';
                     }
                     
                     updatePassiveBookDescription(item, name, newLevel);
@@ -1566,7 +1567,7 @@
                 const updateInputWidth = function() {
                     const font = window.getComputedStyle(this).font;
                     const width = measureTextWidth(this.value || '1', font);
-                    this.style.width = (width + 5) + 'px';
+                    this.style.width = (width + 2) + 'px';
                 };
                 
                 levelInput.addEventListener('input', updateInputWidth);
@@ -1605,7 +1606,7 @@
                 setTimeout(() => {
                     const font = window.getComputedStyle(levelInput).font;
                     const width = measureTextWidth(levelInput.value || '1', font);
-                    levelInput.style.width = (width + 5) + 'px';
+                    levelInput.style.width = (width + 2) + 'px';
                 }, 0);
                 
                 const levelUnit = document.createElement('span');
@@ -1701,7 +1702,7 @@
                         // Обновляем ширину поля
                         const font = window.getComputedStyle(input).font;
                         const width = measureTextWidth(input.value || '1', font);
-                        input.style.width = (width + 5) + 'px';
+                        input.style.width = (width + 2) + 'px';
                     }
                     
                     updateActiveBookDescription(item, name, newLevel);
