@@ -116,13 +116,13 @@ z-index: 1000;
 .class-item:hover { background-color: rgba(255, 255, 255, 0.1); }
 .class-item.active { color: var(--accent); font-weight: 600; background-color: rgba(88, 101, 242, 0.15); }
 
-/* СТАТЫ В ПРОФИЛЕ - УМЕНЬШЕННЫЕ ОТСТУПЫ */
+/* СТАТЫ В ПРОФИЛЕ - ЧЁТКОЕ ВЫРАВНИВАНИЕ */
 .stats-grid { 
     width: 100%; 
     display: grid; 
     grid-template-columns: repeat(3, 1fr); 
-    gap: 3px; 
-    padding: 8px 15px; 
+    gap: 6px; 
+    padding: 15px; 
     box-sizing: border-box; 
 }
 
@@ -130,7 +130,7 @@ z-index: 1000;
     background-color: transparent; 
     border: none; 
     border-radius: 0; 
-    padding: 4px 4px; 
+    padding: 8px 4px; 
     display: flex; 
     align-items: center; 
     justify-content: center; 
@@ -165,7 +165,6 @@ z-index: 1000;
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    gap: 4px;
 }
 
 .stat-value {
@@ -1681,6 +1680,7 @@ updateClassResult();
 updateKarmaIcon();
 }
 
+// Функция для редактирования статов в профиле - С ОГРАНИЧЕНИЕМ 99999
 window.editStatByCell = function(cellElement, isResist = false, isKarma = false) {
 const valueContainer = cellElement.querySelector('.stat-value-container');
 const valueSpan = valueContainer.querySelector('.stat-value');
@@ -1692,6 +1692,8 @@ const input = document.createElement('input');
 input.type = 'number';
 input.value = cleanVal === '0' ? '' : cleanVal;
 input.className = 'stat-input';
+input.maxLength = 5;
+input.max = '99999';
 valueSpan.style.visibility = 'hidden';
 valueContainer.appendChild(input);
 input.focus();
@@ -1715,18 +1717,22 @@ const finish = () => {
 let newVal = input.value;
 if (newVal === '') newVal = '0';
 let finalValue = newVal;
+// Ограничение до 99999
+const num = parseFloat(newVal);
+if (!isNaN(num)) {
+if (num > 99999) finalValue = '99999';
+else finalValue = Math.floor(num).toString();
+}
 if (isResist) {
 const runes = parseFloat(newVal);
 const percent = calculateRunesResist(runes);
 finalValue = percent + '%';
 } else if (isKarma) {
-let num = parseInt(newVal);
-if (num < -20) num = -20;
-if (num > 20) num = 20;
-finalValue = num.toString();
+let karmaNum = parseInt(newVal);
+if (karmaNum < -20) karmaNum = -20;
+if (karmaNum > 20) karmaNum = 20;
+finalValue = karmaNum.toString();
 } else {
-const num = parseFloat(newVal);
-if (!isNaN(num)) finalValue = Math.floor(num).toString();
 if (key === 'class_lvl' && parseInt(finalValue) < 1) finalValue = '1';
 }
 valueSpan.textContent = finalValue;
