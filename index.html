@@ -434,29 +434,31 @@ text-align: center;
     pointer-events: none;
 }
 
-/* ПОЛЕ ВВОДА В АКТИВКАХ - ИДЕНТИЧНО ПРОФИЛЮ */
+/* ПОЛЕ ВВОДА В АКТИВКАХ - ПРОЗРАЧНОЕ КАК В ПРОФИЛЕ */
 .stat-input-small {
 position: absolute;
 top: 0;
 left: 0;
 width: 100%;
 height: 100%;
-background: transparent;
-border: none;
+background: transparent !important;
+border: none !important;
+outline: none !important;
 color: var(--text-main);
 font-size: 14px;
 font-weight: 700;
 font-family: inherit;
-padding: 0;
-margin: 0;
+padding: 0 !important;
+margin: 0 !important;
 border-radius: 0;
-outline: none;
 text-align: left;
 direction: ltr;
 z-index: 20;
 box-sizing: border-box;
 -webkit-appearance: none;
 appearance: none;
+-moz-appearance: textfield;
+box-shadow: none !important;
 }
 .stat-input-small::-webkit-outer-spin-button,
 .stat-input-small::-webkit-inner-spin-button {
@@ -465,6 +467,12 @@ appearance: none;
 }
 .stat-input-small[type=number] {
     -moz-appearance: textfield;
+}
+.stat-input-small:focus {
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
 }
 .book-desc {
 font-size: 13px;
