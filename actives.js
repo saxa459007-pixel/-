@@ -26,7 +26,7 @@ const ACTIVE_SKILLS = {
         "calc_damage": function(lvl, vit) {
             return floor((vit / 3) * ((Math.sqrt(lvl*10)/100*1 + 1)));
         },
-        "desc": "Вы восстанавливаете {damage} HP ({heal_percent}% от макс. HP), на столько же снижая кровотечение, и дезориентируете врага, снижая его точность на {accuracy_reduce}% до конца боя.",
+        "desc": "Вы восстанавливаете ({heal_percent}% от макс. HP), на столько же снижая кровотечение, и дезориентируете врага, снижая его точность на {accuracy_reduce}% до конца боя.",
         "params": ["vit"],
         "vopla_bonus": true
     },
