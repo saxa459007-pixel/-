@@ -44,12 +44,11 @@ const PASSIVE_SKILLS = {
     },
     "Исследователь": {
         "calc": function(lvl) {
-            return 0; // Не используется, всё в format
+            // Точная формула из бота
+            return (Math.sqrt(lvl*10)/100 + 1) * 2 - 0.01;
         },
         "desc": "Шанс встретить любого противника в подземелье уменьшен в {result:.2f} раз.",
-        "format": function(lvl) {
-            // ТОЧНАЯ ФОРМУЛА ИЗ БОТА commands.py
-            const result = (Math.sqrt(lvl*10)/100 + 1) * 2 - 0.01;
+        "format": function(result) {
             return { result: result.toFixed(2) };
         }
     },
@@ -234,13 +233,13 @@ const PASSIVE_SKILLS = {
     },
     "Расторопность": {
         "calc": function(lvl) {
-            return 0; // Не используется, всё в format
+            // Точная формула из бота
+            return ((Math.sqrt(lvl*10)/100 + 1) * 2);
         },
         "desc": "Снижает время на добычу руды, разбор завалов и ныряние за осколками в {result_div} раз.",
-        "format": function(lvl) {
-            // ТОЧНАЯ ФОРМУЛА ИЗ БОТА commands.py с округлением вниз до сотых
-            const result_div_value = ((Math.sqrt(lvl*10)/100 + 1) * 2);
-            const result_div = Math.floor(result_div_value * 100) / 100;
+        "format": function(result) {
+            // Округление вниз до сотых как в боте
+            const result_div = Math.floor(result * 100) / 100;
             return { result_div: result_div };
         }
     },
