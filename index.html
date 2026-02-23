@@ -434,31 +434,29 @@ text-align: center;
     pointer-events: none;
 }
 
-/* ПОЛЕ ВВОДА В АКТИВКАХ - ПРОЗРАЧНОЕ КАК В ПРОФИЛЕ */
+/* ПОЛЕ ВВОДА В АКТИВКАХ - ИДЕНТИЧНО ПРОФИЛЮ (БЕЗ РАМОК И ПОДСВЕТКИ) */
 .stat-input-small {
-position: absolute;
-top: 0;
-left: 0;
-width: 100%;
-height: 100%;
-background: transparent !important;
-border: none !important;
-outline: none !important;
-color: var(--text-main);
-font-size: 14px;
-font-weight: 700;
-font-family: inherit;
-padding: 0 !important;
-margin: 0 !important;
-border-radius: 0;
-text-align: left;
-direction: ltr;
-z-index: 20;
-box-sizing: border-box;
--webkit-appearance: none;
-appearance: none;
--moz-appearance: textfield;
-box-shadow: none !important;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border: none;
+    color: var(--text-main);
+    font-size: 14px;
+    font-weight: 700;
+    font-family: inherit;
+    padding: 0;
+    margin: 0;
+    border-radius: 0;
+    outline: none;
+    text-align: left;
+    direction: ltr;
+    z-index: 20;
+    box-sizing: border-box;
+    -webkit-appearance: none;
+    appearance: none;
 }
 .stat-input-small::-webkit-outer-spin-button,
 .stat-input-small::-webkit-inner-spin-button {
@@ -467,12 +465,6 @@ box-shadow: none !important;
 }
 .stat-input-small[type=number] {
     -moz-appearance: textfield;
-}
-.stat-input-small:focus {
-    border: none !important;
-    outline: none !important;
-    box-shadow: none !important;
-    background: transparent !important;
 }
 .book-desc {
 font-size: 13px;
