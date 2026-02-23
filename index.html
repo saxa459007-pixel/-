@@ -369,7 +369,7 @@ color: var(--text-main);
 text-transform: none;
 }
 
-/* СТАТЫ В АКТИВНЫХ КНИГАХ - ФИКСИРОВАННАЯ ШИРИНА */
+/* СТАТЫ В АКТИВНЫХ КНИГАХ - ИДЕНТИЧНО ПРОФИЛЮ */
 .stats-row {
 display: flex;
 gap: 12px;
@@ -396,16 +396,16 @@ background-color: rgba(255, 255, 255, 0.05);
 }
 
 .stat-icon-small {
-font-size: 14px;
+font-size: 18px;
 pointer-events: none;
 flex-shrink: 0;
-width: 16px;
+width: 20px;
 text-align: center;
 }
 
 .stat-value-container-small {
     position: relative;
-    width: 50px; /* ← ФИКСИРОВАННАЯ ШИРИНА ДЛЯ АКТИВОК */
+    width: 55px;
     display: flex;
     justify-content: flex-start;
     align-items: center;
@@ -414,18 +414,19 @@ text-align: center;
 }
 
 .stat-value-small {
+    font-size: 14px;
+    font-weight: 700;
     color: var(--text-main);
-    font-weight: 600;
-    pointer-events: none;
-    min-width: 30px;
-    display: inline-block;
+    padding: 0;
+    margin: 0;
     text-align: left;
+    white-space: nowrap;
     direction: ltr;
-    font-size: 12px;
+    pointer-events: none;
 }
 
 .stat-label-small {
-    font-size: 10px;
+    font-size: 11px;
     color: var(--text-secondary);
     text-transform: lowercase;
     white-space: nowrap;
@@ -433,7 +434,7 @@ text-align: center;
     pointer-events: none;
 }
 
-/* ПОЛЕ ВВОДА В АКТИВКАХ */
+/* ПОЛЕ ВВОДА В АКТИВКАХ - ИДЕНТИЧНО ПРОФИЛЮ */
 .stat-input-small {
 position: absolute;
 top: 0;
@@ -443,13 +444,15 @@ height: 100%;
 background: transparent;
 border: none;
 color: var(--text-main);
-font-size: 12px;
+font-size: 14px;
 font-weight: 700;
-padding: 2px 4px 2px 20px;
+font-family: inherit;
+padding: 0;
+margin: 0;
 border-radius: 0;
+outline: none;
 text-align: left;
 direction: ltr;
-outline: none;
 z-index: 20;
 box-sizing: border-box;
 -webkit-appearance: none;
