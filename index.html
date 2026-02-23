@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>RPG Stats & Books</title>
+<title>RPG Stats & Skills</title>
 <script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
 <style>
 :root {
@@ -115,117 +115,105 @@ z-index: 1000;
 .class-item:last-child { border-bottom: none; }
 .class-item:hover { background-color: rgba(255, 255, 255, 0.1); }
 .class-item.active { color: var(--accent); font-weight: 600; background-color: rgba(88, 101, 242, 0.15); }
-
-/* СТАТЫ В ПРОФИЛЕ - ФИКСИРОВАННАЯ ШИРИНА */
-.stats-grid { 
-    width: 100%; 
-    display: grid; 
-    grid-template-columns: repeat(3, 1fr); 
-    gap: 3px; 
-    padding: 8px 15px; 
-    box-sizing: border-box; 
+.stats-grid {
+width: 100%;
+display: grid;
+grid-template-columns: repeat(3, 1fr);
+gap: 3px;
+padding: 8px 15px;
+box-sizing: border-box;
 }
-
-.stat-cell { 
-    background-color: transparent; 
-    border: none; 
-    border-radius: 0; 
-    padding: 4px 4px; 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    cursor: pointer; 
-    position: relative; 
+.stat-cell {
+background-color: transparent;
+border: none;
+border-radius: 0;
+padding: 4px 4px;
+display: flex;
+align-items: center;
+justify-content: center;
+cursor: pointer;
+position: relative;
 }
-
-.stat-cell:active, .stat-cell:hover { 
-    background-color: transparent; 
+.stat-cell:active, .stat-cell:hover {
+background-color: transparent;
 }
-
 .stat-row {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    pointer-events: none;
-    width: 100%;
-    justify-content: center;
-    direction: ltr;
+display: flex;
+align-items: center;
+gap: 4px;
+pointer-events: none;
+width: 100%;
+justify-content: center;
+direction: ltr;
 }
-
 .stat-icon {
-    font-size: 18px;
-    flex-shrink: 0;
-    width: 20px;
-    text-align: center;
+font-size: 18px;
+flex-shrink: 0;
+width: 20px;
+text-align: center;
 }
-
 .stat-value-container {
-    position: relative;
-    width: 55px;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    gap: 2px;
-    flex-shrink: 0;
+position: relative;
+width: 55px;
+display: flex;
+justify-content: flex-start;
+align-items: center;
+gap: 2px;
+flex-shrink: 0;
 }
-
 .stat-value {
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--text-main);
-    padding: 0;
-    margin: 0;
-    text-align: left;
-    white-space: nowrap;
-    direction: ltr;
+font-size: 14px;
+font-weight: 700;
+color: var(--text-main);
+padding: 0;
+margin: 0;
+text-align: left;
+white-space: nowrap;
+direction: ltr;
 }
-
 .stat-label {
-    font-size: 11px;
-    color: var(--text-secondary);
-    text-transform: lowercase;
-    white-space: nowrap;
-    margin: 0;
+font-size: 11px;
+color: var(--text-secondary);
+text-transform: lowercase;
+white-space: nowrap;
+margin: 0;
 }
-
-/* ПОЛЕ ВВОДА В ПРОФИЛЕ - СТАТИЧНОЕ 100% */
 .stat-input {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: transparent;
-    border: none;
-    color: var(--text-main);
-    font-size: 14px;
-    font-weight: 700;
-    font-family: inherit;
-    padding: 0;
-    margin: 0;
-    border-radius: 0;
-    outline: none;
-    text-align: left;
-    direction: ltr;
-    z-index: 20;
-    box-sizing: border-box;
-    appearance: none;
-    -webkit-appearance: none;
+position: absolute;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background: transparent;
+border: none;
+color: var(--text-main);
+font-size: 14px;
+font-weight: 700;
+font-family: inherit;
+padding: 0;
+margin: 0;
+border-radius: 0;
+outline: none;
+text-align: left;
+direction: ltr;
+z-index: 20;
+box-sizing: border-box;
+appearance: none;
+-webkit-appearance: none;
 }
 .stat-input[type=number] { -moz-appearance: textfield; }
 .stat-input::-webkit-outer-spin-button,
 .stat-input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
+-webkit-appearance: none;
+margin: 0;
 }
-
 .class-result-box { width: 100%; padding: 0 15px; box-sizing: border-box; margin-bottom: 15px; }
 .result-card { background-color: transparent; border: none; border-radius: 0; padding: 12px 0 10px 0; display: flex; align-items: center; box-shadow: none; border-top: 1px solid var(--separator-color); margin-top: 5px; }
 .result-description { font-size: 13px; color: var(--text-secondary); line-height: 1.4; width: 100%; }
 .highlight-class { color: var(--text-main); font-weight: 700; font-size: 13px; margin-right: 4px; }
 .highlight-val { color: var(--text-secondary); font-weight: 600; }
 
-/* --- СТИЛИ ДЛЯ ПОИСКА И СОРТИРОВКИ --- */
+/* === СТИЛИ ДЛЯ ПОИСКА И СОРТИРОВКИ - ОДНА ВЫСОТА === */
 .search-container {
 width: 100%;
 padding: 15px 15px 10px 15px;
@@ -235,35 +223,48 @@ position: sticky;
 top: 54px;
 z-index: 90;
 }
+
 .search-controls {
 display: flex;
 gap: 8px;
-align-items: center;
+align-items: stretch;
+height: 42px;
 }
-.search-input-wrapper {
+
+.search-bar {
 position: relative;
 flex: 1;
-}
-.search-input {
-width: 100%;
+display: flex;
+align-items: stretch;
+height: 100%;
 background-color: var(--input-bg);
 border: 1px solid var(--separator-color);
+border-radius: 6px;
+overflow: hidden;
+}
+
+.search-bar:focus-within {
+border-color: var(--accent);
+}
+
+.search-input {
+flex: 1;
+background: transparent;
+border: none;
 color: var(--text-main);
 font-size: 14px;
-padding: 10px 40px 10px 38px;
-border-radius: 6px;
+padding: 10px 38px 10px 38px;
 outline: none;
-transition: border-color 0.2s;
-box-sizing: border-box;
 font-family: inherit;
+height: 100%;
+box-sizing: border-box;
 }
-.search-input:focus {
-border-color: var(--separator-color);
-}
+
 .search-input::placeholder {
 color: var(--text-secondary);
 opacity: 0.6;
 }
+
 .search-icon {
 position: absolute;
 left: 10px;
@@ -273,10 +274,12 @@ width: 18px;
 height: 18px;
 fill: var(--text-secondary);
 pointer-events: none;
+z-index: 2;
 }
+
 .clear-btn {
 position: absolute;
-right: 8px;
+right: 42px;
 top: 50%;
 transform: translateY(-50%);
 width: 24px;
@@ -290,22 +293,59 @@ align-items: center;
 justify-content: center;
 padding: 0;
 transition: background 0.2s;
-z-index: 10;
+z-index: 3;
 }
+
 .clear-btn.visible {
 display: flex;
 }
+
 .clear-btn:hover {
 background-color: rgba(255, 255, 255, 0.1);
 }
+
 .clear-btn svg {
 width: 14px;
 height: 14px;
 fill: var(--text-secondary);
 }
+
 .clear-btn:hover svg {
 fill: var(--text-main);
 }
+
+.bulk-level-btn {
+background: transparent;
+border: none;
+color: var(--text-secondary);
+padding: 0 12px;
+cursor: pointer;
+display: flex;
+align-items: center;
+justify-content: center;
+transition: all 0.2s;
+flex-shrink: 0;
+height: 100%;
+}
+
+.bulk-level-btn:hover {
+background-color: rgba(255,255,255,0.05);
+color: var(--text-main);
+}
+
+.bulk-level-btn:active {
+background-color: rgba(88, 101, 242, 0.2);
+}
+
+.bulk-level-btn svg {
+width: 20px;
+height: 20px;
+fill: none;
+stroke: currentColor;
+stroke-width: 2;
+stroke-linecap: round;
+}
+
 .sort-btn {
 background-color: var(--input-bg);
 border: 1px solid var(--separator-color);
@@ -320,16 +360,129 @@ gap: 6px;
 transition: all 0.2s;
 white-space: nowrap;
 font-family: inherit;
+height: 100%;
+min-width: 42px;
 }
+
 .sort-btn:hover {
 background-color: rgba(255,255,255,0.05);
 color: var(--text-main);
 }
+
 .sort-btn svg {
 width: 20px;
 height: 20px;
 fill: currentColor;
 }
+
+/* === КОМПАКТНОЕ МОДАЛЬНОЕ ОКНО === */
+.modal-overlay {
+display: none;
+position: fixed;
+top: 0;
+left: 0;
+right: 0;
+bottom: 0;
+background-color: rgba(0, 0, 0, 0.7);
+z-index: 1000;
+align-items: center;
+justify-content: center;
+padding: 20px;
+}
+
+.modal-overlay.show {
+display: flex;
+}
+
+.modal-container {
+background-color: var(--card-bg);
+border-radius: 8px;
+padding: 16px;
+width: 100%;
+max-width: 280px;
+box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+animation: modalSlideIn 0.2s ease-out;
+}
+
+@keyframes modalSlideIn {
+from {
+opacity: 0;
+transform: translateY(-20px);
+}
+to {
+opacity: 1;
+transform: translateY(0);
+}
+}
+
+.modal-title {
+font-size: 15px;
+font-weight: 600;
+color: var(--text-main);
+margin: 0 0 12px 0;
+text-align: center;
+}
+
+.modal-input-wrapper {
+display: flex;
+align-items: center;
+gap: 8px;
+margin-bottom: 12px;
+}
+
+.modal-input {
+flex: 1;
+background-color: var(--input-bg);
+border: 1px solid var(--separator-color);
+color: var(--text-main);
+font-size: 16px;
+padding: 10px;
+border-radius: 6px;
+outline: none;
+text-align: center;
+font-weight: 600;
+}
+
+.modal-input:focus {
+border-color: var(--accent);
+}
+
+.modal-buttons {
+display: flex;
+gap: 8px;
+}
+
+.modal-btn {
+flex: 1;
+padding: 10px;
+border: none;
+border-radius: 6px;
+font-size: 13px;
+font-weight: 600;
+cursor: pointer;
+transition: all 0.2s;
+font-family: inherit;
+}
+
+.modal-btn-cancel {
+background-color: var(--input-bg);
+color: var(--text-secondary);
+}
+
+.modal-btn-cancel:hover {
+background-color: rgba(255, 255, 255, 0.1);
+color: var(--text-main);
+}
+
+.modal-btn-apply {
+background-color: var(--accent);
+color: white;
+}
+
+.modal-btn-apply:hover {
+background-color: #4752c4;
+}
+
 .no-results {
 text-align: center;
 color: var(--text-secondary);
@@ -337,11 +490,13 @@ padding: 20px;
 font-size: 14px;
 display: none;
 }
+
 .books-list {
 width: 100%;
 padding: 0;
 box-sizing: border-box;
 }
+
 .book-item {
 background-color: transparent;
 border: none;
@@ -353,15 +508,18 @@ flex-direction: column;
 gap: 6px;
 border-bottom: 1px solid var(--separator-color);
 }
+
 .book-item:last-child {
 border-bottom: none;
 }
+
 .book-header {
 display: flex;
 justify-content: space-between;
 align-items: center;
 margin-bottom: 2px;
 }
+
 .book-name {
 font-size: 15px;
 font-weight: 700;
@@ -369,7 +527,6 @@ color: var(--text-main);
 text-transform: none;
 }
 
-/* СТАТЫ В АКТИВНЫХ КНИГАХ - ИДЕНТИЧНО ПРОФИЛЮ */
 .stats-row {
 display: flex;
 gap: 12px;
@@ -404,68 +561,70 @@ text-align: center;
 }
 
 .stat-value-container-small {
-    position: relative;
-    width: 55px;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    gap: 2px;
-    flex-shrink: 0;
+position: relative;
+width: 55px;
+display: flex;
+justify-content: flex-start;
+align-items: center;
+gap: 2px;
+flex-shrink: 0;
 }
 
 .stat-value-small {
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--text-main);
-    padding: 0;
-    margin: 0;
-    text-align: left;
-    white-space: nowrap;
-    direction: ltr;
-    pointer-events: none;
+font-size: 14px;
+font-weight: 700;
+color: var(--text-main);
+padding: 0;
+margin: 0;
+text-align: left;
+white-space: nowrap;
+direction: ltr;
+pointer-events: none;
 }
 
 .stat-label-small {
-    font-size: 11px;
-    color: var(--text-secondary);
-    text-transform: lowercase;
-    white-space: nowrap;
-    margin: 0;
-    pointer-events: none;
+font-size: 11px;
+color: var(--text-secondary);
+text-transform: lowercase;
+white-space: nowrap;
+margin: 0;
+pointer-events: none;
 }
 
-/* ПОЛЕ ВВОДА В АКТИВКАХ - ИДЕНТИЧНО ПРОФИЛЮ (БЕЗ РАМОК И ПОДСВЕТКИ) */
 .stat-input-small {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: transparent;
-    border: none;
-    color: var(--text-main);
-    font-size: 14px;
-    font-weight: 700;
-    font-family: inherit;
-    padding: 0;
-    margin: 0;
-    border-radius: 0;
-    outline: none;
-    text-align: left;
-    direction: ltr;
-    z-index: 20;
-    box-sizing: border-box;
-    -webkit-appearance: none;
-    appearance: none;
+position: absolute;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background: transparent;
+border: none;
+color: var(--text-main);
+font-size: 14px;
+font-weight: 700;
+font-family: inherit;
+padding: 0;
+margin: 0;
+border-radius: 0;
+outline: none;
+text-align: left;
+direction: ltr;
+z-index: 20;
+box-sizing: border-box;
+-webkit-appearance: none;
+appearance: none;
 }
+
 .stat-input-small::-webkit-outer-spin-button,
 .stat-input-small::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
+-webkit-appearance: none;
+margin: 0;
 }
+
 .stat-input-small[type=number] {
-    -moz-appearance: textfield;
+-moz-appearance: textfield;
 }
+
 .book-desc {
 font-size: 13px;
 color: var(--text-secondary);
@@ -474,10 +633,12 @@ white-space: pre-line;
 margin-bottom: 4px;
 padding-right: 10px;
 }
+
 .book-val {
 color: var(--text-main);
 font-weight: 600;
 }
+
 .book-footer {
 display: flex;
 justify-content: space-between;
@@ -486,6 +647,7 @@ margin-top: 2px;
 padding-top: 6px;
 width: 100%;
 }
+
 .left-group {
 display: flex;
 align-items: center;
@@ -494,7 +656,6 @@ max-width: calc(100% - 120px);
 flex-shrink: 1;
 }
 
-/* УРОВЕНЬ КНИГ - ВПРИТЫК К ЧИСЛУ */
 .book-level-wrapper {
 display: flex;
 align-items: center;
@@ -502,6 +663,7 @@ gap: 0;
 max-width: 100%;
 flex-wrap: nowrap;
 }
+
 .book-level-input {
 background: transparent;
 border: none;
@@ -519,11 +681,13 @@ flex-shrink: 1;
 flex-grow: 0;
 margin: 0;
 }
+
 .book-level-input::-webkit-outer-spin-button,
 .book-level-input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
+-webkit-appearance: none;
+margin: 0;
 }
+
 .book-level-unit {
 color: var(--text-secondary);
 font-size: 13px;
@@ -533,12 +697,14 @@ margin: 0;
 padding: 0;
 margin-left: -2px;
 }
+
 .book-percent {
 color: var(--text-secondary);
 font-size: 12px;
 white-space: nowrap;
 flex-shrink: 0;
 }
+
 .book-price {
 color: var(--gold);
 font-weight: 500;
@@ -547,7 +713,6 @@ flex-shrink: 0;
 margin-left: auto;
 }
 
-/* Стили для подвала */
 .app-footer {
 width: 100%;
 max-width: 500px;
@@ -558,21 +723,25 @@ text-align: center;
 box-sizing: border-box;
 background-color: var(--bg-color);
 }
+
 .footer-text {
 font-size: 12px;
 color: var(--text-secondary);
 line-height: 1.6;
 }
+
 .footer-link {
 color: var(--text-main);
 text-decoration: none;
 font-weight: 500;
 transition: color 0.2s;
 }
+
 .footer-link:hover {
 color: var(--accent);
 text-decoration: underline;
 }
+
 .hidden {
 display: none !important;
 }
@@ -591,6 +760,7 @@ display: none !important;
 </div>
 </div>
 <div class="content-container">
+
 <!-- СТРАНИЦА ПРОФИЛЯ -->
 <div id="page-profile" class="page active">
 <div class="profile-card">
@@ -625,11 +795,12 @@ display: none !important;
 </div>
 </div>
 </div>
+
 <!-- СТРАНИЦА АКТИВНЫХ УМЕНИЙ -->
 <div id="page-active" class="page">
 <div class="search-container">
 <div class="search-controls">
-<div class="search-input-wrapper">
+<div class="search-bar">
 <svg class="search-icon" viewBox="0 0 24 24">
 <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
 </svg>
@@ -637,6 +808,17 @@ display: none !important;
 <button class="clear-btn" id="clearActiveSearchBtn" onclick="clearActiveSearch()" aria-label="Очистить поиск">
 <svg viewBox="0 0 24 24">
 <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+</svg>
+</button>
+<button class="bulk-level-btn" onclick="openBulkLevelModal('active')" title="Установить уровень для всех">
+<svg viewBox="0 0 24 24">
+<line x1="4" y1="5" x2="16" y2="5"></line>
+<line x1="4" y1="12" x2="10" y2="12"></line>
+<line x1="14" y1="12" x2="20" y2="12"></line>
+<line x1="8" y1="19" x2="20" y2="19"></line>
+<circle cx="18" cy="5" r="2"></circle>
+<circle cx="12" cy="12" r="2"></circle>
+<circle cx="6" cy="19" r="2"></circle>
 </svg>
 </button>
 </div>
@@ -653,11 +835,12 @@ display: none !important;
 <div class="books-list" id="activeBooksContainer"></div>
 <div class="no-results" id="activeNoResultsMsg">Активные умения не найдены</div>
 </div>
-<!-- СТРАНИЦА ПАССИВНЫХ КНИГ -->
+
+<!-- СТРАНИЦА ПАССИВНЫХ УМЕНИЙ -->
 <div id="page-passive" class="page">
 <div class="search-container">
 <div class="search-controls">
-<div class="search-input-wrapper">
+<div class="search-bar">
 <svg class="search-icon" viewBox="0 0 24 24">
 <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
 </svg>
@@ -665,6 +848,17 @@ display: none !important;
 <button class="clear-btn" id="clearPassiveSearchBtn" onclick="clearPassiveSearch()" aria-label="Очистить поиск">
 <svg viewBox="0 0 24 24">
 <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+</svg>
+</button>
+<button class="bulk-level-btn" onclick="openBulkLevelModal('passive')" title="Установить уровень для всех">
+<svg viewBox="0 0 24 24">
+<line x1="4" y1="5" x2="16" y2="5"></line>
+<line x1="4" y1="12" x2="10" y2="12"></line>
+<line x1="14" y1="12" x2="20" y2="12"></line>
+<line x1="8" y1="19" x2="20" y2="19"></line>
+<circle cx="18" cy="5" r="2"></circle>
+<circle cx="12" cy="12" r="2"></circle>
+<circle cx="6" cy="19" r="2"></circle>
 </svg>
 </button>
 </div>
@@ -679,9 +873,25 @@ display: none !important;
 </div>
 </div>
 <div class="books-list" id="passiveBooksContainer"></div>
-<div class="no-results" id="passiveNoResultsMsg">Пассивные книги не найдены</div>
+<div class="no-results" id="passiveNoResultsMsg">Пассивные умения не найдены</div>
+</div>
+
+</div>
+
+<!-- КОМПАКТНОЕ МОДАЛЬНОЕ ОКНО ДЛЯ МАССОВОГО ИЗМЕНЕНИЯ УРОВНЯ -->
+<div class="modal-overlay" id="bulkLevelModal">
+<div class="modal-container">
+<h3 class="modal-title" id="modalTitle">Уровень для всех</h3>
+<div class="modal-input-wrapper">
+<input type="number" class="modal-input" id="bulkLevelInput" placeholder="0" min="0" max="99999">
+</div>
+<div class="modal-buttons">
+<button class="modal-btn modal-btn-cancel" onclick="closeBulkLevelModal()">Отмена</button>
+<button class="modal-btn modal-btn-apply" onclick="applyBulkLevel()">OK</button>
 </div>
 </div>
+</div>
+
 <!-- ПОДВАЛ С ССЫЛКАМИ -->
 <div class="app-footer">
 <div class="footer-text">
@@ -693,6 +903,7 @@ display: none !important;
 <a href="https://vk.com/r_i_d_l_e" target="_blank" rel="noopener noreferrer" class="footer-link">Александр Кулаковский</a>
 </div>
 </div>
+
 <script src="passives.js"></script>
 <script src="actives.js"></script>
 <script src="prices.js"></script>
@@ -717,7 +928,6 @@ const CLASS_KEY = 'rpg_class_final_verified_v8';
 const BOOKS_LVL_KEY = 'rpg_books_levels_final_verified_v8';
 const ACTIVE_BOOKS_LVL_KEY = 'rpg_active_books_levels_final_verified_v8';
 const VK_STORAGE_KEY = 'rpg_complete_user_data_v1';
-
 const PASSIVE_ORDER = [
 "Барьер",
 "Быстрое восстановление",
@@ -772,115 +982,215 @@ let passiveSortByAlphabet = false;
 let activeSortByAlphabet = false;
 
 // ========== ФУНКЦИИ ДЛЯ РАБОТЫ С VK CLOUD STORAGE ==========
-
-// Сохранение всех данных пользователя в облако VK
 async function saveAllDataToVK() {
-    try {
-        // Собираем все данные
-        const stats = {};
-        document.querySelectorAll('.stat-value').forEach(el => {
-            stats[el.dataset.key] = el.textContent;
-        });
-        
-        const classData = localStorage.getItem(CLASS_KEY) || "жнец душ";
-        
-        const passiveBooks = JSON.parse(localStorage.getItem(BOOKS_LVL_KEY) || '{}');
-        const activeBooks = JSON.parse(localStorage.getItem(ACTIVE_BOOKS_LVL_KEY) || '{}');
-        
-        // Формируем объект для сохранения
-        const userData = {
-            stats: stats,
-            class: classData,
-            books: {
-                passive: passiveBooks,
-                active: activeBooks
-            },
-            lastSave: Date.now(),
-            version: '1.0'
-        };
-        
-        // Сохраняем в VK Storage
-        await vkBridge.send('VKWebAppStorageSet', {
-            key: VK_STORAGE_KEY,
-            value: JSON.stringify(userData)
-        });
-        
-        console.log('✅ Данные сохранены в облако VK');
-        return true;
-    } catch (error) {
-        console.log('❌ Ошибка сохранения в VK:', error);
-        return false;
-    }
+try {
+const stats = {};
+document.querySelectorAll('.stat-value').forEach(el => {
+stats[el.dataset.key] = el.textContent;
+});
+const classData = localStorage.getItem(CLASS_KEY) || "жнец душ";
+const passiveBooks = JSON.parse(localStorage.getItem(BOOKS_LVL_KEY) || '{}');
+const activeBooks = JSON.parse(localStorage.getItem(ACTIVE_BOOKS_LVL_KEY) || '{}');
+const userData = {
+stats: stats,
+class: classData,
+books: {
+passive: passiveBooks,
+active: activeBooks
+},
+lastSave: Date.now(),
+version: '1.0'
+};
+await vkBridge.send('VKWebAppStorageSet', {
+key: VK_STORAGE_KEY,
+value: JSON.stringify(userData)
+});
+console.log('✅ Данные сохранены в облако VK');
+return true;
+} catch (error) {
+console.log('❌ Ошибка сохранения в VK:', error);
+return false;
+}
 }
 
-// Загрузка всех данных пользователя из облака VK
 async function loadAllDataFromVK() {
-    try {
-        const response = await vkBridge.send('VKWebAppStorageGet', {
-            keys: [VK_STORAGE_KEY]
-        });
-        
-        if (response.keys && response.keys[0] && response.keys[0].value) {
-            const userData = JSON.parse(response.keys[0].value);
-            
-            // Восстанавливаем статистику
-            if (userData.stats) {
-                Object.entries(userData.stats).forEach(([key, value]) => {
-                    const el = document.querySelector(`.stat-value[data-key="${key}"]`);
-                    if (el) el.textContent = value;
-                });
-            }
-            
-            // Восстанавливаем класс
-            if (userData.class) {
-                localStorage.setItem(CLASS_KEY, userData.class);
-                triggerBtn.textContent = userData.class;
-            }
-            
-            // Восстанавливаем книги
-            if (userData.books) {
-                if (userData.books.passive) {
-                    localStorage.setItem(BOOKS_LVL_KEY, JSON.stringify(userData.books.passive));
-                }
-                if (userData.books.active) {
-                    localStorage.setItem(ACTIVE_BOOKS_LVL_KEY, JSON.stringify(userData.books.active));
-                }
-            }
-            
-            // Обновляем дату
-            localStorage.setItem(DATE_KEY, Date.now().toString());
-            
-            console.log('✅ Данные загружены из облака VK');
-            
-            // Обновляем интерфейс
-            updateClassResult();
-            updateKarmaIcon();
-            
-            return true;
-        }
-        return false;
-    } catch (error) {
-        console.log('❌ Ошибка загрузки из VK:', error);
-        return false;
-    }
+try {
+const response = await vkBridge.send('VKWebAppStorageGet', {
+keys: [VK_STORAGE_KEY]
+});
+if (response.keys && response.keys[0] && response.keys[0].value) {
+const userData = JSON.parse(response.keys[0].value);
+if (userData.stats) {
+Object.entries(userData.stats).forEach(([key, value]) => {
+const el = document.querySelector(`.stat-value[data-key="${key}"]`);
+if (el) el.textContent = value;
+});
+}
+if (userData.class) {
+localStorage.setItem(CLASS_KEY, userData.class);
+triggerBtn.textContent = userData.class;
+}
+if (userData.books) {
+if (userData.books.passive) {
+localStorage.setItem(BOOKS_LVL_KEY, JSON.stringify(userData.books.passive));
+}
+if (userData.books.active) {
+localStorage.setItem(ACTIVE_BOOKS_LVL_KEY, JSON.stringify(userData.books.active));
+}
+}
+localStorage.setItem(DATE_KEY, Date.now().toString());
+console.log('✅ Данные загружены из облака VK');
+updateClassResult();
+updateKarmaIcon();
+return true;
+}
+return false;
+} catch (error) {
+console.log('❌ Ошибка загрузки из VK:', error);
+return false;
+}
 }
 
-// ========== СОХРАНЕНИЕ ПРИ ВЫХОДЕ ==========
-
-// Сохраняем при закрытии/перезагрузке страницы
 window.addEventListener('beforeunload', function() {
-    saveAllDataToVK();
+saveAllDataToVK();
 });
 
-// Для мобильных устройств - при сворачивании приложения
 document.addEventListener('visibilitychange', function() {
-    if (document.visibilityState === 'hidden') {
-        saveAllDataToVK();
-    }
+if (document.visibilityState === 'hidden') {
+saveAllDataToVK();
+}
+});
+
+// ========== ФУНКЦИИ ДЛЯ МАССОВОГО ИЗМЕНЕНИЯ УРОВНЯ ==========
+let currentBulkTab = 'active';
+
+window.openBulkLevelModal = function(tab) {
+currentBulkTab = tab;
+const modal = document.getElementById('bulkLevelModal');
+const title = document.getElementById('modalTitle');
+const input = document.getElementById('bulkLevelInput');
+
+if (tab === 'active') {
+title.textContent = 'Уровень для всех активных';
+} else {
+title.textContent = 'Уровень для всех пассивных';
+}
+
+input.value = '';
+modal.classList.add('show');
+setTimeout(() => input.focus(), 100);
+};
+
+window.closeBulkLevelModal = function() {
+const modal = document.getElementById('bulkLevelModal');
+modal.classList.remove('show');
+currentBulkTab = 'active';
+};
+
+window.applyBulkLevel = function() {
+const input = document.getElementById('bulkLevelInput');
+const level = parseInt(input.value);
+
+if (isNaN(level) || level < 0) {
+alert('Введите уровень (0 или больше)');
+return;
+}
+
+if (level > 99999) {
+alert('Макс. уровень: 99999');
+return;
+}
+
+if (currentBulkTab === 'active') {
+applyBulkLevelToActive(level);
+} else {
+applyBulkLevelToPassive(level);
+}
+
+closeBulkLevelModal();
+};
+
+function applyBulkLevelToActive(level) {
+const savedLevels = JSON.parse(localStorage.getItem(ACTIVE_BOOKS_LVL_KEY) || '{}');
+const items = document.querySelectorAll('#activeBooksContainer .book-item');
+
+items.forEach(item => {
+const bookName = item.dataset.bookName;
+const input = item.querySelector('.book-level-input');
+
+savedLevels[Object.keys(ACTIVE_SKILLS).find(key => key.toLowerCase() === bookName)] = level;
+
+if (input) {
+input.value = level;
+const font = window.getComputedStyle(input).font;
+const width = measureTextWidth(input.value || '1', font, 2);
+input.style.width = (width + 2) + 'px';
+}
+
+const fullName = Object.keys(ACTIVE_SKILLS).find(key => key.toLowerCase() === bookName);
+if (fullName) {
+updateActiveBookDescription(item, fullName, level);
+updateActiveBookPrice(item, fullName, level);
+}
+});
+
+localStorage.setItem(ACTIVE_BOOKS_LVL_KEY, JSON.stringify(savedLevels));
+localStorage.setItem(DATE_KEY, Date.now().toString());
+}
+
+function applyBulkLevelToPassive(level) {
+const savedLevels = JSON.parse(localStorage.getItem(BOOKS_LVL_KEY) || '{}');
+const items = document.querySelectorAll('#passiveBooksContainer .book-item');
+
+items.forEach(item => {
+const bookName = item.dataset.bookName;
+const input = item.querySelector('.book-level-input');
+
+savedLevels[Object.keys(PASSIVE_SKILLS).find(key => key.toLowerCase() === bookName)] = level;
+
+if (input) {
+input.value = level;
+const font = window.getComputedStyle(input).font;
+const width = measureTextWidth(input.value || '1', font, 2);
+input.style.width = (width + 2) + 'px';
+}
+
+const fullName = Object.keys(PASSIVE_SKILLS).find(key => key.toLowerCase() === bookName);
+if (fullName) {
+updatePassiveBookDescription(item, fullName, level);
+updatePassiveBookPrice(item, fullName, level);
+}
+});
+
+localStorage.setItem(BOOKS_LVL_KEY, JSON.stringify(savedLevels));
+localStorage.setItem(DATE_KEY, Date.now().toString());
+}
+
+document.addEventListener('click', function(e) {
+const modal = document.getElementById('bulkLevelModal');
+if (e.target === modal) {
+closeBulkLevelModal();
+}
+});
+
+document.addEventListener('keydown', function(e) {
+if (e.key === 'Escape') {
+closeBulkLevelModal();
+}
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+const input = document.getElementById('bulkLevelInput');
+if (input) {
+input.addEventListener('keydown', function(e) {
+if (e.key === 'Enter') {
+applyBulkLevel();
+}
+});
+}
 });
 
 // ========== ОСТАЛЬНЫЕ ФУНКЦИИ ==========
-
 function measureTextWidth(text, font, padding = 0) {
 const span = document.createElement('span');
 span.style.font = font;
@@ -970,7 +1280,6 @@ item.classList.toggle('active', item.textContent === cls);
 listDiv.classList.remove('show');
 triggerBtn.classList.remove('open');
 updateClassResult();
-// В VK сохранится при выходе
 };
 
 document.addEventListener('click', function(e) {
@@ -1086,7 +1395,6 @@ return '?';
 }
 }
 
-// Функция для редактирования статов в активных книгах
 window.editActiveStat = function(event, element, statKey) {
 event.preventDefault();
 event.stopPropagation();
@@ -1100,48 +1408,39 @@ const input = document.createElement('input');
 input.type = 'number';
 input.value = currentVal === '0' ? '' : currentVal;
 input.className = 'stat-input-small';
-
 input.maxLength = 5;
 input.max = '99999';
-
 input.addEventListener('input', function() {
-    if (this.value.length > 5) {
-        this.value = this.value.slice(0, 5);
-    }
+if (this.value.length > 5) {
+this.value = this.value.slice(0, 5);
+}
 });
-
 valueSpan.style.visibility = 'hidden';
 if (labelSpan) labelSpan.style.visibility = 'hidden';
 valueContainer.appendChild(input);
 input.focus();
 input.select();
-
 const finish = () => {
 let newVal = input.value;
 if (newVal === '') newVal = '0';
 let finalValue = newVal;
 const num = parseFloat(newVal);
 if (!isNaN(num)) {
-    if (num > 99999) finalValue = '99999';
-    else finalValue = Math.floor(num).toString();
+if (num > 99999) finalValue = '99999';
+else finalValue = Math.floor(num).toString();
 }
-
 if (key === 'str' || key === 'agi' || key === 'vit') {
-    if (parseInt(finalValue) < 3) finalValue = '3';
+if (parseInt(finalValue) < 3) finalValue = '3';
 }
-
 valueSpan.textContent = finalValue;
 valueSpan.style.visibility = 'visible';
 if (labelSpan) labelSpan.style.visibility = 'visible';
 input.remove();
-
 const profileStat = document.querySelector(`.stat-value[data-key="${key}"]`);
 if (profileStat) {
 profileStat.textContent = finalValue;
 }
-
 saveStats();
-
 const items = document.querySelectorAll('#activeBooksContainer .book-item');
 const stats = getStatsFromProfile();
 items.forEach(item => {
@@ -1467,7 +1766,6 @@ updatePassiveBookPrice(item, name, newLevel);
 break;
 }
 }
-// В VK сохранится при выходе
 };
 
 window.togglePassiveSort = function() {
@@ -1710,7 +2008,6 @@ updateActiveBookPrice(item, name, newLevel);
 break;
 }
 }
-// В VK сохранится при выходе
 };
 
 window.toggleActiveSort = function() {
@@ -1802,7 +2099,6 @@ localStorage.setItem(DB_KEY, JSON.stringify(data));
 localStorage.setItem(DATE_KEY, Date.now().toString());
 updateClassResult();
 updateKarmaIcon();
-// В VK сохранится при выходе
 }
 
 function loadStats() {
@@ -1816,7 +2112,6 @@ updateClassResult();
 updateKarmaIcon();
 }
 
-// Функция для редактирования статов в профиле
 window.editStatByCell = function(cellElement, isResist = false, isKarma = false) {
 const valueContainer = cellElement.querySelector('.stat-value-container');
 const valueSpan = valueContainer.querySelector('.stat-value');
@@ -1829,22 +2124,18 @@ const input = document.createElement('input');
 input.type = 'number';
 input.value = cleanVal === '0' ? '' : cleanVal;
 input.className = 'stat-input';
-
 input.maxLength = 5;
 input.max = '99999';
-
 input.addEventListener('input', function() {
-    if (this.value.length > 5) {
-        this.value = this.value.slice(0, 5);
-    }
+if (this.value.length > 5) {
+this.value = this.value.slice(0, 5);
+}
 });
-
 valueSpan.style.visibility = 'hidden';
 if (labelSpan) labelSpan.style.visibility = 'hidden';
 valueContainer.appendChild(input);
 input.focus();
 input.select();
-
 const finish = () => {
 let newVal = input.value;
 if (newVal === '') newVal = '0';
@@ -1878,7 +2169,6 @@ input.remove();
 if (isKarma) updateKarmaIcon();
 saveStats();
 };
-
 input.onblur = finish;
 input.onkeydown = e => {
 if(e.key === 'Enter') {
@@ -1891,63 +2181,51 @@ return false;
 input.onclick = e => e.stopPropagation();
 }
 
-// Функция инициализации списка классов
 function initClassList() {
-    const saved = localStorage.getItem(CLASS_KEY) || "жнец душ";
-    triggerBtn.textContent = saved;
-    listDiv.innerHTML = '';
-    Object.keys(CLASS_CONFIG).forEach(cls => {
-        const div = document.createElement('div');
-        div.className = 'class-item';
-        if (cls === saved) div.classList.add('active');
-        div.textContent = cls;
-        div.onclick = function(e) {
-            e.stopPropagation();
-            selectClass(cls);
-        };
-        listDiv.appendChild(div);
-    });
-    updateClassResult();
+const saved = localStorage.getItem(CLASS_KEY) || "жнец душ";
+triggerBtn.textContent = saved;
+listDiv.innerHTML = '';
+Object.keys(CLASS_CONFIG).forEach(cls => {
+const div = document.createElement('div');
+div.className = 'class-item';
+if (cls === saved) div.classList.add('active');
+div.textContent = cls;
+div.onclick = function(e) {
+e.stopPropagation();
+selectClass(cls);
+};
+listDiv.appendChild(div);
+});
+updateClassResult();
 }
 
 window.onload = async () => {
-    checkReset();
-
-    try {
-        await vkBridge.send('VKWebAppInit');
-        console.log('VK Bridge инициализирован успешно');
-        await loadVKUserData();
-
-        // Пробуем загрузить данные из облака VK
-        const loaded = await loadAllDataFromVK();
-        if (!loaded) {
-            // Если нет облачных данных, загружаем из localStorage
-            loadStats();
-            // Инициализируем класс из localStorage
-            const savedClass = localStorage.getItem(CLASS_KEY);
-            if (savedClass) {
-                triggerBtn.textContent = savedClass;
-            }
-        } else {
-            // Если загрузили из VK, обновляем localStorage
-            saveStats();
-        }
-
-        // Обновляем список классов
-        initClassList();
-
-    } catch (error) {
-        console.log('Ошибка инициализации VK Bridge:', error);
-        document.getElementById('user-name').textContent = 'Тестовый пользователь';
-        // Загружаем из localStorage как запасной вариант
-        loadStats();
-        // Всё равно инициализируем классы
-        const savedClass = localStorage.getItem(CLASS_KEY);
-        if (savedClass) {
-            triggerBtn.textContent = savedClass;
-        }
-        initClassList();
-    }
+checkReset();
+try {
+await vkBridge.send('VKWebAppInit');
+console.log('VK Bridge инициализирован успешно');
+await loadVKUserData();
+const loaded = await loadAllDataFromVK();
+if (!loaded) {
+loadStats();
+const savedClass = localStorage.getItem(CLASS_KEY);
+if (savedClass) {
+triggerBtn.textContent = savedClass;
+}
+} else {
+saveStats();
+}
+initClassList();
+} catch (error) {
+console.log('Ошибка инициализации VK Bridge:', error);
+document.getElementById('user-name').textContent = 'Тестовый пользователь';
+loadStats();
+const savedClass = localStorage.getItem(CLASS_KEY);
+if (savedClass) {
+triggerBtn.textContent = savedClass;
+}
+initClassList();
+}
 };
 </script>
 </body>
