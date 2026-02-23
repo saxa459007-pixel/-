@@ -1295,7 +1295,7 @@ booksArray.push([name, data]);
 }
 }
 for (const [name, data] of booksArray) {
-const lvl = savedLevels[name] || 1;
+const lvl = savedLevels[name] || 0;
 let result = data.calc(lvl);
 let formatData;
 if (data.format) {
@@ -1344,7 +1344,7 @@ const levelInput = document.createElement('input');
 levelInput.type = 'number';
 levelInput.className = 'book-level-input';
 levelInput.value = lvl;
-levelInput.min = '1';
+levelInput.min = '0';
 levelInput.setAttribute('form', 'off');
 levelInput.setAttribute('autocomplete', 'off');
 levelInput.setAttribute('autocorrect', 'off');
@@ -1448,7 +1448,7 @@ console.log('Ошибка обновления цены для', bookName);
 
 window.updatePassiveBookLevel = function(name, value) {
 const savedLevels = JSON.parse(localStorage.getItem(BOOKS_LVL_KEY) || '{}');
-const newLevel = parseInt(value) || 1;
+const newLevel = parseInt(value) || 0;
 if (savedLevels[name] === newLevel) return;
 savedLevels[name] = newLevel;
 localStorage.setItem(BOOKS_LVL_KEY, JSON.stringify(savedLevels));
@@ -1543,7 +1543,7 @@ booksArray.sort((a, b) => a[0].localeCompare(b[0], 'ru'));
 }
 const stats = getStatsFromProfile();
 for (const [name, data] of booksArray) {
-const lvl = savedLevels[name] || 1;
+const lvl = savedLevels[name] || 0;
 const desc = getSkillDescription(name, lvl, stats);
 const statsString = getStatsString(name, stats);
 const effectPercent = data.calc ? data.calc(lvl) : 0;
@@ -1584,7 +1584,7 @@ const levelInput = document.createElement('input');
 levelInput.type = 'number';
 levelInput.className = 'book-level-input';
 levelInput.value = lvl;
-levelInput.min = '1';
+levelInput.min = '0';
 levelInput.setAttribute('form', 'off');
 levelInput.setAttribute('autocomplete', 'off');
 levelInput.setAttribute('autocorrect', 'off');
@@ -1691,7 +1691,7 @@ console.log('Ошибка обновления цены для', bookName);
 
 window.updateActiveBookLevel = function(name, value) {
 const savedLevels = JSON.parse(localStorage.getItem(ACTIVE_BOOKS_LVL_KEY) || '{}');
-const newLevel = parseInt(value) || 1;
+const newLevel = parseInt(value) || 0;
 if (savedLevels[name] === newLevel) return;
 savedLevels[name] = newLevel;
 localStorage.setItem(ACTIVE_BOOKS_LVL_KEY, JSON.stringify(savedLevels));
