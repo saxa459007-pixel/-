@@ -1133,8 +1133,7 @@ case "Слабое исцеление":
 const heal_percent = Math.floor(mult / 4);
 const accuracy_reduce = Math.floor(heal_percent / 5);
 desc = desc.replace('{heal_percent}', `<span class="book-val">${heal_percent}</span>`)
-.replace('{accuracy_reduce}', `<span class="book-val">${accuracy_reduce}</span>`)
-.replace('{damage}', `<span class="book-val">${damage}</span>`);
+.replace('{accuracy_reduce}', `<span class="book-val">${accuracy_reduce}</span>`);
 break;
 case "Удар вампира":
 const regen = Math.ceil(damage / 15);
