@@ -1004,6 +1004,18 @@ const input = document.createElement('input');
 input.type = 'number';
 input.value = currentVal === '0' ? '' : currentVal;
 input.className = 'stat-input-small';
+
+// ⬇️ ОГРАНИЧЕНИЕ НА 5 СИМВОЛОВ / 99999 (КАК В ПРОФИЛЕ) ⬇️
+input.maxLength = 5;
+input.max = '99999';
+
+// Блокировка ввода более 5 символов
+input.addEventListener('input', function() {
+    if (this.value.length > 5) {
+        this.value = this.value.slice(0, 5);
+    }
+});
+
 valueSpan.style.visibility = 'hidden';
 if (labelSpan) labelSpan.style.visibility = 'hidden';
 valueContainer.appendChild(input);
@@ -1014,8 +1026,11 @@ const finish = () => {
 let newVal = input.value;
 if (newVal === '') newVal = '0';
 let finalValue = newVal;
-const num = parseInt(newVal);
-if (!isNaN(num)) finalValue = num.toString();
+const num = parseFloat(newVal);
+if (!isNaN(num)) {
+    if (num > 99999) finalValue = '99999';
+    else finalValue = Math.floor(num).toString();
+}
 valueSpan.textContent = finalValue;
 valueSpan.style.visibility = 'visible';
 if (labelSpan) labelSpan.style.visibility = 'visible';
