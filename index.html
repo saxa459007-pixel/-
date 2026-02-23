@@ -716,6 +716,8 @@ const DATE_KEY = 'rpg_date_final_verified_v8';
 const CLASS_KEY = 'rpg_class_final_verified_v8';
 const BOOKS_LVL_KEY = 'rpg_books_levels_final_verified_v8';
 const ACTIVE_BOOKS_LVL_KEY = 'rpg_active_books_levels_final_verified_v8';
+const VK_STORAGE_KEY = 'rpg_complete_user_data_v1'; // Ключ для облака VK
+
 const PASSIVE_ORDER = [
 "Барьер",
 "Быстрое восстановление",
@@ -768,6 +770,110 @@ const listDiv = document.getElementById('classList');
 const karmaIconSpan = document.getElementById('karma-icon');
 let passiveSortByAlphabet = false;
 let activeSortByAlphabet = false;
+
+// ========== ФУНКЦИИ ДЛЯ РАБОТЫ С VK CLOUD STORAGE ==========
+
+// Сохранение всех данных пользователя в облако VK
+async function saveAllDataToVK() {
+    try {
+        // Собираем все данные
+        const stats = {};
+        document.querySelectorAll('.stat-value').forEach(el => {
+            stats[el.dataset.key] = el.textContent;
+        });
+        
+        const classData = localStorage.getItem(CLASS_KEY) || "жнец душ";
+        
+        const passiveBooks = JSON.parse(localStorage.getItem(BOOKS_LVL_KEY) || '{}');
+        const activeBooks = JSON.parse(localStorage.getItem(ACTIVE_BOOKS_LVL_KEY) || '{}');
+        
+        // Формируем объект для сохранения
+        const userData = {
+            stats: stats,
+            class: classData,
+            books: {
+                passive: passiveBooks,
+                active: activeBooks
+            },
+            lastSave: Date.now(),
+            version: '1.0'
+        };
+        
+        // Сохраняем в VK Storage
+        await vkBridge.send('VKWebAppStorageSet', {
+            key: VK_STORAGE_KEY,
+            value: JSON.stringify(userData)
+        });
+        
+        console.log('✅ Данные сохранены в облако VK');
+        return true;
+    } catch (error) {
+        console.log('❌ Ошибка сохранения в VK:', error);
+        return false;
+    }
+}
+
+// Загрузка всех данных пользователя из облака VK
+async function loadAllDataFromVK() {
+    try {
+        const response = await vkBridge.send('VKWebAppStorageGet', {
+            keys: [VK_STORAGE_KEY]
+        });
+        
+        if (response.keys && response.keys[0] && response.keys[0].value) {
+            const userData = JSON.parse(response.keys[0].value);
+            
+            // Восстанавливаем статистику
+            if (userData.stats) {
+                Object.entries(userData.stats).forEach(([key, value]) => {
+                    const el = document.querySelector(`.stat-value[data-key="${key}"]`);
+                    if (el) el.textContent = value;
+                });
+            }
+            
+            // Восстанавливаем класс
+            if (userData.class) {
+                localStorage.setItem(CLASS_KEY, userData.class);
+                triggerBtn.textContent = userData.class;
+            }
+            
+            // Восстанавливаем книги
+            if (userData.books) {
+                if (userData.books.passive) {
+                    localStorage.setItem(BOOKS_LVL_KEY, JSON.stringify(userData.books.passive));
+                }
+                if (userData.books.active) {
+                    localStorage.setItem(ACTIVE_BOOKS_LVL_KEY, JSON.stringify(userData.books.active));
+                }
+            }
+            
+            // Обновляем дату
+            localStorage.setItem(DATE_KEY, Date.now().toString());
+            
+            console.log('✅ Данные загружены из облака VK');
+            
+            // Обновляем интерфейс
+            updateClassResult();
+            updateKarmaIcon();
+            
+            // Если мы на странице книг, перерисовываем их
+            const activePage = document.querySelector('.page.active')?.id;
+            if (activePage === 'page-passive') {
+                await renderPassiveBooks();
+            } else if (activePage === 'page-active') {
+                await renderActiveBooks();
+            }
+            
+            return true;
+        }
+        return false;
+    } catch (error) {
+        console.log('❌ Ошибка загрузки из VK:', error);
+        return false;
+    }
+}
+
+// ========== ОСТАЛЬНЫЕ ФУНКЦИИ (БЕЗ ИЗМЕНЕНИЙ) ==========
 
 function measureTextWidth(text, font, padding = 0) {
 const span = document.createElement('span');
@@ -847,7 +953,7 @@ triggerBtn.classList.add('open');
 }
 };
 
-window.selectClass = function(cls) {
+window.selectClass = async function(cls) {
 localStorage.setItem(CLASS_KEY, cls);
 localStorage.setItem(DATE_KEY, Date.now().toString());
 triggerBtn.textContent = cls;
@@ -858,25 +964,10 @@ item.classList.toggle('active', item.textContent === cls);
 listDiv.classList.remove('show');
 triggerBtn.classList.remove('open');
 updateClassResult();
-};
 
-function initClassList() {
-const saved = localStorage.getItem(CLASS_KEY) || "жнец душ";
-triggerBtn.textContent = saved;
-listDiv.innerHTML = '';
-Object.keys(CLASS_CONFIG).forEach(cls => {
-const div = document.createElement('div');
-div.className = 'class-item';
-if (cls === saved) div.classList.add('active');
-div.textContent = cls;
-div.onclick = function(e) {
-e.stopPropagation();
-selectClass(cls);
+// Сохраняем в облако VK
+await saveAllDataToVK();
 };
-listDiv.appendChild(div);
-});
-updateClassResult();
-}
 
 document.addEventListener('click', function(e) {
 if (!listDiv.contains(e.target) && e.target !== triggerBtn) {
@@ -991,7 +1082,7 @@ return '?';
 }
 }
 
-// Функция для редактирования статов в активных книгах - С ОГРАНИЧЕНИЯМИ
+// Функция для редактирования статов в активных книгах
 window.editActiveStat = function(event, element, statKey) {
 event.preventDefault();
 event.stopPropagation();
@@ -1006,7 +1097,7 @@ input.type = 'number';
 input.value = currentVal === '0' ? '' : currentVal;
 input.className = 'stat-input-small';
 
-// ⬇️ ОГРАНИЧЕНИЕ НА 5 СИМВОЛОВ / 99999 ⬇️
+// Ограничение на 5 символов / 99999
 input.maxLength = 5;
 input.max = '99999';
 
@@ -1023,7 +1114,7 @@ valueContainer.appendChild(input);
 input.focus();
 input.select();
 
-const finish = () => {
+const finish = async () => {
 let newVal = input.value;
 if (newVal === '') newVal = '0';
 let finalValue = newVal;
@@ -1033,7 +1124,7 @@ if (!isNaN(num)) {
     else finalValue = Math.floor(num).toString();
 }
 
-// ⬇️ ПРОВЕРКИ МИНИМАЛЬНЫХ ЗНАЧЕНИЙ ДЛЯ СТАТОВ ⬇️
+// Проверки минимальных значений для статов
 if (key === 'str' || key === 'agi' || key === 'vit') {
     if (parseInt(finalValue) < 3) finalValue = '3';
 }
@@ -1356,7 +1447,7 @@ console.log('Ошибка обновления цены для', bookName);
 }
 }
 
-window.updatePassiveBookLevel = function(name, value) {
+window.updatePassiveBookLevel = async function(name, value) {
 const savedLevels = JSON.parse(localStorage.getItem(BOOKS_LVL_KEY) || '{}');
 const newLevel = parseInt(value) || 1;
 if (savedLevels[name] === newLevel) return;
@@ -1377,6 +1468,9 @@ updatePassiveBookPrice(item, name, newLevel);
 break;
 }
 }
+
+// Сохраняем в облако VK
+await saveAllDataToVK();
 };
 
 window.togglePassiveSort = function() {
@@ -1598,7 +1692,7 @@ console.log('Ошибка обновления цены для', bookName);
 }
 }
 
-window.updateActiveBookLevel = function(name, value) {
+window.updateActiveBookLevel = async function(name, value) {
 const savedLevels = JSON.parse(localStorage.getItem(ACTIVE_BOOKS_LVL_KEY) || '{}');
 const newLevel = parseInt(value) || 1;
 if (savedLevels[name] === newLevel) return;
@@ -1619,6 +1713,9 @@ updateActiveBookPrice(item, name, newLevel);
 break;
 }
 }
+
+// Сохраняем в облако VK
+await saveAllDataToVK();
 };
 
 window.toggleActiveSort = function() {
@@ -1699,22 +1796,21 @@ renderActiveBooks();
 function checkReset() {
 const last = localStorage.getItem(DATE_KEY);
 if (last && (Date.now() - parseInt(last) > 7 * 24 * 60 * 60 * 1000)) {
-localStorage.removeItem(DB_KEY);
-localStorage.removeItem(DATE_KEY);
-localStorage.removeItem(CLASS_KEY);
-localStorage.removeItem(BOOKS_LVL_KEY);
-localStorage.removeItem(ACTIVE_BOOKS_LVL_KEY);
-location.reload();
+// Не удаляем, а просто обновляем дату
+localStorage.setItem(DATE_KEY, Date.now().toString());
 }
 }
 
-function saveStats() {
+async function saveStats() {
 const data = {};
 document.querySelectorAll('.stat-value').forEach(el => data[el.dataset.key] = el.textContent);
 localStorage.setItem(DB_KEY, JSON.stringify(data));
 localStorage.setItem(DATE_KEY, Date.now().toString());
 updateClassResult();
 updateKarmaIcon();
+
+// Сохраняем в облако VK
+await saveAllDataToVK();
 }
 
 function loadStats() {
@@ -1728,7 +1824,7 @@ updateClassResult();
 updateKarmaIcon();
 }
 
-// Функция для редактирования статов в профиле - С ОГРАНИЧЕНИЯМИ
+// Функция для редактирования статов в профиле
 window.editStatByCell = function(cellElement, isResist = false, isKarma = false) {
 const valueContainer = cellElement.querySelector('.stat-value-container');
 const valueSpan = valueContainer.querySelector('.stat-value');
@@ -1742,7 +1838,7 @@ input.type = 'number';
 input.value = cleanVal === '0' ? '' : cleanVal;
 input.className = 'stat-input';
 
-// ⬇️ ОГРАНИЧЕНИЕ НА 5 СИМВОЛОВ / 99999 ⬇️
+// Ограничение на 5 символов / 99999
 input.maxLength = 5;
 input.max = '99999';
 
@@ -1759,7 +1855,7 @@ valueContainer.appendChild(input);
 input.focus();
 input.select();
 
-const finish = () => {
+const finish = async () => {
 let newVal = input.value;
 if (newVal === '') newVal = '0';
 let finalValue = newVal;
@@ -1778,7 +1874,7 @@ if (karmaNum < -20) karmaNum = -20;
 if (karmaNum > 20) karmaNum = 20;
 finalValue = karmaNum.toString();
 } else {
-// ⬇️ НОВЫЕ ПРОВЕРКИ ДЛЯ МИНИМАЛЬНЫХ ЗНАЧЕНИЙ ⬇️
+// Проверки для минимальных значений
 if (key === 'class_lvl') {
 if (parseInt(finalValue) < 50) finalValue = '50';
 }
@@ -1791,7 +1887,7 @@ valueSpan.style.visibility = 'visible';
 if (labelSpan) labelSpan.style.visibility = 'visible';
 input.remove();
 if (isKarma) updateKarmaIcon();
-saveStats();
+await saveStats();
 };
 
 input.onblur = finish;
@@ -1806,23 +1902,35 @@ return false;
 input.onclick = e => e.stopPropagation();
 }
 
-window.onload = () => {
+window.onload = async () => {
 checkReset();
-loadStats();
-initClassList();
+
 try {
-vkBridge.send('VKWebAppInit')
-.then(() => {
+await vkBridge.send('VKWebAppInit');
 console.log('VK Bridge инициализирован успешно');
-loadVKUserData();
-})
-.catch(error => {
+await loadVKUserData();
+
+// Пробуем загрузить данные из облака VK
+const loaded = await loadAllDataFromVK();
+if (!loaded) {
+// Если нет облачных данных, загружаем из localStorage
+loadStats();
+// Инициализируем класс из localStorage
+const savedClass = localStorage.getItem(CLASS_KEY);
+if (savedClass) {
+triggerBtn.textContent = savedClass;
+}
+}
+
+// Обновляем список классов
+initClassList();
+
+} catch (error) {
 console.log('Ошибка инициализации VK Bridge:', error);
 document.getElementById('user-name').textContent = 'Тестовый пользователь';
-});
-} catch (e) {
-console.log('VK Bridge не доступен (возможно, запуск вне VK)');
-document.getElementById('user-name').textContent = 'Тестовый пользователь';
+// Загружаем из localStorage как запасной вариант
+loadStats();
+initClassList();
 }
 };
 </script>
