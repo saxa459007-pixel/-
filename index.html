@@ -116,7 +116,7 @@ z-index: 1000;
 .class-item:hover { background-color: rgba(255, 255, 255, 0.1); }
 .class-item.active { color: var(--accent); font-weight: 600; background-color: rgba(88, 101, 242, 0.15); }
 
-/* СТАТЫ В ПРОФИЛЕ - НАЗВАНИЕ ВПЛОТНУЮ К ЧИСЛУ + ФИКСАЦИЯ */
+/* СТАТЫ В ПРОФИЛЕ - ФИКСИРОВАННАЯ ШИРИНА */
 .stats-grid { 
     width: 100%; 
     display: grid; 
@@ -161,11 +161,11 @@ z-index: 1000;
 
 .stat-value-container {
     position: relative;
-    min-width: 55px; /* ← ФИКСИРОВАННАЯ МИНИМАЛЬНАЯ ШИРИНА ДЛЯ ВЫРАВНИВАНИЯ */
+    width: 55px; /* ← ФИКСИРОВАННАЯ ШИРИНА (не сдвигается) */
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    gap: 2px; /* ← НАЗВАНИЕ ВПЛОТНУЮ К ЧИСЛУ */
+    gap: 2px;
     flex-shrink: 0;
 }
 
@@ -185,7 +185,7 @@ z-index: 1000;
     color: var(--text-secondary);
     text-transform: lowercase;
     white-space: nowrap;
-    margin: 0; /* ← БЕЗ ОТСТУПА - ВПЛОТНУЮ */
+    margin: 0;
 }
 
 /* ПОЛЕ ВВОДА В ПРОФИЛЕ - СТАТИЧНОЕ 100% */
