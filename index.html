@@ -991,6 +991,7 @@ return '?';
 }
 }
 
+// Функция для редактирования статов в активных книгах - С ОГРАНИЧЕНИЯМИ
 window.editActiveStat = function(event, element, statKey) {
 event.preventDefault();
 event.stopPropagation();
@@ -1005,7 +1006,7 @@ input.type = 'number';
 input.value = currentVal === '0' ? '' : currentVal;
 input.className = 'stat-input-small';
 
-// ⬇️ ОГРАНИЧЕНИЕ НА 5 СИМВОЛОВ / 99999 (КАК В ПРОФИЛЕ) ⬇️
+// ⬇️ ОГРАНИЧЕНИЕ НА 5 СИМВОЛОВ / 99999 ⬇️
 input.maxLength = 5;
 input.max = '99999';
 
@@ -1031,15 +1032,26 @@ if (!isNaN(num)) {
     if (num > 99999) finalValue = '99999';
     else finalValue = Math.floor(num).toString();
 }
+
+// ⬇️ ПРОВЕРКИ МИНИМАЛЬНЫХ ЗНАЧЕНИЙ ДЛЯ СТАТОВ ⬇️
+if (key === 'str' || key === 'agi' || key === 'vit') {
+    if (parseInt(finalValue) < 3) finalValue = '3';
+}
+
 valueSpan.textContent = finalValue;
 valueSpan.style.visibility = 'visible';
 if (labelSpan) labelSpan.style.visibility = 'visible';
 input.remove();
+
+// Обновляем соответствующий стат в профиле
 const profileStat = document.querySelector(`.stat-value[data-key="${key}"]`);
 if (profileStat) {
 profileStat.textContent = finalValue;
 }
+
 saveStats();
+
+// Перерисовываем активные книги с новыми статами
 const items = document.querySelectorAll('#activeBooksContainer .book-item');
 const stats = getStatsFromProfile();
 items.forEach(item => {
@@ -1716,7 +1728,7 @@ updateClassResult();
 updateKarmaIcon();
 }
 
-// Функция для редактирования статов в профиле - С ОГРАНИЧЕНИЕМ 99999
+// Функция для редактирования статов в профиле - С ОГРАНИЧЕНИЯМИ
 window.editStatByCell = function(cellElement, isResist = false, isKarma = false) {
 const valueContainer = cellElement.querySelector('.stat-value-container');
 const valueSpan = valueContainer.querySelector('.stat-value');
@@ -1747,8 +1759,6 @@ valueContainer.appendChild(input);
 input.focus();
 input.select();
 
-// НЕТ динамического изменения ширины - поле статично 100%!
-
 const finish = () => {
 let newVal = input.value;
 if (newVal === '') newVal = '0';
@@ -1768,7 +1778,13 @@ if (karmaNum < -20) karmaNum = -20;
 if (karmaNum > 20) karmaNum = 20;
 finalValue = karmaNum.toString();
 } else {
-if (key === 'class_lvl' && parseInt(finalValue) < 1) finalValue = '1';
+// ⬇️ НОВЫЕ ПРОВЕРКИ ДЛЯ МИНИМАЛЬНЫХ ЗНАЧЕНИЙ ⬇️
+if (key === 'class_lvl') {
+if (parseInt(finalValue) < 50) finalValue = '50';
+}
+else if (key === 'str' || key === 'agi' || key === 'vit') {
+if (parseInt(finalValue) < 3) finalValue = '3';
+}
 }
 valueSpan.textContent = finalValue;
 valueSpan.style.visibility = 'visible';
