@@ -605,15 +605,15 @@ display: none !important;
 </div>
 </div>
 <div class="stats-grid">
-<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🕯️</span><div class="stat-value-container"><span class="stat-value" data-key="lvl">207</span><span class="stat-label">ур</span></div></div></div>
-<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">⚔️</span><div class="stat-value-container"><span class="stat-value" data-key="atk">717</span><span class="stat-label">атк</span></div></div></div>
-<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🛡️</span><div class="stat-value-container"><span class="stat-value" data-key="armor">212</span><span class="stat-label">брн</span></div></div></div>
-<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">💪</span><div class="stat-value-container"><span class="stat-value" data-key="str">403</span><span class="stat-label">сил</span></div></div></div>
-<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">👐</span><div class="stat-value-container"><span class="stat-value" data-key="agi">861</span><span class="stat-label">лвк</span></div></div></div>
-<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">❤️</span><div class="stat-value-container"><span class="stat-value" data-key="vit">602</span><span class="stat-label">внс</span></div></div></div>
-<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🍀</span><div class="stat-value-container"><span class="stat-value" data-key="luck">57</span><span class="stat-label">удч</span></div></div></div>
-<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🎯</span><div class="stat-value-container"><span class="stat-value" data-key="acc">112</span><span class="stat-label">тчн</span></div></div></div>
-<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🌀</span><div class="stat-value-container"><span class="stat-value" data-key="conc">64</span><span class="stat-label">кц</span></div></div></div>
+<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🕯️</span><div class="stat-value-container"><span class="stat-value" data-key="lvl">1</span><span class="stat-label">ур</span></div></div></div>
+<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">⚔️</span><div class="stat-value-container"><span class="stat-value" data-key="atk">0</span><span class="stat-label">атк</span></div></div></div>
+<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🛡️</span><div class="stat-value-container"><span class="stat-value" data-key="armor">0</span><span class="stat-label">брн</span></div></div></div>
+<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">💪</span><div class="stat-value-container"><span class="stat-value" data-key="str">3</span><span class="stat-label">сил</span></div></div></div>
+<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">👐</span><div class="stat-value-container"><span class="stat-value" data-key="agi">3</span><span class="stat-label">лвк</span></div></div></div>
+<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">❤️</span><div class="stat-value-container"><span class="stat-value" data-key="vit">3</span><span class="stat-label">внс</span></div></div></div>
+<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🍀</span><div class="stat-value-container"><span class="stat-value" data-key="luck">0</span><span class="stat-label">удч</span></div></div></div>
+<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🎯</span><div class="stat-value-container"><span class="stat-value" data-key="acc">0</span><span class="stat-label">тчн</span></div></div></div>
+<div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🌀</span><div class="stat-value-container"><span class="stat-value" data-key="conc">0</span><span class="stat-label">кц</span></div></div></div>
 <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">📜</span><div class="stat-value-container"><span class="stat-value" data-key="class_lvl">50</span><span class="stat-label">ур. кл.</span></div></div></div>
 <div class="stat-cell" onclick="editStatByCell(this, true)"><div class="stat-row"><span class="stat-icon">🔰</span><div class="stat-value-container"><span class="stat-value" data-key="resist">0%</span><span class="stat-label">сопр</span></div></div></div>
 <div class="stat-cell" onclick="editStatByCell(this, false, true)"><div class="stat-row"><span class="stat-icon" id="karma-icon">😐</span><div class="stat-value-container"><span class="stat-value" data-key="karma">0</span><span class="stat-label">карма</span></div></div></div>
@@ -1891,36 +1891,63 @@ return false;
 input.onclick = e => e.stopPropagation();
 }
 
+// Функция инициализации списка классов
+function initClassList() {
+    const saved = localStorage.getItem(CLASS_KEY) || "жнец душ";
+    triggerBtn.textContent = saved;
+    listDiv.innerHTML = '';
+    Object.keys(CLASS_CONFIG).forEach(cls => {
+        const div = document.createElement('div');
+        div.className = 'class-item';
+        if (cls === saved) div.classList.add('active');
+        div.textContent = cls;
+        div.onclick = function(e) {
+            e.stopPropagation();
+            selectClass(cls);
+        };
+        listDiv.appendChild(div);
+    });
+    updateClassResult();
+}
+
 window.onload = async () => {
-checkReset();
+    checkReset();
 
-try {
-await vkBridge.send('VKWebAppInit');
-console.log('VK Bridge инициализирован успешно');
-await loadVKUserData();
+    try {
+        await vkBridge.send('VKWebAppInit');
+        console.log('VK Bridge инициализирован успешно');
+        await loadVKUserData();
 
-// Пробуем загрузить данные из облака VK
-const loaded = await loadAllDataFromVK();
-if (!loaded) {
-// Если нет облачных данных, загружаем из localStorage
-loadStats();
-// Инициализируем класс из localStorage
-const savedClass = localStorage.getItem(CLASS_KEY);
-if (savedClass) {
-triggerBtn.textContent = savedClass;
-}
-}
+        // Пробуем загрузить данные из облака VK
+        const loaded = await loadAllDataFromVK();
+        if (!loaded) {
+            // Если нет облачных данных, загружаем из localStorage
+            loadStats();
+            // Инициализируем класс из localStorage
+            const savedClass = localStorage.getItem(CLASS_KEY);
+            if (savedClass) {
+                triggerBtn.textContent = savedClass;
+            }
+        } else {
+            // Если загрузили из VK, обновляем localStorage
+            saveStats();
+        }
 
-// Обновляем список классов
-initClassList();
+        // Обновляем список классов
+        initClassList();
 
-} catch (error) {
-console.log('Ошибка инициализации VK Bridge:', error);
-document.getElementById('user-name').textContent = 'Тестовый пользователь';
-// Загружаем из localStorage как запасной вариант
-loadStats();
-initClassList();
-}
+    } catch (error) {
+        console.log('Ошибка инициализации VK Bridge:', error);
+        document.getElementById('user-name').textContent = 'Тестовый пользователь';
+        // Загружаем из localStorage как запасной вариант
+        loadStats();
+        // Всё равно инициализируем классы
+        const savedClass = localStorage.getItem(CLASS_KEY);
+        if (savedClass) {
+            triggerBtn.textContent = savedClass;
+        }
+        initClassList();
+    }
 };
 </script>
 </body>
