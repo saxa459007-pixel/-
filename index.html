@@ -161,7 +161,7 @@ z-index: 1000;
 
 .stat-value-container {
     position: relative;
-    width: 55px; /* ← ФИКСИРОВАННАЯ ШИРИНА (не сдвигается) */
+    width: 55px;
     display: flex;
     justify-content: flex-start;
     align-items: center;
@@ -369,7 +369,7 @@ color: var(--text-main);
 text-transform: none;
 }
 
-/* СТАТЫ В АКТИВНЫХ КНИГАХ */
+/* СТАТЫ В АКТИВНЫХ КНИГАХ - ФИКСИРОВАННАЯ ШИРИНА */
 .stats-row {
 display: flex;
 gap: 12px;
@@ -378,6 +378,7 @@ color: var(--text-secondary);
 margin-bottom: 4px;
 flex-wrap: wrap;
 }
+
 .stat-item {
 display: flex;
 align-items: center;
@@ -389,9 +390,11 @@ transition: background 0.2s;
 position: relative;
 direction: ltr;
 }
+
 .stat-item:hover {
 background-color: rgba(255, 255, 255, 0.05);
 }
+
 .stat-icon-small {
 font-size: 14px;
 pointer-events: none;
@@ -399,14 +402,35 @@ flex-shrink: 0;
 width: 16px;
 text-align: center;
 }
+
+.stat-value-container-small {
+    position: relative;
+    width: 50px; /* ← ФИКСИРОВАННАЯ ШИРИНА ДЛЯ АКТИВОК */
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 2px;
+    flex-shrink: 0;
+}
+
 .stat-value-small {
-color: var(--text-main);
-font-weight: 600;
-pointer-events: none;
-min-width: 20px;
-display: inline-block;
-text-align: left;
-direction: ltr;
+    color: var(--text-main);
+    font-weight: 600;
+    pointer-events: none;
+    min-width: 30px;
+    display: inline-block;
+    text-align: left;
+    direction: ltr;
+    font-size: 12px;
+}
+
+.stat-label-small {
+    font-size: 10px;
+    color: var(--text-secondary);
+    text-transform: lowercase;
+    white-space: nowrap;
+    margin: 0;
+    pointer-events: none;
 }
 
 /* ПОЛЕ ВВОДА В АКТИВКАХ */
@@ -967,7 +991,9 @@ return '?';
 window.editActiveStat = function(event, element, statKey) {
 event.preventDefault();
 event.stopPropagation();
-const valueSpan = element.querySelector('.stat-value-small');
+const valueContainer = element.querySelector('.stat-value-container-small');
+const valueSpan = valueContainer.querySelector('.stat-value-small');
+const labelSpan = valueContainer.querySelector('.stat-label-small');
 if (!valueSpan) return;
 let currentVal = valueSpan.textContent;
 const key = statKey;
@@ -976,22 +1002,11 @@ input.type = 'number';
 input.value = currentVal === '0' ? '' : currentVal;
 input.className = 'stat-input-small';
 valueSpan.style.visibility = 'hidden';
-element.style.position = 'relative';
-element.appendChild(input);
+if (labelSpan) labelSpan.style.visibility = 'hidden';
+valueContainer.appendChild(input);
 input.focus();
 input.select();
-const updateInputWidth = function() {
-const font = window.getComputedStyle(this).font;
-const displayValue = this.value || '0';
-const width = measureTextWidth(displayValue, font, 0);
-this.style.width = (width + 20) + 'px';
-};
-input.addEventListener('input', updateInputWidth);
-setTimeout(() => {
-const font = window.getComputedStyle(input).font;
-const width = measureTextWidth(input.value || '0', font, 0);
-input.style.width = (width + 20) + 'px';
-}, 0);
+
 const finish = () => {
 let newVal = input.value;
 if (newVal === '') newVal = '0';
@@ -1000,6 +1015,7 @@ const num = parseInt(newVal);
 if (!isNaN(num)) finalValue = num.toString();
 valueSpan.textContent = finalValue;
 valueSpan.style.visibility = 'visible';
+if (labelSpan) labelSpan.style.visibility = 'visible';
 input.remove();
 const profileStat = document.querySelector(`.stat-value[data-key="${key}"]`);
 if (profileStat) {
@@ -1043,37 +1059,37 @@ input.onclick = e => e.stopPropagation();
 function getStatsString(skillName, stats) {
 switch(skillName) {
 case "Грязный удар":
-return `<div class="stat-item" onclick="editActiveStat(event, this, 'agi')"><span class="stat-icon-small">👐</span><span class="stat-value-small">${stats.agi}</span></div><div class="stat-item" onclick="editActiveStat(event, this, 'str')"><span class="stat-icon-small">💪</span><span class="stat-value-small">${stats.str}</span></div>`;
+return `<div class="stat-item" onclick="editActiveStat(event, this, 'agi')"><span class="stat-icon-small">👐</span><div class="stat-value-container-small"><span class="stat-value-small">${stats.agi}</span><span class="stat-label-small">лвк</span></div></div><div class="stat-item" onclick="editActiveStat(event, this, 'str')"><span class="stat-icon-small">💪</span><div class="stat-value-container-small"><span class="stat-value-small">${stats.str}</span><span class="stat-label-small">сил</span></div></div>`;
 case "Слабое исцеление":
-return `<div class="stat-item" onclick="editActiveStat(event, this, 'vit')"><span class="stat-icon-small">❤️</span><span class="stat-value-small">${stats.vit}</span></div>`;
+return `<div class="stat-item" onclick="editActiveStat(event, this, 'vit')"><span class="stat-icon-small">❤️</span><div class="stat-value-container-small"><span class="stat-value-small">${stats.vit}</span><span class="stat-label-small">внс</span></div></div>`;
 case "Удар вампира":
-return `<div class="stat-item" onclick="editActiveStat(event, this, 'agi')"><span class="stat-icon-small">👐</span><span class="stat-value-small">${stats.agi}</span></div><div class="stat-item" onclick="editActiveStat(event, this, 'vit')"><span class="stat-icon-small">❤️</span><span class="stat-value-small">${stats.vit}</span></div>`;
+return `<div class="stat-item" onclick="editActiveStat(event, this, 'agi')"><span class="stat-icon-small">👐</span><div class="stat-value-container-small"><span class="stat-value-small">${stats.agi}</span><span class="stat-label-small">лвк</span></div></div><div class="stat-item" onclick="editActiveStat(event, this, 'vit')"><span class="stat-icon-small">❤️</span><div class="stat-value-container-small"><span class="stat-value-small">${stats.vit}</span><span class="stat-label-small">внс</span></div></div>`;
 case "Мощный удар":
-return `<div class="stat-item" onclick="editActiveStat(event, this, 'str')"><span class="stat-icon-small">💪</span><span class="stat-value-small">${stats.str}</span></div><div class="stat-item" onclick="editActiveStat(event, this, 'atk')"><span class="stat-icon-small">⚔️</span><span class="stat-value-small">${stats.atk}</span></div>`;
+return `<div class="stat-item" onclick="editActiveStat(event, this, 'str')"><span class="stat-icon-small">💪</span><div class="stat-value-container-small"><span class="stat-value-small">${stats.str}</span><span class="stat-label-small">сил</span></div></div><div class="stat-item" onclick="editActiveStat(event, this, 'atk')"><span class="stat-icon-small">⚔️</span><div class="stat-value-container-small"><span class="stat-value-small">${stats.atk}</span><span class="stat-label-small">атк</span></div></div>`;
 case "Сила теней":
-return `<div class="stat-item" onclick="editActiveStat(event, this, 'lvl')"><span class="stat-icon-small">🕯️</span><span class="stat-value-small">${stats.lvl}</span></div>`;
+return `<div class="stat-item" onclick="editActiveStat(event, this, 'lvl')"><span class="stat-icon-small">🕯️</span><div class="stat-value-container-small"><span class="stat-value-small">${stats.lvl}</span><span class="stat-label-small">ур</span></div></div>`;
 case "Расправа":
-return `<div class="stat-item" onclick="editActiveStat(event, this, 'lvl')"><span class="stat-icon-small">🕯️</span><span class="stat-value-small">${stats.lvl}</span></div>`;
+return `<div class="stat-item" onclick="editActiveStat(event, this, 'lvl')"><span class="stat-icon-small">🕯️</span><div class="stat-value-container-small"><span class="stat-value-small">${stats.lvl}</span><span class="stat-label-small">ур</span></div></div>`;
 case "Слепота":
 return `<span class="stat-item">не требует статов</span>`;
 case "Рассечение":
-return `<div class="stat-item" onclick="editActiveStat(event, this, 'atk')"><span class="stat-icon-small">⚔️</span><span class="stat-value-small">${stats.atk}</span></div><div class="stat-item" onclick="editActiveStat(event, this, 'agi')"><span class="stat-icon-small">👐</span><span class="stat-value-small">${stats.agi}</span></div>`;
+return `<div class="stat-item" onclick="editActiveStat(event, this, 'atk')"><span class="stat-icon-small">⚔️</span><div class="stat-value-container-small"><span class="stat-value-small">${stats.atk}</span><span class="stat-label-small">атк</span></div></div><div class="stat-item" onclick="editActiveStat(event, this, 'agi')"><span class="stat-icon-small">👐</span><div class="stat-value-container-small"><span class="stat-value-small">${stats.agi}</span><span class="stat-label-small">лвк</span></div></div>`;
 case "Берсеркер":
 return `<span class="stat-item">не требует статов</span>`;
 case "Таран":
-return `<div class="stat-item" onclick="editActiveStat(event, this, 'armor')"><span class="stat-icon-small">🛡️</span><span class="stat-value-small">${stats.armor}</span></div>`;
+return `<div class="stat-item" onclick="editActiveStat(event, this, 'armor')"><span class="stat-icon-small">🛡️</span><div class="stat-value-container-small"><span class="stat-value-small">${stats.armor}</span><span class="stat-label-small">брн</span></div></div>`;
 case "Проклятие тьмы":
-return `<div class="stat-item" onclick="editActiveStat(event, this, 'lvl')"><span class="stat-icon-small">🕯️</span><span class="stat-value-small">${stats.lvl}</span></div>`;
+return `<div class="stat-item" onclick="editActiveStat(event, this, 'lvl')"><span class="stat-icon-small">🕯️</span><div class="stat-value-container-small"><span class="stat-value-small">${stats.lvl}</span><span class="stat-label-small">ур</span></div></div>`;
 case "Огонек надежды":
-return `<div class="stat-item" onclick="editActiveStat(event, this, 'vit')"><span class="stat-icon-small">❤️</span><span class="stat-value-small">${stats.vit}</span></div>`;
+return `<div class="stat-item" onclick="editActiveStat(event, this, 'vit')"><span class="stat-icon-small">❤️</span><div class="stat-value-container-small"><span class="stat-value-small">${stats.vit}</span><span class="stat-label-small">внс</span></div></div>`;
 case "Целебный огонь":
-return `<div class="stat-item" onclick="editActiveStat(event, this, 'lvl')"><span class="stat-icon-small">🕯️</span><span class="stat-value-small">${stats.lvl}</span></div>`;
+return `<div class="stat-item" onclick="editActiveStat(event, this, 'lvl')"><span class="stat-icon-small">🕯️</span><div class="stat-value-container-small"><span class="stat-value-small">${stats.lvl}</span><span class="stat-label-small">ур</span></div></div>`;
 case "Кровотечение":
-return `<div class="stat-item" onclick="editActiveStat(event, this, 'atk')"><span class="stat-icon-small">⚔️</span><span class="stat-value-small">${stats.atk}</span></div><div class="stat-item" onclick="editActiveStat(event, this, 'agi')"><span class="stat-icon-small">👐</span><span class="stat-value-small">${stats.agi}</span></div>`;
+return `<div class="stat-item" onclick="editActiveStat(event, this, 'atk')"><span class="stat-icon-small">⚔️</span><div class="stat-value-container-small"><span class="stat-value-small">${stats.atk}</span><span class="stat-label-small">атк</span></div></div><div class="stat-item" onclick="editActiveStat(event, this, 'agi')"><span class="stat-icon-small">👐</span><div class="stat-value-container-small"><span class="stat-value-small">${stats.agi}</span><span class="stat-label-small">лвк</span></div></div>`;
 case "Заражение":
-return `<div class="stat-item" onclick="editActiveStat(event, this, 'vit')"><span class="stat-icon-small">❤️</span><span class="stat-value-small">${stats.vit}</span></div>`;
+return `<div class="stat-item" onclick="editActiveStat(event, this, 'vit')"><span class="stat-icon-small">❤️</span><div class="stat-value-container-small"><span class="stat-value-small">${stats.vit}</span><span class="stat-label-small">внс</span></div></div>`;
 case "Раскол":
-return `<div class="stat-item" onclick="editActiveStat(event, this, 'agi')"><span class="stat-icon-small">👐</span><span class="stat-value-small">${stats.agi}</span></div>`;
+return `<div class="stat-item" onclick="editActiveStat(event, this, 'agi')"><span class="stat-icon-small">👐</span><div class="stat-value-container-small"><span class="stat-value-small">${stats.agi}</span><span class="stat-label-small">лвк</span></div></div>`;
 default:
 return '';
 }
