@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>RPG Stats & Skills</title>
+<title>RPG Stats & Books</title>
 <script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
 <style>
 :root {
@@ -213,7 +213,7 @@ margin: 0;
 .highlight-class { color: var(--text-main); font-weight: 700; font-size: 13px; margin-right: 4px; }
 .highlight-val { color: var(--text-secondary); font-weight: 600; }
 
-/* === СТИЛИ ДЛЯ ПОИСКА И СОРТИРОВКИ - ОДНА ВЫСОТА === */
+/* === СТИЛИ ДЛЯ ПОИСКА И СОРТИРОВКИ === */
 .search-container {
 width: 100%;
 padding: 15px 15px 10px 15px;
@@ -337,6 +337,11 @@ color: var(--text-main);
 background-color: rgba(88, 101, 242, 0.2);
 }
 
+.bulk-level-btn.active {
+color: var(--accent);
+background-color: rgba(88, 101, 242, 0.15);
+}
+
 .bulk-level-btn svg {
 width: 20px;
 height: 20px;
@@ -375,39 +380,25 @@ height: 20px;
 fill: currentColor;
 }
 
-/* === КОМПАКТНОЕ МОДАЛЬНОЕ ОКНО === */
-.modal-overlay {
+/* === ПАНЕЛЬ МАССОВОГО ИЗМЕНЕНИЯ УРОВНЯ === */
+.bulk-panel {
 display: none;
-position: fixed;
-top: 0;
-left: 0;
-right: 0;
-bottom: 0;
-background-color: rgba(0, 0, 0, 0.7);
-z-index: 1000;
-align-items: center;
-justify-content: center;
-padding: 20px;
-}
-
-.modal-overlay.show {
-display: flex;
-}
-
-.modal-container {
 background-color: var(--card-bg);
-border-radius: 8px;
-padding: 16px;
-width: 100%;
-max-width: 280px;
-box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-animation: modalSlideIn 0.2s ease-out;
+border: 1px solid var(--separator-color);
+border-radius: 6px;
+padding: 12px;
+margin-top: 8px;
+animation: slideDown 0.2s ease-out;
 }
 
-@keyframes modalSlideIn {
+.bulk-panel.show {
+display: block;
+}
+
+@keyframes slideDown {
 from {
 opacity: 0;
-transform: translateY(-20px);
+transform: translateY(-10px);
 }
 to {
 opacity: 1;
@@ -415,22 +406,20 @@ transform: translateY(0);
 }
 }
 
-.modal-title {
-font-size: 15px;
-font-weight: 600;
-color: var(--text-main);
-margin: 0 0 12px 0;
+.bulk-panel-title {
+font-size: 13px;
+color: var(--text-secondary);
+margin-bottom: 10px;
 text-align: center;
 }
 
-.modal-input-wrapper {
+.bulk-panel-content {
 display: flex;
-align-items: center;
 gap: 8px;
-margin-bottom: 12px;
+align-items: center;
 }
 
-.modal-input {
+.bulk-panel-input {
 flex: 1;
 background-color: var(--input-bg);
 border: 1px solid var(--separator-color);
@@ -443,18 +432,12 @@ text-align: center;
 font-weight: 600;
 }
 
-.modal-input:focus {
+.bulk-panel-input:focus {
 border-color: var(--accent);
 }
 
-.modal-buttons {
-display: flex;
-gap: 8px;
-}
-
-.modal-btn {
-flex: 1;
-padding: 10px;
+.bulk-panel-btn {
+padding: 10px 16px;
 border: none;
 border-radius: 6px;
 font-size: 13px;
@@ -464,22 +447,22 @@ transition: all 0.2s;
 font-family: inherit;
 }
 
-.modal-btn-cancel {
+.bulk-panel-btn-cancel {
 background-color: var(--input-bg);
 color: var(--text-secondary);
 }
 
-.modal-btn-cancel:hover {
+.bulk-panel-btn-cancel:hover {
 background-color: rgba(255, 255, 255, 0.1);
 color: var(--text-main);
 }
 
-.modal-btn-apply {
+.bulk-panel-btn-apply {
 background-color: var(--accent);
 color: white;
 }
 
-.modal-btn-apply:hover {
+.bulk-panel-btn-apply:hover {
 background-color: #4752c4;
 }
 
@@ -810,7 +793,7 @@ display: none !important;
 <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
 </svg>
 </button>
-<button class="bulk-level-btn" onclick="openBulkLevelModal('active')" title="Установить уровень для всех">
+<button class="bulk-level-btn" onclick="toggleBulkPanel('active')" id="activeBulkBtn" title="Установить уровень для всех">
 <svg viewBox="0 0 24 24">
 <line x1="4" y1="5" x2="16" y2="5"></line>
 <line x1="4" y1="12" x2="10" y2="12"></line>
@@ -831,12 +814,21 @@ display: none !important;
 </svg>
 </button>
 </div>
+<!-- ПАНЕЛЬ МАССОВОГО ИЗМЕНЕНИЯ УРОВНЯ -->
+<div class="bulk-panel" id="activeBulkPanel">
+<div class="bulk-panel-title">Установить уровень для всех активных умений</div>
+<div class="bulk-panel-content">
+<input type="number" class="bulk-panel-input" id="activeBulkInput" placeholder="0" min="0" max="9999999">
+<button class="bulk-panel-btn bulk-panel-btn-cancel" onclick="closeBulkPanel('active')">Отмена</button>
+<button class="bulk-panel-btn bulk-panel-btn-apply" onclick="applyBulkLevel('active')">OK</button>
+</div>
+</div>
 </div>
 <div class="books-list" id="activeBooksContainer"></div>
 <div class="no-results" id="activeNoResultsMsg">Активные умения не найдены</div>
 </div>
 
-<!-- СТРАНИЦА ПАССИВНЫХ УМЕНИЙ -->
+<!-- СТРАНИЦА ПАССИВНЫХ КНИГ -->
 <div id="page-passive" class="page">
 <div class="search-container">
 <div class="search-controls">
@@ -850,7 +842,7 @@ display: none !important;
 <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
 </svg>
 </button>
-<button class="bulk-level-btn" onclick="openBulkLevelModal('passive')" title="Установить уровень для всех">
+<button class="bulk-level-btn" onclick="toggleBulkPanel('passive')" id="passiveBulkBtn" title="Установить уровень для всех">
 <svg viewBox="0 0 24 24">
 <line x1="4" y1="5" x2="16" y2="5"></line>
 <line x1="4" y1="12" x2="10" y2="12"></line>
@@ -871,25 +863,20 @@ display: none !important;
 </svg>
 </button>
 </div>
+<!-- ПАНЕЛЬ МАССОВОГО ИЗМЕНЕНИЯ УРОВНЯ -->
+<div class="bulk-panel" id="passiveBulkPanel">
+<div class="bulk-panel-title">Установить уровень для всех пассивных книг</div>
+<div class="bulk-panel-content">
+<input type="number" class="bulk-panel-input" id="passiveBulkInput" placeholder="0" min="0" max="9999999">
+<button class="bulk-panel-btn bulk-panel-btn-cancel" onclick="closeBulkPanel('passive')">Отмена</button>
+<button class="bulk-panel-btn bulk-panel-btn-apply" onclick="applyBulkLevel('passive')">OK</button>
+</div>
+</div>
 </div>
 <div class="books-list" id="passiveBooksContainer"></div>
-<div class="no-results" id="passiveNoResultsMsg">Пассивные умения не найдены</div>
+<div class="no-results" id="passiveNoResultsMsg">Пассивные книги не найдены</div>
 </div>
 
-</div>
-
-<!-- КОМПАКТНОЕ МОДАЛЬНОЕ ОКНО ДЛЯ МАССОВОГО ИЗМЕНЕНИЯ УРОВНЯ -->
-<div class="modal-overlay" id="bulkLevelModal">
-<div class="modal-container">
-<h3 class="modal-title" id="modalTitle">Уровень для всех</h3>
-<div class="modal-input-wrapper">
-<input type="number" class="modal-input" id="bulkLevelInput" placeholder="0" min="0" max="99999">
-</div>
-<div class="modal-buttons">
-<button class="modal-btn modal-btn-cancel" onclick="closeBulkLevelModal()">Отмена</button>
-<button class="modal-btn modal-btn-apply" onclick="applyBulkLevel()">OK</button>
-</div>
-</div>
 </div>
 
 <!-- ПОДВАЛ С ССЫЛКАМИ -->
@@ -1061,34 +1048,43 @@ saveAllDataToVK();
 }
 });
 
-// ========== ФУНКЦИИ ДЛЯ МАССОВОГО ИЗМЕНЕНИЯ УРОВНЯ ==========
-let currentBulkTab = 'active';
+// ========== ФУНКЦИИ ДЛЯ ПАНЕЛИ МАССОВОГО ИЗМЕНЕНИЯ УРОВНЯ ==========
+window.toggleBulkPanel = function(tab) {
+const panel = document.getElementById(`${tab}BulkPanel`);
+const btn = document.getElementById(`${tab}BulkBtn`);
+const input = document.getElementById(`${tab}BulkInput`);
 
-window.openBulkLevelModal = function(tab) {
-currentBulkTab = tab;
-const modal = document.getElementById('bulkLevelModal');
-const title = document.getElementById('modalTitle');
-const input = document.getElementById('bulkLevelInput');
+const isShown = panel.classList.contains('show');
 
-if (tab === 'active') {
-title.textContent = 'Уровень для всех активных';
-} else {
-title.textContent = 'Уровень для всех пассивных';
+// Закрываем все панели
+closeAllBulkPanels();
+
+if (!isShown) {
+panel.classList.add('show');
+btn.classList.add('active');
+input.value = '';
+setTimeout(() => input.focus(), 100);
+}
+};
+
+window.closeBulkPanel = function(tab) {
+const panel = document.getElementById(`${tab}BulkPanel`);
+const btn = document.getElementById(`${tab}BulkBtn`);
+panel.classList.remove('show');
+btn.classList.remove('active');
+};
+
+function closeAllBulkPanels() {
+['active', 'passive'].forEach(tab => {
+const panel = document.getElementById(`${tab}BulkPanel`);
+const btn = document.getElementById(`${tab}BulkBtn`);
+panel.classList.remove('show');
+btn.classList.remove('active');
+});
 }
 
-input.value = '';
-modal.classList.add('show');
-setTimeout(() => input.focus(), 100);
-};
-
-window.closeBulkLevelModal = function() {
-const modal = document.getElementById('bulkLevelModal');
-modal.classList.remove('show');
-currentBulkTab = 'active';
-};
-
-window.applyBulkLevel = function() {
-const input = document.getElementById('bulkLevelInput');
+window.applyBulkLevel = function(tab) {
+const input = document.getElementById(`${tab}BulkInput`);
 const level = parseInt(input.value);
 
 if (isNaN(level) || level < 0) {
@@ -1096,18 +1092,18 @@ alert('Введите уровень (0 или больше)');
 return;
 }
 
-if (level > 99999) {
-alert('Макс. уровень: 99999');
+if (level > 9999999) {
+alert('Макс. уровень: 9999999');
 return;
 }
 
-if (currentBulkTab === 'active') {
+if (tab === 'active') {
 applyBulkLevelToActive(level);
 } else {
 applyBulkLevelToPassive(level);
 }
 
-closeBulkLevelModal();
+closeBulkPanel(tab);
 };
 
 function applyBulkLevelToActive(level) {
@@ -1166,27 +1162,10 @@ localStorage.setItem(BOOKS_LVL_KEY, JSON.stringify(savedLevels));
 localStorage.setItem(DATE_KEY, Date.now().toString());
 }
 
+// Закрытие панели при клике вне её
 document.addEventListener('click', function(e) {
-const modal = document.getElementById('bulkLevelModal');
-if (e.target === modal) {
-closeBulkLevelModal();
-}
-});
-
-document.addEventListener('keydown', function(e) {
-if (e.key === 'Escape') {
-closeBulkLevelModal();
-}
-});
-
-document.addEventListener('DOMContentLoaded', function() {
-const input = document.getElementById('bulkLevelInput');
-if (input) {
-input.addEventListener('keydown', function(e) {
-if (e.key === 'Enter') {
-applyBulkLevel();
-}
-});
+if (!e.target.closest('.bulk-panel') && !e.target.closest('.bulk-level-btn')) {
+closeAllBulkPanels();
 }
 });
 
@@ -1408,11 +1387,11 @@ const input = document.createElement('input');
 input.type = 'number';
 input.value = currentVal === '0' ? '' : currentVal;
 input.className = 'stat-input-small';
-input.maxLength = 5;
-input.max = '99999';
+input.maxLength = 7;
+input.max = '9999999';
 input.addEventListener('input', function() {
-if (this.value.length > 5) {
-this.value = this.value.slice(0, 5);
+if (this.value.length > 7) {
+this.value = this.value.slice(0, 7);
 }
 });
 valueSpan.style.visibility = 'hidden';
@@ -1426,7 +1405,7 @@ if (newVal === '') newVal = '0';
 let finalValue = newVal;
 const num = parseFloat(newVal);
 if (!isNaN(num)) {
-if (num > 99999) finalValue = '99999';
+if (num > 9999999) finalValue = '9999999';
 else finalValue = Math.floor(num).toString();
 }
 if (key === 'str' || key === 'agi' || key === 'vit') {
@@ -2074,6 +2053,7 @@ noResultsMsg.style.display = 'none';
 };
 
 window.switchPage = function(pageName) {
+closeAllBulkPanels();
 document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
 document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
 document.getElementById(`page-${pageName}`).classList.add('active');
@@ -2124,11 +2104,11 @@ const input = document.createElement('input');
 input.type = 'number';
 input.value = cleanVal === '0' ? '' : cleanVal;
 input.className = 'stat-input';
-input.maxLength = 5;
-input.max = '99999';
+input.maxLength = 7;
+input.max = '9999999';
 input.addEventListener('input', function() {
-if (this.value.length > 5) {
-this.value = this.value.slice(0, 5);
+if (this.value.length > 7) {
+this.value = this.value.slice(0, 7);
 }
 });
 valueSpan.style.visibility = 'hidden';
@@ -2142,7 +2122,7 @@ if (newVal === '') newVal = '0';
 let finalValue = newVal;
 const num = parseFloat(newVal);
 if (!isNaN(num)) {
-if (num > 99999) finalValue = '99999';
+if (num > 9999999) finalValue = '9999999';
 else finalValue = Math.floor(num).toString();
 }
 if (isResist) {
