@@ -317,11 +317,15 @@ display: flex;
 justify-content: center;
 align-items: center;
 line-height: 0;
+flex-shrink: 0;  /* SVG не сжимается */
+width: 40px;     /* фиксированная ширина */
+height: 40px;    /* фиксированная высота */
 }
 .book-svg svg {
 width: 40px;
 height: 40px;
 display: block;
+flex-shrink: 0;
 }
 .book-level-wrapper {
 width: 100%;
@@ -329,11 +333,11 @@ display: flex;
 justify-content: center;
 align-items: center;
 margin-top: 2px;
-gap: 0;
+gap: 0;  /* НЕТ промежутка между числом и "ур." */
 }
 .book-level-input-inventory {
 width: auto;
-min-width: 25px;
+min-width: 12px;
 max-width: 60px;
 background: transparent;
 border: none;
@@ -343,6 +347,7 @@ font-weight: 600;
 text-align: left;
 padding: 2px 0;
 -moz-appearance: textfield;
+flex-shrink: 1;  /* поле может расширяться */
 }
 .book-level-input-inventory::-webkit-outer-spin-button,
 .book-level-input-inventory::-webkit-inner-spin-button {
@@ -356,8 +361,9 @@ outline: none;
 color: var(--text-secondary);
 font-size: 11px;
 white-space: nowrap;
-flex-shrink: 0;
+flex-shrink: 0;  /* "ур." не сжимается */
 margin-left: 0;
+padding-left: 0;
 }
 
 /* === СТИЛИ ДЛЯ ПОИСКА И СОРТИРОВКИ === */
