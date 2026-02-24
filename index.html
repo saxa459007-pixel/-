@@ -1127,6 +1127,22 @@ const listDiv = document.getElementById('classList');
 const karmaIconSpan = document.getElementById('karma-icon');
 const INVENTORY_KEY = 'rpg_inventory_v1';
 
+// Функция для измерения ширины текста (дублируем из books.js для надежности)
+function measureTextWidth(text, font, padding = 0) {
+    const span = document.createElement('span');
+    span.style.font = font;
+    span.style.visibility = 'hidden';
+    span.style.position = 'absolute';
+    span.style.whiteSpace = 'nowrap';
+    span.style.fontSize = '14px';
+    span.style.fontWeight = '700';
+    span.textContent = text || '1';
+    document.body.appendChild(span);
+    const width = span.offsetWidth;
+    document.body.removeChild(span);
+    return width + padding;
+}
+
 // ========== ФУНКЦИИ ДЛЯ ИНВЕНТАРЯ ==========
 window.toggleInventory = function() {
   const content = document.getElementById('inventoryContent');
