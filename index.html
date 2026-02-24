@@ -283,12 +283,13 @@ gap: 8px;
 background-color: transparent;
 border: none;
 border-radius: 0;
-padding: 5px 5px 5px 5px;
+padding: 5px 0;
 display: flex;
 flex-direction: column;
-align-items: center;
+align-items: flex-start;
 cursor: pointer;
 min-height: 75px;
+width: 100%;
 }
 .book-cell:hover {
 background-color: transparent;
@@ -304,22 +305,23 @@ background-color: transparent;
 font-size: 12px;
 font-weight: 600;
 color: var(--text-main);
-text-align: center;
+text-align: left;
 margin-bottom: 0;
 width: 100%;
 white-space: nowrap;
 overflow: hidden;
 text-overflow: ellipsis;
+padding-left: 0;
 }
 .book-svg {
 margin: 0;
 display: flex;
-justify-content: center;
+justify-content: flex-start;
 align-items: center;
 line-height: 0;
-flex-shrink: 0;  /* SVG не сжимается */
-width: 40px;     /* фиксированная ширина */
-height: 40px;    /* фиксированная высота */
+flex-shrink: 0;
+width: 40px;
+height: 40px;
 }
 .book-svg svg {
 width: 40px;
@@ -330,10 +332,10 @@ flex-shrink: 0;
 .book-level-wrapper {
 width: 100%;
 display: flex;
-justify-content: center;
+justify-content: flex-start;
 align-items: center;
 margin-top: 2px;
-gap: 0;  /* НЕТ промежутка между числом и "ур." */
+gap: 0;
 }
 .book-level-input-inventory {
 width: auto;
@@ -347,7 +349,8 @@ font-weight: 600;
 text-align: left;
 padding: 2px 0;
 -moz-appearance: textfield;
-flex-shrink: 1;  /* поле может расширяться */
+flex-shrink: 1;
+margin-left: 0;
 }
 .book-level-input-inventory::-webkit-outer-spin-button,
 .book-level-input-inventory::-webkit-inner-spin-button {
@@ -361,7 +364,7 @@ outline: none;
 color: var(--text-secondary);
 font-size: 11px;
 white-space: nowrap;
-flex-shrink: 0;  /* "ур." не сжимается */
+flex-shrink: 0;
 margin-left: 0;
 padding-left: 0;
 }
@@ -1135,9 +1138,23 @@ window.toggleInventory = function() {
   localStorage.setItem('inventory_open', content.classList.contains('show'));
 };
 
-// Функция для автоматического расширения поля ввода
+// Функция для автоматического расширения поля ввода с точным измерением ширины
 function adjustInventoryInputWidth(input) {
-  const newWidth = Math.min(60, Math.max(12, input.value.length * 8));
+  // Создаем временный span для точного измерения ширины текста
+  const span = document.createElement('span');
+  span.style.font = window.getComputedStyle(input).font;
+  span.style.visibility = 'hidden';
+  span.style.position = 'absolute';
+  span.style.whiteSpace = 'nowrap';
+  span.textContent = input.value || '1';
+  document.body.appendChild(span);
+  
+  // Получаем точную ширину текста
+  const textWidth = span.offsetWidth;
+  document.body.removeChild(span);
+  
+  // Устанавливаем ширину поля равной ширине текста + небольшой запас
+  const newWidth = Math.min(60, Math.max(12, textWidth + 2));
   input.style.width = newWidth + 'px';
 }
 
