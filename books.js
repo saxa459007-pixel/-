@@ -1,4 +1,3 @@
-// ========== КОНСТАНТЫ ==========
 const PASSIVE_ORDER = [
     "Барьер", "Быстрое восстановление", "Мародер", "Внимательность",
     "Инициативность", "Исследователь", "Ведьмак", "Собиратель",
@@ -262,7 +261,6 @@ window.editActiveStat = function(event, element, statKey) {
             profileStat.textContent = finalValue;
         }
         
-        // Обновляем все активные книги
         const items = document.querySelectorAll('#activeBooksContainer .book-item');
         const stats = getStatsFromProfile();
         items.forEach(item => {
@@ -652,6 +650,9 @@ window.renderPassiveBooks = async function() {
         const footerDiv = document.createElement('div');
         footerDiv.className = 'book-footer';
         
+        const leftGroup = document.createElement('div');
+        leftGroup.className = 'left-group';
+        
         const levelWrapper = document.createElement('div');
         levelWrapper.className = 'book-level-wrapper';
         
@@ -714,11 +715,13 @@ window.renderPassiveBooks = async function() {
         levelWrapper.appendChild(levelInput);
         levelWrapper.appendChild(levelUnit);
         
+        leftGroup.appendChild(levelWrapper);
+        
         const priceDiv = document.createElement('div');
         priceDiv.className = 'book-price';
         priceDiv.innerHTML = `🌕 ${priceText}`;
         
-        footerDiv.appendChild(levelWrapper);
+        footerDiv.appendChild(leftGroup);
         footerDiv.appendChild(priceDiv);
         
         item.appendChild(headerDiv);
