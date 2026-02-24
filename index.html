@@ -1131,8 +1131,7 @@ window.toggleInventory = function() {
 
 // Функция для автоматического расширения поля ввода
 function adjustInventoryInputWidth(input) {
-  input.style.width = '25px';
-  const newWidth = Math.min(60, Math.max(25, input.value.length * 8));
+  const newWidth = Math.min(60, Math.max(12, input.value.length * 8));
   input.style.width = newWidth + 'px';
 }
 
