@@ -332,13 +332,13 @@ margin-top: 2px;
 gap: 2px;
 }
 .book-level-input-inventory {
-width: 40px;
+width: 55px;
 background: transparent;
 border: none;
 color: var(--text-main);
 font-size: 12px;
 font-weight: 600;
-text-align: right;
+text-align: left;
 padding: 2px 0;
 -moz-appearance: textfield;
 }
@@ -1131,8 +1131,7 @@ window.syncInventoryBookLevel = function(bookName, level) {
   const savedLevels = JSON.parse(localStorage.getItem('rpg_books_levels_final_verified_v8') || '{}');
   const newLevel = parseInt(level) || 0;
   
-  if (savedLevels[bookName] === newLevel) return;
-  
+  // Сохраняем в localStorage
   savedLevels[bookName] = newLevel;
   localStorage.setItem('rpg_books_levels_final_verified_v8', JSON.stringify(savedLevels));
   localStorage.setItem('rpg_date_final_verified_v8', Date.now().toString());
@@ -1140,14 +1139,17 @@ window.syncInventoryBookLevel = function(bookName, level) {
   // Обновляем отображение на странице пассивных книг
   const passiveItems = document.querySelectorAll('#passiveBooksContainer .book-item');
   for (const item of passiveItems) {
+    // В dataset.bookName хранится имя в нижнем регистре
     if (item.dataset.bookName === bookName.toLowerCase()) {
       const input = item.querySelector('.book-level-input');
-      if (input && parseInt(input.value) !== newLevel) {
+      if (input) {
         input.value = newLevel;
+        // Обновляем ширину input
         const font = window.getComputedStyle(input).font;
         const width = measureTextWidth(input.value || '1', font, 2);
         input.style.width = (width + 2) + 'px';
       }
+      // Обновляем описание и цену
       if (typeof updatePassiveBookDescription === 'function') {
         updatePassiveBookDescription(item, bookName, newLevel);
       }
@@ -1158,6 +1160,7 @@ window.syncInventoryBookLevel = function(bookName, level) {
     }
   }
   
+  // Сохраняем состояние инвентаря
   saveInventory();
 };
 
@@ -1183,18 +1186,18 @@ function loadInventory() {
     if (!cell.classList.contains('empty')) {
       const name = cell.dataset.book;
       const input = cell.querySelector('.book-level-input-inventory');
-      if (input && savedPassiveLevels[name]) {
+      if (input && savedPassiveLevels[name] !== undefined) {
         input.value = savedPassiveLevels[name];
       }
     }
   });
   
-  // Также загружаем сохраненное состояние инвентаря
+  // Загружаем сохраненное состояние инвентаря
   const savedInventory = localStorage.getItem(INVENTORY_KEY);
   if (savedInventory) {
     try {
       const inventory = JSON.parse(savedInventory);
-      // Здесь можно загрузить другие данные инвентаря, если нужно
+      // Здесь можно загрузить другие данные инвентаря
     } catch (e) {
       console.log('Ошибка загрузки инвентаря', e);
     }
