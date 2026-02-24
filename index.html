@@ -329,10 +329,12 @@ display: flex;
 justify-content: center;
 align-items: center;
 margin-top: 2px;
-gap: 2px;
+gap: 0;
 }
 .book-level-input-inventory {
-width: 55px;
+width: auto;
+min-width: 25px;
+max-width: 60px;
 background: transparent;
 border: none;
 color: var(--text-main);
@@ -355,6 +357,7 @@ color: var(--text-secondary);
 font-size: 11px;
 white-space: nowrap;
 flex-shrink: 0;
+margin-left: 0;
 }
 
 /* === СТИЛИ ДЛЯ ПОИСКА И СОРТИРОВКИ === */
@@ -892,7 +895,7 @@ display: none !important;
             </svg>
           </div>
           <div class="book-level-wrapper">
-            <input type="number" class="book-level-input-inventory" id="inventory-book-Мародер" value="1" min="0" max="999999" oninput="if(this.value.length > 6) this.value = this.value.slice(0,6)" onchange="syncInventoryBookLevel('Мародер', this.value)">
+            <input type="number" class="book-level-input-inventory" id="inventory-book-Мародер" value="1" min="0" max="999999" oninput="adjustInventoryInputWidth(this); if(this.value.length > 6) this.value = this.value.slice(0,6)" onkeydown="if(event.key==='Enter') this.blur()" onchange="syncInventoryBookLevel('Мародер', this.value)">
             <span class="book-level-unit">ур.</span>
           </div>
         </div>
@@ -915,7 +918,7 @@ display: none !important;
             </svg>
           </div>
           <div class="book-level-wrapper">
-            <input type="number" class="book-level-input-inventory" id="inventory-book-Гладиатор" value="1" min="0" max="999999" oninput="if(this.value.length > 6) this.value = this.value.slice(0,6)" onchange="syncInventoryBookLevel('Гладиатор', this.value)">
+            <input type="number" class="book-level-input-inventory" id="inventory-book-Гладиатор" value="1" min="0" max="999999" oninput="adjustInventoryInputWidth(this); if(this.value.length > 6) this.value = this.value.slice(0,6)" onkeydown="if(event.key==='Enter') this.blur()" onchange="syncInventoryBookLevel('Гладиатор', this.value)">
             <span class="book-level-unit">ур.</span>
           </div>
         </div>
@@ -938,7 +941,7 @@ display: none !important;
             </svg>
           </div>
           <div class="book-level-wrapper">
-            <input type="number" class="book-level-input-inventory" id="inventory-book-Воздаяние" value="1" min="0" max="999999" oninput="if(this.value.length > 6) this.value = this.value.slice(0,6)" onchange="syncInventoryBookLevel('Воздаяние', this.value)">
+            <input type="number" class="book-level-input-inventory" id="inventory-book-Воздаяние" value="1" min="0" max="999999" oninput="adjustInventoryInputWidth(this); if(this.value.length > 6) this.value = this.value.slice(0,6)" onkeydown="if(event.key==='Enter') this.blur()" onchange="syncInventoryBookLevel('Воздаяние', this.value)">
             <span class="book-level-unit">ур.</span>
           </div>
         </div>
@@ -961,7 +964,7 @@ display: none !important;
             </svg>
           </div>
           <div class="book-level-wrapper">
-            <input type="number" class="book-level-input-inventory" id="inventory-book-Атлетика" value="1" min="0" max="999999" oninput="if(this.value.length > 6) this.value = this.value.slice(0,6)" onchange="syncInventoryBookLevel('Атлетика', this.value)">
+            <input type="number" class="book-level-input-inventory" id="inventory-book-Атлетика" value="1" min="0" max="999999" oninput="adjustInventoryInputWidth(this); if(this.value.length > 6) this.value = this.value.slice(0,6)" onkeydown="if(event.key==='Enter') this.blur()" onchange="syncInventoryBookLevel('Атлетика', this.value)">
             <span class="book-level-unit">ур.</span>
           </div>
         </div>
@@ -1126,6 +1129,13 @@ window.toggleInventory = function() {
   localStorage.setItem('inventory_open', content.classList.contains('show'));
 };
 
+// Функция для автоматического расширения поля ввода
+function adjustInventoryInputWidth(input) {
+  input.style.width = '25px';
+  const newWidth = Math.min(60, Math.max(25, input.value.length * 8));
+  input.style.width = newWidth + 'px';
+}
+
 // ========== СИНХРОНИЗАЦИЯ ИНВЕНТАРЯ С ПАССИВНЫМИ КНИГАМИ ==========
 window.syncInventoryBookLevel = function(bookName, level) {
   const savedLevels = JSON.parse(localStorage.getItem('rpg_books_levels_final_verified_v8') || '{}');
@@ -1188,6 +1198,7 @@ function loadInventory() {
       const input = cell.querySelector('.book-level-input-inventory');
       if (input && savedPassiveLevels[name] !== undefined) {
         input.value = savedPassiveLevels[name];
+        adjustInventoryInputWidth(input);
       }
     }
   });
