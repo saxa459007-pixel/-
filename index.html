@@ -238,81 +238,143 @@ width: 100%;
 .cap-container {
 padding: 15px;
 }
+
+/* Ползунок распределения */
+.distribution-slider {
+background-color: var(--input-bg);
+border-radius: 8px;
+padding: 12px 15px;
+margin-bottom: 15px;
+}
+.slider-title {
+font-size: 13px;
+color: var(--text-secondary);
+margin-bottom: 8px;
+display: flex;
+align-items: center;
+gap: 4px;
+}
+.slider-container {
+display: flex;
+align-items: center;
+gap: 10px;
+}
+.slider-label-left, .slider-label-right {
+font-size: 14px;
+font-weight: 600;
+min-width: 30px;
+text-align: center;
+}
+.slider-label-left {
+color: #ff7b7b;
+}
+.slider-label-right {
+color: #7baeff;
+}
+.slider {
+flex: 1;
+height: 6px;
+-webkit-appearance: none;
+appearance: none;
+background: linear-gradient(90deg, #ff7b7b 0%, #7baeff 100%);
+border-radius: 3px;
+outline: none;
+}
+.slider::-webkit-slider-thumb {
+-webkit-appearance: none;
+appearance: none;
+width: 20px;
+height: 20px;
+border-radius: 50%;
+background: var(--accent);
+cursor: pointer;
+border: 2px solid var(--text-main);
+box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+.slider::-moz-range-thumb {
+width: 20px;
+height: 20px;
+border-radius: 50%;
+background: var(--accent);
+cursor: pointer;
+border: 2px solid var(--text-main);
+}
+.slider-ratio {
+font-size: 13px;
+font-weight: 600;
+color: var(--accent);
+text-align: center;
+margin-top: 5px;
+}
+
 .cap-stats-column {
 display: flex;
 flex-direction: column;
-gap: 8px;
-flex: 1;
+gap: 2px;
 }
 .cap-stat-item {
 display: flex;
 align-items: center;
-justify-content: space-between;
-background-color: var(--input-bg);
-border-radius: 6px;
+gap: 0;
 padding: 8px 12px;
-}
-.cap-stat-left {
-display: flex;
-align-items: center;
-gap: 8px;
-}
-.cap-stat-icon {
-font-size: 18px;
-width: 24px;
-text-align: center;
-}
-.cap-stat-name {
-font-size: 13px;
-color: var(--text-secondary);
-}
-.cap-stat-value {
-font-size: 15px;
-font-weight: 600;
-color: var(--text-main);
-cursor: pointer;
-padding: 2px 6px;
-border-radius: 4px;
-}
-.cap-stat-value:hover {
-background-color: rgba(255,255,255,0.1);
-}
-.cap-right-panel {
-flex: 1;
 background-color: var(--input-bg);
 border-radius: 6px;
-padding: 12px;
-}
-.cap-right-title {
-font-size: 13px;
-color: var(--text-secondary);
-margin-bottom: 10px;
-}
-.cap-right-item {
-margin-bottom: 12px;
-}
-.cap-right-item:last-child {
-margin-bottom: 0;
-}
-.cap-right-label {
-font-size: 12px;
-color: var(--text-secondary);
+cursor: pointer;
+position: relative;
 margin-bottom: 2px;
 }
-.cap-right-stats {
+.cap-stat-item:hover {
+background-color: #5a626b;
+}
+.cap-stat-icon {
+font-size: 16px;
+width: 24px;
+text-align: center;
+flex-shrink: 0;
+}
+.cap-stat-value {
 font-size: 14px;
-font-weight: 600;
+font-weight: 700;
+color: var(--text-main);
+min-width: 20px;
+text-align: left;
+position: relative;
+margin-left: 4px;
+cursor: pointer;
+}
+.cap-stat-name {
+font-size: 12px;
+color: var(--text-secondary);
+text-transform: lowercase;
+margin-left: 4px;
+}
+.cap-stat-info {
+margin-left: auto;
+font-size: 12px;
+color: var(--text-secondary);
+white-space: nowrap;
+}
+.cap-rep-block {
+display: flex;
+justify-content: flex-end;
+align-items: center;
+gap: 2px;
+padding: 0 12px 8px 12px;
+margin-top: -4px;
+}
+.cap-rep-value {
+font-size: 12px;
 color: var(--text-main);
 }
-.cap-right-rep {
-font-size: 13px;
+.cap-rep-icon {
+font-size: 12px;
 color: var(--gold);
-margin-top: 2px;
 }
 .cap-total-rep {
 margin-top: 15px;
-padding-top: 10px;
-border-top: 1px solid var(--separator-color);
+padding: 12px;
+background-color: var(--input-bg);
+border-radius: 6px;
 display: flex;
 justify-content: space-between;
 align-items: center;
@@ -320,38 +382,17 @@ align-items: center;
 .cap-total-label {
 font-size: 14px;
 color: var(--text-secondary);
+display: flex;
+align-items: center;
+gap: 4px;
 }
 .cap-total-value {
 font-size: 18px;
 font-weight: 700;
-color: var(--gold);
-}
-.cap-main-row {
-display: flex;
-gap: 15px;
-margin-top: 10px;
+color: var(--text-main);
 }
 
-/* Информационная иконка */
-.info-icon {
-display: inline-flex;
-align-items: center;
-justify-content: center;
-cursor: pointer;
-color: var(--text-secondary);
-transition: color 0.2s;
-margin-left: 2px;
-}
-.info-icon:hover {
-color: var(--accent);
-}
-.info-icon svg {
-width: 16px;
-height: 16px;
-display: block;
-}
-
-/* Кликабельный уровень */
+/* Кликабельный уровень - без подсветки */
 .level-wrapper {
 display: inline-flex;
 align-items: center;
@@ -362,7 +403,10 @@ border-radius: 4px;
 transition: background-color 0.2s;
 }
 .level-wrapper:hover {
-background-color: var(--input-bg);
+background-color: transparent;
+}
+.level-wrapper .stat-icon {
+font-size: 18px;
 }
 .level-wrapper .stat-value {
 font-size: 17px;
@@ -371,24 +415,6 @@ font-weight: 600;
 .level-wrapper .stat-label {
 font-size: 12px;
 color: var(--text-secondary);
-}
-
-/* Всплывающая подсказка */
-.tooltip {
-position: fixed;
-background-color: var(--input-bg);
-border: 1px solid var(--separator-color);
-border-radius: 8px;
-padding: 10px 15px;
-color: var(--text-main);
-font-size: 13px;
-z-index: 1000;
-box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-pointer-events: none;
-animation: fadeIn 0.2s;
-}
-.tooltip.hidden {
-display: none;
 }
 
 /* СТИЛИ ДЛЯ ИНВЕНТАРЯ */
@@ -1020,70 +1046,65 @@ display: none !important;
             <span class="stat-value" data-cap-key="lvl">1</span>
             <span class="stat-label">ур</span>
           </span>
-          <span class="info-icon" onclick="showRepInfo(event)">
-            <svg width="16" height="16" viewBox="0 0 36 36" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-              <path d="M18,6A12,12,0,1,0,30,18,12,12,0,0,0,18,6Zm-2,5.15a2,2,0,1,1,2,2A2,2,0,0,1,15.9,11.15ZM23,24a1,1,0,0,1-1,1H15a1,1,0,1,1,0-2h2V17H16a1,1,0,0,1,0-2h4v8h2A1,1,0,0,1,23,24Z"/>
-            </svg>
-          </span>
         </h1>
       </div>
     </div>
 
     <div class="cap-container">
-      <!-- Основной ряд: статы слева, капы справа -->
-      <div class="cap-main-row">
-        <!-- Статы в столбик -->
-        <div class="cap-stats-column">
-          <!-- Выносливость -->
-          <div class="cap-stat-item">
-            <div class="cap-stat-left">
-              <span class="cap-stat-icon">❤️</span>
-              <span class="cap-stat-name">вын</span>
-            </div>
-            <span class="cap-stat-value" onclick="editCapStat(this, 'vit')" data-cap-key="vit">3</span>
-          </div>
-          
-          <!-- Сила -->
-          <div class="cap-stat-item">
-            <div class="cap-stat-left">
-              <span class="cap-stat-icon">💪</span>
-              <span class="cap-stat-name">сил</span>
-            </div>
-            <span class="cap-stat-value" onclick="editCapStat(this, 'str')" data-cap-key="str">3</span>
-          </div>
-          
-          <!-- Ловкость -->
-          <div class="cap-stat-item">
-            <div class="cap-stat-left">
-              <span class="cap-stat-icon">🤲</span>
-              <span class="cap-stat-name">лвк</span>
-            </div>
-            <span class="cap-stat-value" onclick="editCapStat(this, 'agi')" data-cap-key="agi">3</span>
-          </div>
+      <!-- Ползунок распределения сразу после заголовка -->
+      <div class="distribution-slider">
+        <div class="slider-title">⚖️ Распределение 💪:🤲</div>
+        <div class="slider-container">
+          <span class="slider-label-left">💪</span>
+          <input type="range" class="slider" id="strAgiSlider" min="0" max="6" value="3" step="1" oninput="updateDistribution(this.value)">
+          <span class="slider-label-right">🤲</span>
+        </div>
+        <div class="slider-ratio" id="sliderRatio">1:1</div>
+      </div>
+
+      <!-- Статы -->
+      <div class="cap-stats-column">
+        <!-- Выносливость -->
+        <div class="cap-stat-item" onclick="editCapStat(this, 'vit')">
+          <span class="cap-stat-icon">❤️</span>
+          <span class="cap-stat-value" data-cap-key="vit">3</span>
+          <span class="cap-stat-name">вын</span>
+          <span class="cap-stat-info" id="cap-vit-info">до капа 51</span>
+        </div>
+        <div class="cap-rep-block">
+          <span class="cap-rep-value" id="cap-vit-rep">14 280</span>
+          <span class="cap-rep-icon">🏹</span>
         </div>
         
-        <!-- Информация о капах справа -->
-        <div class="cap-right-panel">
-          <div class="cap-right-title">До капа:</div>
-          
-          <div class="cap-right-item">
-            <div class="cap-right-label">❤️ выносливость</div>
-            <div class="cap-right-stats" id="cap-vit-stats">51 стат</div>
-            <div class="cap-right-rep" id="cap-vit-rep">14 280 🏹</div>
-          </div>
-          
-          <div class="cap-right-item">
-            <div class="cap-right-label">💪+🤲 сила+ловкость</div>
-            <div class="cap-right-stats" id="cap-str-agi-stats">102 стата</div>
-            <div class="cap-right-rep" id="cap-str-agi-rep">54 570 🏹</div>
-          </div>
+        <!-- Сила -->
+        <div class="cap-stat-item" onclick="editCapStat(this, 'str')">
+          <span class="cap-stat-icon">💪</span>
+          <span class="cap-stat-value" data-cap-key="str">3</span>
+          <span class="cap-stat-name">сил</span>
+          <span class="cap-stat-info" id="cap-str-info">до капа 51</span>
+        </div>
+        <div class="cap-rep-block">
+          <span class="cap-rep-value" id="cap-str-rep">14 280</span>
+          <span class="cap-rep-icon">🏹</span>
+        </div>
+        
+        <!-- Ловкость -->
+        <div class="cap-stat-item" onclick="editCapStat(this, 'agi')">
+          <span class="cap-stat-icon">🤲</span>
+          <span class="cap-stat-value" data-cap-key="agi">3</span>
+          <span class="cap-stat-name">лвк</span>
+          <span class="cap-stat-info" id="cap-agi-info">до капа 51</span>
+        </div>
+        <div class="cap-rep-block">
+          <span class="cap-rep-value" id="cap-agi-rep">14 280</span>
+          <span class="cap-rep-icon">🏹</span>
         </div>
       </div>
       
-      <!-- Общая репутация снизу -->
+      <!-- Общая репутация -->
       <div class="cap-total-rep">
-        <span class="cap-total-label">🏹 Репутация охотников:</span>
-        <span class="cap-total-value" id="cap-total-rep">68 850</span>
+        <span class="cap-total-label">🏹 всего:</span>
+        <span class="cap-total-value" id="cap-total-rep">42 840</span>
       </div>
     </div>
   </div>
@@ -1334,11 +1355,6 @@ display: none !important;
 <div class="no-results" id="passiveNoResultsMsg">Пассивные книги не найдены</div>
 </div>
 
-<!-- Всплывающая подсказка -->
-<div id="rep-tooltip" class="tooltip hidden">
-  🏹 - репутация охотников
-</div>
-
 </div>
 
 <!-- ПОДВАЛ С ССЫЛКАМИ -->
@@ -1398,49 +1414,122 @@ function measureTextWidth(text, font, padding = 0) {
     return width + padding;
 }
 
-// ========== ФУНКЦИИ ДЛЯ КАП СТАТОВ ==========
-// Показать подсказку
-window.showRepInfo = function(event) {
-  const tooltip = document.getElementById('rep-tooltip');
-  tooltip.classList.remove('hidden');
-  
-  // Позиционируем подсказку рядом с иконкой
-  const rect = event.currentTarget.getBoundingClientRect();
-  tooltip.style.left = (rect.left + window.scrollX) + 'px';
-  tooltip.style.top = (rect.bottom + window.scrollY + 5) + 'px';
-  
-  // Скрываем через 3 секунды
-  setTimeout(() => {
-    tooltip.classList.add('hidden');
-  }, 3000);
+// Пропорции для силы/ловкости - ПРАВИЛЬНЫЙ ПОРЯДОК
+const RATIOS = [
+    { str: 4, agi: 1, name: '4:1' },  // максимум силы
+    { str: 3, agi: 1, name: '3:1' },
+    { str: 2, agi: 1, name: '2:1' },
+    { str: 1, agi: 1, name: '1:1' },  // равновесие
+    { str: 1, agi: 2, name: '1:2' },
+    { str: 1, agi: 3, name: '1:3' },
+    { str: 1, agi: 4, name: '1:4' }   // максимум ловкости
+];
+
+let currentRatioIndex = 3; // 1:1 по умолчанию
+
+// Обновление распределения при изменении ползунка
+window.updateDistribution = function(value) {
+    currentRatioIndex = parseInt(value);
+    const ratio = RATIOS[currentRatioIndex];
+    document.getElementById('sliderRatio').textContent = ratio.name;
+    updateCapCalculations();
 };
 
-// Редактирование уровня в заголовке
+// Получение распределенных значений силы и ловкости
+function getDistributedStats(totalLeft) {
+    const ratio = RATIOS[currentRatioIndex];
+    const total = ratio.str + ratio.agi;
+    const strLeft = Math.floor(totalLeft * ratio.str / total);
+    const agiLeft = totalLeft - strLeft;
+    return { str: strLeft, agi: agiLeft };
+}
+
+// ========== ФУНКЦИИ ДЛЯ КАП СТАТОВ ==========
+// Редактирование уровня в заголовке - отступ 6px, БЕЗ РАМКИ
 window.editCapLevel = function(wrapper) {
   const valueSpan = wrapper.querySelector('.stat-value');
+  const iconSpan = wrapper.querySelector('.stat-icon');
+  const labelSpan = wrapper.querySelector('.stat-label');
   const currentVal = valueSpan.textContent;
   
+  // Получаем ширину иконки
+  const iconWidth = iconSpan.offsetWidth;
+  
+  // Создаем контейнер для числа
+  const container = document.createElement('div');
+  container.style.display = 'flex';
+  container.style.alignItems = 'center';
+  container.style.gap = '2px';
+  container.style.position = 'absolute';
+  container.style.top = '0';
+  container.style.left = (iconWidth + 6) + 'px';
+  container.style.height = '100%';
+  container.style.padding = '2px 4px 2px 0';
+  container.style.boxSizing = 'border-box';
+  container.style.pointerEvents = 'none';
+  
+  // Функция для точного измерения ширины текста
+  function getTextWidth(text) {
+    const span = document.createElement('span');
+    span.style.font = window.getComputedStyle(input).font;
+    span.style.visibility = 'hidden';
+    span.style.position = 'absolute';
+    span.style.whiteSpace = 'nowrap';
+    span.textContent = text || '1';
+    document.body.appendChild(span);
+    const width = span.offsetWidth;
+    document.body.removeChild(span);
+    return width;
+  }
+  
+  // Создаем input для числа - БЕЗ РАМКИ
   const input = document.createElement('input');
   input.type = 'number';
   input.value = currentVal;
   input.className = 'stat-input';
-  input.style.position = 'absolute';
-  input.style.width = '50px';
-  input.style.backgroundColor = 'var(--input-bg)';
-  input.style.border = '1px solid var(--accent)';
-  input.style.borderRadius = '4px';
+  input.style.position = 'relative';
+  input.style.width = 'auto';
+  input.style.minWidth = 'auto';
+  input.style.maxWidth = '60px';
+  input.style.background = 'transparent';
   input.style.color = 'var(--text-main)';
   input.style.fontSize = '17px';
   input.style.fontWeight = '600';
-  input.style.padding = '2px 4px';
-  input.style.top = '50%';
-  input.style.left = '50%';
-  input.style.transform = 'translate(-50%, -50%)';
-  input.style.zIndex = '100';
+  input.style.fontFamily = 'inherit';
+  input.style.padding = '0';
+  input.style.margin = '0';
+  input.style.textAlign = 'left';
+  input.style.appearance = 'none';
+  input.style.webkitAppearance = 'none';
+  input.style.mozAppearance = 'textfield';
+  input.style.pointerEvents = 'auto';
+  input.maxLength = 5;
+  
+  // Создаем span для "ур"
+  const labelSpan2 = document.createElement('span');
+  labelSpan2.className = 'stat-label';
+  labelSpan2.style.marginLeft = '0';
+  labelSpan2.style.pointerEvents = 'none';
+  labelSpan2.textContent = 'ур';
+  
+  input.addEventListener('input', function() {
+    if (this.value.length > 5) {
+      this.value = this.value.slice(0, 5);
+    }
+    const textWidth = getTextWidth(this.value || '1');
+    this.style.width = textWidth + 'px';
+  });
   
   valueSpan.style.visibility = 'hidden';
+  labelSpan.style.visibility = 'hidden';
+  
+  container.appendChild(input);
+  container.appendChild(labelSpan2);
   wrapper.style.position = 'relative';
-  wrapper.appendChild(input);
+  wrapper.appendChild(container);
+  
+  const initialWidth = getTextWidth(currentVal);
+  input.style.width = initialWidth + 'px';
   input.focus();
   input.select();
   
@@ -1451,15 +1540,15 @@ window.editCapLevel = function(wrapper) {
     const num = parseInt(newVal);
     if (!isNaN(num)) {
       if (num < 1) finalValue = '1';
-      else if (num > 999999) finalValue = '999999';
+      else if (num > 99999) finalValue = '99999';
       else finalValue = num.toString();
     }
     
     valueSpan.textContent = finalValue;
     valueSpan.style.visibility = 'visible';
-    input.remove();
+    labelSpan.style.visibility = 'visible';
+    container.remove();
     
-    // Обновляем уровень в профиле
     const profileLvl = document.querySelector('.stat-value[data-key="lvl"]');
     if (profileLvl) {
       profileLvl.textContent = finalValue;
@@ -1479,30 +1568,88 @@ window.editCapLevel = function(wrapper) {
 };
 
 // Редактирование стата на странице капов
-window.editCapStat = function(element, statKey) {
-  const currentVal = element.textContent;
+window.editCapStat = function(item, statKey) {
+  const valueSpan = item.querySelector('.cap-stat-value');
+  const nameSpan = item.querySelector('.cap-stat-name');
+  const iconSpan = item.querySelector('.cap-stat-icon');
+  const currentVal = valueSpan.textContent;
+  const currentName = nameSpan.textContent;
+  
+  const iconWidth = iconSpan.offsetWidth;
+  
+  const container = document.createElement('div');
+  container.style.display = 'flex';
+  container.style.alignItems = 'center';
+  container.style.gap = '4px';
+  container.style.position = 'absolute';
+  container.style.top = '0';
+  container.style.left = (iconWidth + 8) + 'px';
+  container.style.height = '100%';
+  container.style.padding = '8px 12px 8px 8px';
+  container.style.boxSizing = 'border-box';
+  container.style.pointerEvents = 'none';
+  
+  function getTextWidth(text) {
+    const span = document.createElement('span');
+    span.style.font = window.getComputedStyle(input).font;
+    span.style.visibility = 'hidden';
+    span.style.position = 'absolute';
+    span.style.whiteSpace = 'nowrap';
+    span.textContent = text || '1';
+    document.body.appendChild(span);
+    const width = span.offsetWidth;
+    document.body.removeChild(span);
+    return width;
+  }
   
   const input = document.createElement('input');
   input.type = 'number';
   input.value = currentVal;
   input.className = 'stat-input';
-  input.style.position = 'absolute';
-  input.style.width = '50px';
-  input.style.backgroundColor = 'var(--input-bg)';
-  input.style.border = '1px solid var(--accent)';
-  input.style.borderRadius = '4px';
+  input.style.position = 'relative';
+  input.style.width = 'auto';
+  input.style.minWidth = 'auto';
+  input.style.maxWidth = '60px';
+  input.style.background = 'transparent';
+  input.style.border = 'none';
   input.style.color = 'var(--text-main)';
-  input.style.fontSize = '15px';
-  input.style.fontWeight = '600';
-  input.style.padding = '2px 4px';
-  input.style.top = '50%';
-  input.style.left = '50%';
-  input.style.transform = 'translate(-50%, -50%)';
-  input.style.zIndex = '100';
+  input.style.fontSize = '14px';
+  input.style.fontWeight = '700';
+  input.style.fontFamily = 'inherit';
+  input.style.padding = '0';
+  input.style.margin = '0';
+  input.style.borderRadius = '0';
+  input.style.outline = 'none';
+  input.style.textAlign = 'left';
+  input.style.appearance = 'none';
+  input.style.webkitAppearance = 'none';
+  input.style.mozAppearance = 'textfield';
+  input.style.pointerEvents = 'auto';
+  input.maxLength = 5;
   
-  element.style.visibility = 'hidden';
-  element.parentElement.style.position = 'relative';
-  element.parentElement.appendChild(input);
+  const nameSpan2 = document.createElement('span');
+  nameSpan2.className = 'cap-stat-name';
+  nameSpan2.style.marginLeft = '0';
+  nameSpan2.style.pointerEvents = 'none';
+  nameSpan2.textContent = currentName;
+  
+  input.addEventListener('input', function() {
+    if (this.value.length > 5) {
+      this.value = this.value.slice(0, 5);
+    }
+    const textWidth = getTextWidth(this.value || '1');
+    this.style.width = textWidth + 'px';
+  });
+  
+  valueSpan.style.visibility = 'hidden';
+  nameSpan.style.visibility = 'hidden';
+  
+  container.appendChild(input);
+  container.appendChild(nameSpan2);
+  item.appendChild(container);
+  
+  const initialWidth = getTextWidth(currentVal);
+  input.style.width = initialWidth + 'px';
   input.focus();
   input.select();
   
@@ -1513,15 +1660,15 @@ window.editCapStat = function(element, statKey) {
     const num = parseInt(newVal);
     if (!isNaN(num)) {
       if (num < 3) finalValue = '3';
-      else if (num > 999999) finalValue = '999999';
+      else if (num > 99999) finalValue = '99999';
       else finalValue = num.toString();
     }
     
-    element.textContent = finalValue;
-    element.style.visibility = 'visible';
-    input.remove();
+    valueSpan.textContent = finalValue;
+    valueSpan.style.visibility = 'visible';
+    nameSpan.style.visibility = 'visible';
+    container.remove();
     
-    // Обновляем соответствующий стат в профиле
     const profileStat = document.querySelector(`.stat-value[data-key="${statKey}"]`);
     if (profileStat) {
       profileStat.textContent = finalValue;
@@ -1551,7 +1698,6 @@ function loadCapStatsFromProfile() {
     document.querySelector('[data-cap-key="lvl"]').textContent = lvlEl.textContent;
   }
   
-  // Обновляем все элементы с data-cap-key
   document.querySelectorAll('[data-cap-key="vit"]').forEach(el => {
     if (vitEl) el.textContent = vitEl.textContent;
   });
@@ -1577,11 +1723,14 @@ function updateCapCalculations() {
   const strAgiCap = lvl * 6 + 90;
   const strAgiSum = str + agi;
   
-  // Сколько осталось до капа
+  // Сколько осталось до капа (общее)
   const vitLeft = Math.max(0, vitCap - vit);
   const strAgiLeft = Math.max(0, strAgiCap - strAgiSum);
   
-  // Стоимость в репутации (1 стат = 10 репутации, каждый следующий +10)
+  // Распределение силы и ловкости согласно пропорции
+  const distributed = getDistributedStats(strAgiLeft);
+  
+  // Стоимость в репутации
   function calculateRepCost(current, left) {
     let total = 0;
     for (let i = 0; i < left; i++) {
@@ -1591,26 +1740,24 @@ function updateCapCalculations() {
   }
   
   const vitRep = calculateRepCost(vit, vitLeft);
-  const strAgiRep = calculateRepCost(strAgiSum, strAgiLeft);
-  const totalRep = vitRep + strAgiRep;
+  const strRep = calculateRepCost(str, distributed.str);
+  const agiRep = calculateRepCost(agi, distributed.agi);
+  const totalRep = vitRep + strRep + agiRep;
   
-  // Форматирование чисел
   function formatNumber(num) {
     return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
   }
   
-  // Склонение слова "стат"
-  function getStatWord(count) {
-    if (count % 10 === 1 && count % 100 !== 11) return 'стат';
-    if ([2,3,4].includes(count % 10) && ![12,13,14].includes(count % 100)) return 'стата';
-    return 'статов';
-  }
-  
   // Обновляем отображение
-  document.getElementById('cap-vit-stats').textContent = vitLeft + ' ' + getStatWord(vitLeft);
-  document.getElementById('cap-vit-rep').textContent = formatNumber(vitRep) + ' 🏹';
-  document.getElementById('cap-str-agi-stats').textContent = strAgiLeft + ' ' + getStatWord(strAgiLeft);
-  document.getElementById('cap-str-agi-rep').textContent = formatNumber(strAgiRep) + ' 🏹';
+  document.getElementById('cap-vit-info').textContent = 'до капа ' + vitLeft;
+  document.getElementById('cap-vit-rep').textContent = formatNumber(vitRep);
+  
+  document.getElementById('cap-str-info').textContent = 'до капа ' + distributed.str;
+  document.getElementById('cap-str-rep').textContent = formatNumber(strRep);
+  
+  document.getElementById('cap-agi-info').textContent = 'до капа ' + distributed.agi;
+  document.getElementById('cap-agi-rep').textContent = formatNumber(agiRep);
+  
   document.getElementById('cap-total-rep').textContent = formatNumber(totalRep);
 }
 
@@ -1625,7 +1772,6 @@ window.toggleInventory = function() {
   localStorage.setItem('inventory_open', content.classList.contains('show'));
 };
 
-// Функция для автоматического расширения поля ввода
 function adjustInventoryInputWidth(input) {
   if (input.value.length > 6) {
     input.value = input.value.slice(0, 6);
@@ -1801,7 +1947,7 @@ localStorage.setItem(DATE_KEY, Date.now().toString());
 console.log('✅ Данные загружены из облака VK');
 updateClassResult();
 updateKarmaIcon();
-loadCapStatsFromProfile(); // Загружаем капы из профиля
+loadCapStatsFromProfile();
 return true;
 }
 return false;
@@ -1986,7 +2132,7 @@ if (labelSpan) labelSpan.style.visibility = 'visible';
 input.remove();
 if (isKarma) updateKarmaIcon();
 saveStats();
-updateCapCalculations(); // Обновляем капы
+updateCapCalculations();
 };
 input.onblur = finish;
 input.onkeydown = e => {
@@ -2058,7 +2204,7 @@ if (typeof renderPassiveBooks === 'function') renderPassiveBooks();
 } else if (pageName === 'active') {
 if (typeof renderActiveBooks === 'function') renderActiveBooks();
 } else if (pageName === 'cap') {
-loadCapStatsFromProfile(); // Загружаем капы при открытии
+loadCapStatsFromProfile();
 updateCapCalculations();
 }
 };
@@ -2081,7 +2227,7 @@ triggerBtn.textContent = savedClass;
 saveStats();
 }
 initClassList();
-loadCapStatsFromProfile(); // Загружаем капы
+loadCapStatsFromProfile();
 } catch (error) {
 console.log('Ошибка инициализации VK Bridge:', error);
 document.getElementById('user-name').textContent = 'Тестовый пользователь';
