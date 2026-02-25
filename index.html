@@ -89,7 +89,7 @@ flex: 1;
 .profile-header { padding: 15px; display: flex; align-items: flex-start; border-bottom: 1px solid var(--separator-color); position: relative; z-index: 10; }
 .avatar { width: 50px; height: 50px; border-radius: 50%; margin-right: 12px; object-fit: cover; border: 2px solid var(--separator-color); flex-shrink: 0; background-color: #000; }
 .info { flex: 1; overflow: visible; position: relative; }
-.player-name { font-size: 17px; margin: 0 0 5px 0; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text-main); }
+.player-name { font-size: 17px; margin: 0 0 5px 0; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text-main); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .class-wrapper { position: relative; width: 100%; z-index: 50; }
 .class-trigger { background: none; border: none; color: var(--text-secondary); font-size: 12px; padding: 4px 8px; margin: 0; cursor: pointer; text-transform: lowercase; font-family: inherit; display: inline-flex; align-items: center; gap: 4px; outline: none; text-align: left; border-radius: 4px; transition: background 0.2s; width: auto; }
 .class-trigger:hover { background-color: rgba(255,255,255,0.05); color: var(--text-main); }
@@ -233,6 +233,163 @@ width: 100%;
 }
 .highlight-class { color: var(--text-main); font-weight: 700; font-size: 13px; margin-right: 4px; }
 .highlight-val { color: var(--text-secondary); font-weight: 600; }
+
+/* СТИЛИ ДЛЯ КАП СТАТОВ */
+.cap-container {
+padding: 15px;
+}
+.cap-stats-column {
+display: flex;
+flex-direction: column;
+gap: 8px;
+flex: 1;
+}
+.cap-stat-item {
+display: flex;
+align-items: center;
+justify-content: space-between;
+background-color: var(--input-bg);
+border-radius: 6px;
+padding: 8px 12px;
+}
+.cap-stat-left {
+display: flex;
+align-items: center;
+gap: 8px;
+}
+.cap-stat-icon {
+font-size: 18px;
+width: 24px;
+text-align: center;
+}
+.cap-stat-name {
+font-size: 13px;
+color: var(--text-secondary);
+}
+.cap-stat-value {
+font-size: 15px;
+font-weight: 600;
+color: var(--text-main);
+cursor: pointer;
+padding: 2px 6px;
+border-radius: 4px;
+}
+.cap-stat-value:hover {
+background-color: rgba(255,255,255,0.1);
+}
+.cap-right-panel {
+flex: 1;
+background-color: var(--input-bg);
+border-radius: 6px;
+padding: 12px;
+}
+.cap-right-title {
+font-size: 13px;
+color: var(--text-secondary);
+margin-bottom: 10px;
+}
+.cap-right-item {
+margin-bottom: 12px;
+}
+.cap-right-item:last-child {
+margin-bottom: 0;
+}
+.cap-right-label {
+font-size: 12px;
+color: var(--text-secondary);
+margin-bottom: 2px;
+}
+.cap-right-stats {
+font-size: 14px;
+font-weight: 600;
+color: var(--text-main);
+}
+.cap-right-rep {
+font-size: 13px;
+color: var(--gold);
+margin-top: 2px;
+}
+.cap-total-rep {
+margin-top: 15px;
+padding-top: 10px;
+border-top: 1px solid var(--separator-color);
+display: flex;
+justify-content: space-between;
+align-items: center;
+}
+.cap-total-label {
+font-size: 14px;
+color: var(--text-secondary);
+}
+.cap-total-value {
+font-size: 18px;
+font-weight: 700;
+color: var(--gold);
+}
+.cap-main-row {
+display: flex;
+gap: 15px;
+margin-top: 10px;
+}
+
+/* Информационная иконка */
+.info-icon {
+display: inline-flex;
+align-items: center;
+justify-content: center;
+cursor: pointer;
+color: var(--text-secondary);
+transition: color 0.2s;
+margin-left: 2px;
+}
+.info-icon:hover {
+color: var(--accent);
+}
+.info-icon svg {
+width: 16px;
+height: 16px;
+display: block;
+}
+
+/* Кликабельный уровень */
+.level-wrapper {
+display: inline-flex;
+align-items: center;
+gap: 2px;
+cursor: pointer;
+padding: 2px 4px;
+border-radius: 4px;
+transition: background-color 0.2s;
+}
+.level-wrapper:hover {
+background-color: var(--input-bg);
+}
+.level-wrapper .stat-value {
+font-size: 17px;
+font-weight: 600;
+}
+.level-wrapper .stat-label {
+font-size: 12px;
+color: var(--text-secondary);
+}
+
+/* Всплывающая подсказка */
+.tooltip {
+position: fixed;
+background-color: var(--input-bg);
+border: 1px solid var(--separator-color);
+border-radius: 8px;
+padding: 10px 15px;
+color: var(--text-main);
+font-size: 13px;
+z-index: 1000;
+box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+pointer-events: none;
+animation: fadeIn 0.2s;
+}
+.tooltip.hidden {
+display: none;
+}
 
 /* СТИЛИ ДЛЯ ИНВЕНТАРЯ */
 .inventory-section {
@@ -827,17 +984,110 @@ display: none !important;
 </head>
 <body>
 <div class="top-nav">
-<div class="nav-item active" onclick="switchPage('profile')" id="nav-profile">
-<svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
-</div>
-<div class="nav-item" onclick="switchPage('active')" id="nav-active">
-<span>📕</span>
-</div>
-<div class="nav-item" onclick="switchPage('passive')" id="nav-passive">
-<span>📘</span>
-</div>
+  <!-- Новая вкладка Кап статов -->
+  <div class="nav-item" onclick="switchPage('cap')" id="nav-cap">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12,14a1,1,0,0,0-1,1v2a1,1,0,0,0,2,0V15A1,1,0,0,0,12,14Zm.38-2.92A1,1,0,0,0,11.8,11l-.18.06-.18.09-.15.12A1,1,0,0,0,11,12a1,1,0,0,0,.29.71,1,1,0,0,0,.33.21A.84.84,0,0,0,12,13a1,1,0,0,0,.71-.29A1,1,0,0,0,13,12a1,1,0,0,0-.29-.71A1.15,1.15,0,0,0,12.38,11.08ZM20,8.94a1.31,1.31,0,0,0-.06-.27l0-.09a1.07,1.07,0,0,0-.19-.28h0l-6-6h0a1.07,1.07,0,0,0-.28-.19l-.1,0A1.1,1.1,0,0,0,13.06,2H7A3,3,0,0,0,4,5V19a3,3,0,0,0,3,3H17a3,3,0,0,0,3-3V9S20,9,20,8.94ZM14,5.41,16.59,8H15a1,1,0,0,1-1-1ZM18,19a1,1,0,0,1-1,1H7a1,1,0,0,1-1-1V5A1,1,0,0,1,7,4h5V7a3,3,0,0,0,3,3h3Z"/>
+    </svg>
+  </div>
+  
+  <!-- Профиль -->
+  <div class="nav-item active" onclick="switchPage('profile')" id="nav-profile">
+    <svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+  </div>
+  
+  <!-- Активные -->
+  <div class="nav-item" onclick="switchPage('active')" id="nav-active">
+    <span>📕</span>
+  </div>
+  
+  <!-- Пассивные -->
+  <div class="nav-item" onclick="switchPage('passive')" id="nav-passive">
+    <span>📘</span>
+  </div>
 </div>
 <div class="content-container">
+
+<!-- СТРАНИЦА КАП СТАТОВ -->
+<div id="page-cap" class="page">
+  <div class="profile-card">
+    <div class="profile-header">
+      <div class="info">
+        <h1 class="player-name">
+          Кап статов
+          <span class="level-wrapper" onclick="editCapLevel(this)">
+            <span class="stat-icon">🕯️</span>
+            <span class="stat-value" data-cap-key="lvl">1</span>
+            <span class="stat-label">ур</span>
+          </span>
+          <span class="info-icon" onclick="showRepInfo(event)">
+            <svg width="16" height="16" viewBox="0 0 36 36" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+              <path d="M18,6A12,12,0,1,0,30,18,12,12,0,0,0,18,6Zm-2,5.15a2,2,0,1,1,2,2A2,2,0,0,1,15.9,11.15ZM23,24a1,1,0,0,1-1,1H15a1,1,0,1,1,0-2h2V17H16a1,1,0,0,1,0-2h4v8h2A1,1,0,0,1,23,24Z"/>
+            </svg>
+          </span>
+        </h1>
+      </div>
+    </div>
+
+    <div class="cap-container">
+      <!-- Основной ряд: статы слева, капы справа -->
+      <div class="cap-main-row">
+        <!-- Статы в столбик -->
+        <div class="cap-stats-column">
+          <!-- Выносливость -->
+          <div class="cap-stat-item">
+            <div class="cap-stat-left">
+              <span class="cap-stat-icon">❤️</span>
+              <span class="cap-stat-name">вын</span>
+            </div>
+            <span class="cap-stat-value" onclick="editCapStat(this, 'vit')" data-cap-key="vit">3</span>
+          </div>
+          
+          <!-- Сила -->
+          <div class="cap-stat-item">
+            <div class="cap-stat-left">
+              <span class="cap-stat-icon">💪</span>
+              <span class="cap-stat-name">сил</span>
+            </div>
+            <span class="cap-stat-value" onclick="editCapStat(this, 'str')" data-cap-key="str">3</span>
+          </div>
+          
+          <!-- Ловкость -->
+          <div class="cap-stat-item">
+            <div class="cap-stat-left">
+              <span class="cap-stat-icon">🤲</span>
+              <span class="cap-stat-name">лвк</span>
+            </div>
+            <span class="cap-stat-value" onclick="editCapStat(this, 'agi')" data-cap-key="agi">3</span>
+          </div>
+        </div>
+        
+        <!-- Информация о капах справа -->
+        <div class="cap-right-panel">
+          <div class="cap-right-title">До капа:</div>
+          
+          <div class="cap-right-item">
+            <div class="cap-right-label">❤️ выносливость</div>
+            <div class="cap-right-stats" id="cap-vit-stats">51 стат</div>
+            <div class="cap-right-rep" id="cap-vit-rep">14 280 🏹</div>
+          </div>
+          
+          <div class="cap-right-item">
+            <div class="cap-right-label">💪+🤲 сила+ловкость</div>
+            <div class="cap-right-stats" id="cap-str-agi-stats">102 стата</div>
+            <div class="cap-right-rep" id="cap-str-agi-rep">54 570 🏹</div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Общая репутация снизу -->
+      <div class="cap-total-rep">
+        <span class="cap-total-label">🏹 Репутация охотников:</span>
+        <span class="cap-total-value" id="cap-total-rep">68 850</span>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- СТРАНИЦА ПРОФИЛЯ -->
 <div id="page-profile" class="page active">
@@ -1084,6 +1334,11 @@ display: none !important;
 <div class="no-results" id="passiveNoResultsMsg">Пассивные книги не найдены</div>
 </div>
 
+<!-- Всплывающая подсказка -->
+<div id="rep-tooltip" class="tooltip hidden">
+  🏹 - репутация охотников
+</div>
+
 </div>
 
 <!-- ПОДВАЛ С ССЫЛКАМИ -->
@@ -1127,7 +1382,7 @@ const listDiv = document.getElementById('classList');
 const karmaIconSpan = document.getElementById('karma-icon');
 const INVENTORY_KEY = 'rpg_inventory_v1';
 
-// Функция для измерения ширины текста (дублируем из books.js для надежности)
+// Функция для измерения ширины текста
 function measureTextWidth(text, font, padding = 0) {
     const span = document.createElement('span');
     span.style.font = font;
@@ -1143,6 +1398,222 @@ function measureTextWidth(text, font, padding = 0) {
     return width + padding;
 }
 
+// ========== ФУНКЦИИ ДЛЯ КАП СТАТОВ ==========
+// Показать подсказку
+window.showRepInfo = function(event) {
+  const tooltip = document.getElementById('rep-tooltip');
+  tooltip.classList.remove('hidden');
+  
+  // Позиционируем подсказку рядом с иконкой
+  const rect = event.currentTarget.getBoundingClientRect();
+  tooltip.style.left = (rect.left + window.scrollX) + 'px';
+  tooltip.style.top = (rect.bottom + window.scrollY + 5) + 'px';
+  
+  // Скрываем через 3 секунды
+  setTimeout(() => {
+    tooltip.classList.add('hidden');
+  }, 3000);
+};
+
+// Редактирование уровня в заголовке
+window.editCapLevel = function(wrapper) {
+  const valueSpan = wrapper.querySelector('.stat-value');
+  const currentVal = valueSpan.textContent;
+  
+  const input = document.createElement('input');
+  input.type = 'number';
+  input.value = currentVal;
+  input.className = 'stat-input';
+  input.style.position = 'absolute';
+  input.style.width = '50px';
+  input.style.backgroundColor = 'var(--input-bg)';
+  input.style.border = '1px solid var(--accent)';
+  input.style.borderRadius = '4px';
+  input.style.color = 'var(--text-main)';
+  input.style.fontSize = '17px';
+  input.style.fontWeight = '600';
+  input.style.padding = '2px 4px';
+  input.style.top = '50%';
+  input.style.left = '50%';
+  input.style.transform = 'translate(-50%, -50%)';
+  input.style.zIndex = '100';
+  
+  valueSpan.style.visibility = 'hidden';
+  wrapper.style.position = 'relative';
+  wrapper.appendChild(input);
+  input.focus();
+  input.select();
+  
+  const finish = () => {
+    let newVal = input.value;
+    if (newVal === '') newVal = '1';
+    let finalValue = newVal;
+    const num = parseInt(newVal);
+    if (!isNaN(num)) {
+      if (num < 1) finalValue = '1';
+      else if (num > 999999) finalValue = '999999';
+      else finalValue = num.toString();
+    }
+    
+    valueSpan.textContent = finalValue;
+    valueSpan.style.visibility = 'visible';
+    input.remove();
+    
+    // Обновляем уровень в профиле
+    const profileLvl = document.querySelector('.stat-value[data-key="lvl"]');
+    if (profileLvl) {
+      profileLvl.textContent = finalValue;
+    }
+    
+    saveStats();
+    updateCapCalculations();
+  };
+  
+  input.onblur = finish;
+  input.onkeydown = e => {
+    if(e.key === 'Enter') {
+      e.preventDefault();
+      input.blur();
+    }
+  };
+};
+
+// Редактирование стата на странице капов
+window.editCapStat = function(element, statKey) {
+  const currentVal = element.textContent;
+  
+  const input = document.createElement('input');
+  input.type = 'number';
+  input.value = currentVal;
+  input.className = 'stat-input';
+  input.style.position = 'absolute';
+  input.style.width = '50px';
+  input.style.backgroundColor = 'var(--input-bg)';
+  input.style.border = '1px solid var(--accent)';
+  input.style.borderRadius = '4px';
+  input.style.color = 'var(--text-main)';
+  input.style.fontSize = '15px';
+  input.style.fontWeight = '600';
+  input.style.padding = '2px 4px';
+  input.style.top = '50%';
+  input.style.left = '50%';
+  input.style.transform = 'translate(-50%, -50%)';
+  input.style.zIndex = '100';
+  
+  element.style.visibility = 'hidden';
+  element.parentElement.style.position = 'relative';
+  element.parentElement.appendChild(input);
+  input.focus();
+  input.select();
+  
+  const finish = () => {
+    let newVal = input.value;
+    if (newVal === '') newVal = '3';
+    let finalValue = newVal;
+    const num = parseInt(newVal);
+    if (!isNaN(num)) {
+      if (num < 3) finalValue = '3';
+      else if (num > 999999) finalValue = '999999';
+      else finalValue = num.toString();
+    }
+    
+    element.textContent = finalValue;
+    element.style.visibility = 'visible';
+    input.remove();
+    
+    // Обновляем соответствующий стат в профиле
+    const profileStat = document.querySelector(`.stat-value[data-key="${statKey}"]`);
+    if (profileStat) {
+      profileStat.textContent = finalValue;
+    }
+    
+    saveStats();
+    updateCapCalculations();
+  };
+  
+  input.onblur = finish;
+  input.onkeydown = e => {
+    if(e.key === 'Enter') {
+      e.preventDefault();
+      input.blur();
+    }
+  };
+};
+
+// Загрузка значений из профиля
+function loadCapStatsFromProfile() {
+  const lvlEl = document.querySelector('.stat-value[data-key="lvl"]');
+  const vitEl = document.querySelector('.stat-value[data-key="vit"]');
+  const strEl = document.querySelector('.stat-value[data-key="str"]');
+  const agiEl = document.querySelector('.stat-value[data-key="agi"]');
+  
+  if (lvlEl) {
+    document.querySelector('[data-cap-key="lvl"]').textContent = lvlEl.textContent;
+  }
+  
+  // Обновляем все элементы с data-cap-key
+  document.querySelectorAll('[data-cap-key="vit"]').forEach(el => {
+    if (vitEl) el.textContent = vitEl.textContent;
+  });
+  document.querySelectorAll('[data-cap-key="str"]').forEach(el => {
+    if (strEl) el.textContent = strEl.textContent;
+  });
+  document.querySelectorAll('[data-cap-key="agi"]').forEach(el => {
+    if (agiEl) el.textContent = agiEl.textContent;
+  });
+  
+  updateCapCalculations();
+}
+
+// Обновление расчетов на странице капов
+function updateCapCalculations() {
+  const lvl = parseInt(document.querySelector('[data-cap-key="lvl"]')?.textContent) || 1;
+  const vit = parseInt(document.querySelector('[data-cap-key="vit"]').textContent) || 3;
+  const str = parseInt(document.querySelector('[data-cap-key="str"]').textContent) || 3;
+  const agi = parseInt(document.querySelector('[data-cap-key="agi"]').textContent) || 3;
+  
+  // Капы
+  const vitCap = lvl * 3 + 45;
+  const strAgiCap = lvl * 6 + 90;
+  const strAgiSum = str + agi;
+  
+  // Сколько осталось до капа
+  const vitLeft = Math.max(0, vitCap - vit);
+  const strAgiLeft = Math.max(0, strAgiCap - strAgiSum);
+  
+  // Стоимость в репутации (1 стат = 10 репутации, каждый следующий +10)
+  function calculateRepCost(current, left) {
+    let total = 0;
+    for (let i = 0; i < left; i++) {
+      total += (current + i) * 10;
+    }
+    return total;
+  }
+  
+  const vitRep = calculateRepCost(vit, vitLeft);
+  const strAgiRep = calculateRepCost(strAgiSum, strAgiLeft);
+  const totalRep = vitRep + strAgiRep;
+  
+  // Форматирование чисел
+  function formatNumber(num) {
+    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+  }
+  
+  // Склонение слова "стат"
+  function getStatWord(count) {
+    if (count % 10 === 1 && count % 100 !== 11) return 'стат';
+    if ([2,3,4].includes(count % 10) && ![12,13,14].includes(count % 100)) return 'стата';
+    return 'статов';
+  }
+  
+  // Обновляем отображение
+  document.getElementById('cap-vit-stats').textContent = vitLeft + ' ' + getStatWord(vitLeft);
+  document.getElementById('cap-vit-rep').textContent = formatNumber(vitRep) + ' 🏹';
+  document.getElementById('cap-str-agi-stats').textContent = strAgiLeft + ' ' + getStatWord(strAgiLeft);
+  document.getElementById('cap-str-agi-rep').textContent = formatNumber(strAgiRep) + ' 🏹';
+  document.getElementById('cap-total-rep').textContent = formatNumber(totalRep);
+}
+
 // ========== ФУНКЦИИ ДЛЯ ИНВЕНТАРЯ ==========
 window.toggleInventory = function() {
   const content = document.getElementById('inventoryContent');
@@ -1154,19 +1625,16 @@ window.toggleInventory = function() {
   localStorage.setItem('inventory_open', content.classList.contains('show'));
 };
 
-// Функция для автоматического расширения поля ввода с точным измерением ширины
+// Функция для автоматического расширения поля ввода
 function adjustInventoryInputWidth(input) {
-  // Ограничиваем значение до 6 цифр
   if (input.value.length > 6) {
     input.value = input.value.slice(0, 6);
   }
   
-  // Преобразуем несколько нулей в один
   if (input.value.match(/^0+$/)) {
     input.value = '0';
   }
   
-  // Создаем временный span для точного измерения ширины текста
   const span = document.createElement('span');
   span.style.font = window.getComputedStyle(input).font;
   span.style.visibility = 'hidden';
@@ -1175,12 +1643,9 @@ function adjustInventoryInputWidth(input) {
   span.textContent = input.value || '1';
   document.body.appendChild(span);
   
-  // Получаем точную ширину текста
   const textWidth = span.offsetWidth;
   document.body.removeChild(span);
   
-  // Устанавливаем ширину поля равной ширине текста + небольшой запас
-  // Но не больше 60px
   const newWidth = Math.min(60, textWidth + 2);
   input.style.width = newWidth + 'px';
 }
@@ -1190,25 +1655,20 @@ window.syncInventoryBookLevel = function(bookName, level) {
   const savedLevels = JSON.parse(localStorage.getItem('rpg_books_levels_final_verified_v8') || '{}');
   const newLevel = parseInt(level) || 0;
   
-  // Сохраняем в localStorage
   savedLevels[bookName] = newLevel;
   localStorage.setItem('rpg_books_levels_final_verified_v8', JSON.stringify(savedLevels));
   localStorage.setItem('rpg_date_final_verified_v8', Date.now().toString());
   
-  // Обновляем отображение на странице пассивных книг
   const passiveItems = document.querySelectorAll('#passiveBooksContainer .book-item');
   for (const item of passiveItems) {
-    // В dataset.bookName хранится имя в нижнем регистре
     if (item.dataset.bookName === bookName.toLowerCase()) {
       const input = item.querySelector('.book-level-input');
       if (input) {
         input.value = newLevel;
-        // Обновляем ширину input
         const font = window.getComputedStyle(input).font;
         const width = measureTextWidth(input.value || '1', font, 2);
         input.style.width = (width + 2) + 'px';
       }
-      // Обновляем описание и цену
       if (typeof updatePassiveBookDescription === 'function') {
         updatePassiveBookDescription(item, bookName, newLevel);
       }
@@ -1219,7 +1679,6 @@ window.syncInventoryBookLevel = function(bookName, level) {
     }
   }
   
-  // Сохраняем состояние инвентаря
   saveInventory();
 };
 
@@ -1238,7 +1697,6 @@ function saveInventory() {
 }
 
 function loadInventory() {
-  // Загружаем уровни из пассивных книг
   const savedPassiveLevels = JSON.parse(localStorage.getItem('rpg_books_levels_final_verified_v8') || '{}');
   
   document.querySelectorAll('.book-cell').forEach(cell => {
@@ -1252,12 +1710,10 @@ function loadInventory() {
     }
   });
   
-  // Загружаем сохраненное состояние инвентаря
   const savedInventory = localStorage.getItem(INVENTORY_KEY);
   if (savedInventory) {
     try {
       const inventory = JSON.parse(savedInventory);
-      // Здесь можно загрузить другие данные инвентаря
     } catch (e) {
       console.log('Ошибка загрузки инвентаря', e);
     }
@@ -1345,6 +1801,7 @@ localStorage.setItem(DATE_KEY, Date.now().toString());
 console.log('✅ Данные загружены из облака VK');
 updateClassResult();
 updateKarmaIcon();
+loadCapStatsFromProfile(); // Загружаем капы из профиля
 return true;
 }
 return false;
@@ -1529,6 +1986,7 @@ if (labelSpan) labelSpan.style.visibility = 'visible';
 input.remove();
 if (isKarma) updateKarmaIcon();
 saveStats();
+updateCapCalculations(); // Обновляем капы
 };
 input.onblur = finish;
 input.onkeydown = e => {
@@ -1599,6 +2057,9 @@ if (pageName === 'passive') {
 if (typeof renderPassiveBooks === 'function') renderPassiveBooks();
 } else if (pageName === 'active') {
 if (typeof renderActiveBooks === 'function') renderActiveBooks();
+} else if (pageName === 'cap') {
+loadCapStatsFromProfile(); // Загружаем капы при открытии
+updateCapCalculations();
 }
 };
 
@@ -1620,6 +2081,7 @@ triggerBtn.textContent = savedClass;
 saveStats();
 }
 initClassList();
+loadCapStatsFromProfile(); // Загружаем капы
 } catch (error) {
 console.log('Ошибка инициализации VK Bridge:', error);
 document.getElementById('user-name').textContent = 'Тестовый пользователь';
