@@ -239,68 +239,113 @@ width: 100%;
 padding: 15px;
 }
 
-/* Ползунок распределения */
+/* Ползунок распределения - ИСПРАВЛЕННЫЙ */
 .distribution-slider {
 background-color: var(--input-bg);
 border-radius: 8px;
-padding: 10px 12px;
-margin-bottom: 12px;
+padding: 12px 15px;
+margin-bottom: 15px;
 }
+
 .slider-title {
 font-size: 13px;
 color: var(--text-secondary);
-margin-bottom: 6px;
+margin-bottom: 10px;
+text-align: center;
+letter-spacing: 0.3px;
 }
+
 .slider-container {
 display: flex;
 align-items: center;
-gap: 8px;
+gap: 12px;
+margin-bottom: 5px;
 }
-.slider-label-left, .slider-label-right {
-font-size: 14px;
-font-weight: 600;
-min-width: 30px;
-text-align: center;
-}
-.slider-label-left {
-color: #ff7b7b;
-}
+
+/* Цифры слева и справа - БЕЛЫЕ */
+.slider-label-left,
 .slider-label-right {
-color: #7baeff;
+font-size: 14px !important;
+font-weight: 600 !important;
+min-width: 30px !important;
+text-align: center !important;
+color: #ffffff !important;
 }
+
+/* Соотношение статов внизу - ПО ЦЕНТРУ И БЕЛОЕ */
+.slider-ratio {
+font-size: 12px;
+font-weight: 600;
+color: #ffffff !important;
+text-align: center !important; /* ПО ЦЕНТРУ */
+margin-top: 4px;
+width: 100%;
+background: transparent;
+padding: 0;
+}
+
+/* Сам ползунок */
 .slider {
 flex: 1;
 height: 6px;
 -webkit-appearance: none;
 appearance: none;
-background: linear-gradient(90deg, #ff7b7b 0%, #7baeff 100%);
-border-radius: 3px;
+background: #2b2e33;
+border-radius: 10px;
 outline: none;
+width: 100%;
 }
+
+/* Дорожка ползунка */
+.slider::-webkit-slider-runnable-track {
+width: 100%;
+height: 6px;
+background: #2b2e33;
+border-radius: 10px;
+border: none;
+}
+
+.slider::-moz-range-track {
+width: 100%;
+height: 6px;
+background: #2b2e33;
+border-radius: 10px;
+border: none;
+}
+
+/* Кружок ползунка */
 .slider::-webkit-slider-thumb {
 -webkit-appearance: none;
 appearance: none;
-width: 18px;
-height: 18px;
+width: 22px;
+height: 22px;
 border-radius: 50%;
-background: var(--accent);
+background: #2b2e33;
 cursor: pointer;
-border: 2px solid var(--text-main);
+border: 2px solid #4a5057;
+box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+transition: transform 0.1s;
+margin-top: -8px;
 }
+
 .slider::-moz-range-thumb {
-width: 18px;
-height: 18px;
+width: 22px;
+height: 22px;
 border-radius: 50%;
-background: var(--accent);
+background: #2b2e33;
 cursor: pointer;
-border: 2px solid var(--text-main);
+border: 2px solid #4a5057;
+box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+transition: transform 0.1s;
 }
-.slider-ratio {
-font-size: 12px;
-font-weight: 600;
-color: var(--accent);
-text-align: center;
-margin-top: 4px;
+
+/* Эффект при нажатии */
+.slider:active::-webkit-slider-thumb {
+transform: scale(1.1);
+}
+
+.slider:active::-moz-range-thumb {
+transform: scale(1.1);
 }
 
 /* Два столбца */
@@ -361,35 +406,50 @@ text-transform: lowercase;
 margin-left: 4px;
 }
 
-/* Стили для правого столбца (информация о капах) */
+/* Обновленные стили для правого столбца (информация о капах) */
 .cap-info-block {
 padding: 8px 10px;
 background-color: var(--input-bg);
 border-radius: 6px;
-height: 42px;
+height: auto;
+min-height: 42px;
 box-sizing: border-box;
 display: flex;
 flex-direction: column;
 justify-content: center;
 }
-.cap-info-label {
-font-size: 11px;
-color: var(--text-secondary);
-margin-bottom: 1px;
-line-height: 1.2;
-white-space: nowrap;
+
+/* Новая строка для верхней части (иконка + значение) */
+.cap-info-row {
+display: flex;
+align-items: center;
+justify-content: space-between;
+width: 100%;
+margin-bottom: 4px;
 }
-.cap-info-value {
-font-size: 14px;
+
+.cap-info-label-compact {
+font-size: 12px;
+color: var(--text-secondary);
+white-space: nowrap;
+display: flex;
+align-items: center;
+gap: 4px;
+}
+
+.cap-info-value-compact {
+font-size: 16px;
 font-weight: 700;
 color: var(--text-main);
-margin-bottom: 1px;
-line-height: 1.2;
+white-space: nowrap;
 }
-.cap-info-rep {
+
+.cap-info-rep-compact {
 font-size: 11px;
 color: var(--text-main);
 white-space: nowrap;
+text-align: left;
+width: 100%;
 }
 
 .cap-total-rep {
@@ -1056,7 +1116,7 @@ display: none !important;
 </div>
 <div class="content-container">
 
-<!-- СТРАНИЦА КАП СТАТОВ -->
+<!-- СТРАНИЦА КАП СТАТОВ (обновленная) -->
 <div id="page-cap" class="page">
   <div class="profile-card">
     <div class="profile-header">
@@ -1073,7 +1133,7 @@ display: none !important;
     </div>
 
     <div class="cap-container">
-      <!-- Ползунок распределения -->
+      <!-- Ползунок распределения (обновленный) -->
       <div class="distribution-slider">
         <div class="slider-title">Соотношение 💪:🤲</div>
         <div class="slider-container">
@@ -1110,27 +1170,33 @@ display: none !important;
           </div>
         </div>
         
-        <!-- Правый столбец - информация о капах -->
+        <!-- Правый столбец - информация о капах (обновленный, компактный) -->
         <div class="cap-right-column">
           <!-- Выносливость -->
           <div class="cap-info-block">
-            <div class="cap-info-label">до капа ❤️</div>
-            <div class="cap-info-value" id="cap-vit-left">51</div>
-            <div class="cap-info-rep" id="cap-vit-rep">14 280 🏹</div>
+            <div class="cap-info-row">
+              <span class="cap-info-label-compact">❤️ до капа</span>
+              <span class="cap-info-value-compact" id="cap-vit-left">51</span>
+            </div>
+            <div class="cap-info-rep-compact" id="cap-vit-rep">14 280 🏹</div>
           </div>
           
           <!-- Сила -->
           <div class="cap-info-block">
-            <div class="cap-info-label">до капа 💪</div>
-            <div class="cap-info-value" id="cap-str-left">51</div>
-            <div class="cap-info-rep" id="cap-str-rep">14 280 🏹</div>
+            <div class="cap-info-row">
+              <span class="cap-info-label-compact">💪 до капа</span>
+              <span class="cap-info-value-compact" id="cap-str-left">51</span>
+            </div>
+            <div class="cap-info-rep-compact" id="cap-str-rep">14 280 🏹</div>
           </div>
           
           <!-- Ловкость -->
           <div class="cap-info-block">
-            <div class="cap-info-label">до капа 🤲</div>
-            <div class="cap-info-value" id="cap-agi-left">51</div>
-            <div class="cap-info-rep" id="cap-agi-rep">14 280 🏹</div>
+            <div class="cap-info-row">
+              <span class="cap-info-label-compact">🤲 до капа</span>
+              <span class="cap-info-value-compact" id="cap-agi-left">51</span>
+            </div>
+            <div class="cap-info-rep-compact" id="cap-agi-rep">14 280 🏹</div>
           </div>
         </div>
       </div>
@@ -1461,11 +1527,27 @@ const RATIOS = [
 
 let currentRatioIndex = 3; // 1:1 по умолчанию
 
+// Обновленная функция с вибрацией
 window.updateDistribution = function(value) {
     currentRatioIndex = parseInt(value);
     const ratio = RATIOS[currentRatioIndex];
     document.getElementById('sliderRatio').textContent = ratio.name;
     updateCapCalculations();
+    
+    // Добавляем вибрацию (слабая)
+    try {
+        if (window.vkBridge) {
+            vkBridge.send('VKWebAppTapticImpactOccurred', {'style': 'light'});
+        } else {
+            // Альтернатива для браузера - слабая вибрация, если поддерживается
+            if (navigator.vibrate) {
+                navigator.vibrate(10); // 10 миллисекунд - едва заметно
+            }
+        }
+    } catch (e) {
+        // Если вибрация не поддерживается, просто игнорируем
+        console.log('Вибрация не доступна');
+    }
 };
 
 function getDistributedStats(totalLeft) {
