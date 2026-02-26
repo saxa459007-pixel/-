@@ -239,7 +239,7 @@ width: 100%;
 padding: 15px;
 }
 
-/* Ползунок распределения - ИСПРАВЛЕННЫЙ */
+/* Ползунок распределения - ФИНАЛЬНАЯ ВЕРСИЯ */
 .distribution-slider {
 background-color: var(--input-bg);
 border-radius: 8px;
@@ -277,20 +277,20 @@ color: #ffffff !important;
 font-size: 12px;
 font-weight: 600;
 color: #ffffff !important;
-text-align: center !important; /* ПО ЦЕНТРУ */
+text-align: center !important;
 margin-top: 4px;
 width: 100%;
 background: transparent;
 padding: 0;
 }
 
-/* Сам ползунок */
+/* Сам ползунок - цвет фона карточки */
 .slider {
 flex: 1;
 height: 6px;
 -webkit-appearance: none;
 appearance: none;
-background: #2b2e33;
+background: #3f444b; /* Цвет фона карточки */
 border-radius: 10px;
 outline: none;
 width: 100%;
@@ -300,7 +300,7 @@ width: 100%;
 .slider::-webkit-slider-runnable-track {
 width: 100%;
 height: 6px;
-background: #2b2e33;
+background: #3f444b; /* Цвет фона карточки */
 border-radius: 10px;
 border: none;
 }
@@ -308,21 +308,21 @@ border: none;
 .slider::-moz-range-track {
 width: 100%;
 height: 6px;
-background: #2b2e33;
+background: #3f444b; /* Цвет фона карточки */
 border-radius: 10px;
 border: none;
 }
 
-/* Кружок ползунка */
+/* Кружок ползунка - тоже цвет фона карточки */
 .slider::-webkit-slider-thumb {
 -webkit-appearance: none;
 appearance: none;
 width: 22px;
 height: 22px;
 border-radius: 50%;
-background: #2b2e33;
+background: #3f444b; /* Цвет фона карточки */
 cursor: pointer;
-border: 2px solid #4a5057;
+border: 2px solid #4a5057; /* Обводка цветом рамки */
 box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 transition: transform 0.1s;
 margin-top: -8px;
@@ -332,9 +332,9 @@ margin-top: -8px;
 width: 22px;
 height: 22px;
 border-radius: 50%;
-background: #2b2e33;
+background: #3f444b; /* Цвет фона карточки */
 cursor: pointer;
-border: 2px solid #4a5057;
+border: 2px solid #4a5057; /* Обводка цветом рамки */
 box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 transition: transform 0.1s;
 }
@@ -1133,12 +1133,12 @@ display: none !important;
     </div>
 
     <div class="cap-container">
-      <!-- Ползунок распределения (обновленный) -->
+      <!-- Ползунок распределения с 9 позициями и смайликами -->
       <div class="distribution-slider">
         <div class="slider-title">Соотношение 💪:🤲</div>
         <div class="slider-container">
           <span class="slider-label-left">💪</span>
-          <input type="range" class="slider" id="strAgiSlider" min="0" max="6" value="3" step="1" oninput="updateDistribution(this.value)">
+          <input type="range" class="slider" id="strAgiSlider" min="0" max="8" value="4" step="1" oninput="updateDistribution(this.value)">
           <span class="slider-label-right">🤲</span>
         </div>
         <div class="slider-ratio" id="sliderRatio">1:1</div>
@@ -1514,18 +1514,20 @@ function measureTextWidth(text, font, padding = 0) {
     return width + padding;
 }
 
-// Пропорции для силы/ловкости
+// Пропорции для силы/ловкости - со смайликами для крайних значений
 const RATIOS = [
+    { str: 1, agi: 0, name: '💪' },  // ВСЁ в силу
     { str: 4, agi: 1, name: '4:1' },
     { str: 3, agi: 1, name: '3:1' },
     { str: 2, agi: 1, name: '2:1' },
     { str: 1, agi: 1, name: '1:1' },
     { str: 1, agi: 2, name: '1:2' },
     { str: 1, agi: 3, name: '1:3' },
-    { str: 1, agi: 4, name: '1:4' }
+    { str: 1, agi: 4, name: '1:4' },
+    { str: 0, agi: 1, name: '🤲' }   // ВСЁ в ловкость
 ];
 
-let currentRatioIndex = 3; // 1:1 по умолчанию
+let currentRatioIndex = 4; // 1:1 по умолчанию (теперь на позиции 4)
 
 // Обновленная функция с вибрацией
 window.updateDistribution = function(value) {
@@ -1550,9 +1552,23 @@ window.updateDistribution = function(value) {
     }
 };
 
+// Обновленная функция распределения с поддержкой 1:0 и 0:1
 function getDistributedStats(totalLeft) {
     const ratio = RATIOS[currentRatioIndex];
     const total = ratio.str + ratio.agi;
+    
+    // Защита от деления на ноль
+    if (total === 0) return { str: 0, agi: 0 };
+    
+    // Если весь вес в одном стате
+    if (ratio.str === 0) {
+        return { str: 0, agi: totalLeft };
+    }
+    if (ratio.agi === 0) {
+        return { str: totalLeft, agi: 0 };
+    }
+    
+    // Обычное распределение
     const strLeft = Math.floor(totalLeft * ratio.str / total);
     const agiLeft = totalLeft - strLeft;
     return { str: strLeft, agi: agiLeft };
