@@ -1716,7 +1716,7 @@ function getDistributedStats(totalLeft) {
     return { str: strLeft, agi: agiLeft };
 }
 
-// Функция расчета стоимости перераспределения (прогрессивная)
+// Функция расчета стоимости перераспределения (прогрессивная) - СТАВКА ×10
 function calculateRedistributePrice(statKey) {
     const statValue = parseInt(document.querySelector(`[data-cap-key="${statKey}"]`).textContent);
     const inputElement = document.getElementById(`remove-${statKey}`);
@@ -1751,11 +1751,11 @@ function calculateRedistributePrice(statKey) {
     }
     
     // Прогрессивная стоимость: каждый следующий стат считается от уменьшенного значения
-    // Цена = стат × 10 (не 100!)
+    // Цена = стат × 10 (НЕ 100!)
     let totalPrice = 0;
     let currentVal = statValue;
     for (let i = 0; i < removeValue; i++) {
-        totalPrice += currentVal * 10; // ← ИЗМЕНЕНО: было 100, стало 10
+        totalPrice += currentVal * 10; // ← ИСПРАВЛЕНО: было 100, стало 10
         currentVal--;
     }
     
