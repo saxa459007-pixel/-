@@ -486,21 +486,24 @@ font-size: 12px;
 color: var(--text-secondary);
 }
 
-/* Карточка перераспределения */
+/* Карточка перераспределения - цвет как у profile-card */
 .redistribute-card {
-background-color: var(--input-bg);
+background-color: var(--card-bg);
 border-radius: 8px;
-padding: 12px 15px;
-margin: 15px 15px 5px 15px;
+padding: 15px;
+margin-bottom: 15px;
 border: none;
+width: 100%;
+box-sizing: border-box;
 }
 
 .redistribute-title {
-font-size: 13px;
-color: var(--text-secondary);
-margin-bottom: 12px;
-text-align: center;
-letter-spacing: 0.3px;
+font-size: 17px;
+font-weight: 600;
+color: var(--text-main);
+margin-bottom: 15px;
+padding-bottom: 5px;
+border-bottom: 1px solid var(--separator-color);
 }
 
 .redistribute-header {
@@ -508,11 +511,11 @@ display: flex;
 align-items: center;
 padding: 5px 0;
 margin-bottom: 5px;
-border-bottom: 1px solid var(--separator-color);
-font-size: 11px;
+font-size: 13px;
 color: var(--text-secondary);
 text-transform: uppercase;
 letter-spacing: 0.5px;
+border-bottom: 1px solid var(--separator-color);
 }
 
 .header-current {
@@ -563,7 +566,7 @@ text-align: center;
 .redistribute-input {
 width: 60px;
 height: 32px;
-background-color: var(--card-bg);
+background-color: var(--input-bg);
 border: 1px solid var(--separator-color);
 border-radius: 6px;
 color: var(--text-main);
@@ -609,7 +612,7 @@ margin-right: 2px;
 .redistribute-btn {
 width: 30px;
 height: 32px;
-background-color: var(--card-bg);
+background-color: var(--input-bg);
 border: 1px solid var(--separator-color);
 border-radius: 6px;
 color: var(--text-main);
@@ -635,13 +638,36 @@ transform: scale(0.95);
 .redistribute-btn:disabled {
 opacity: 0.5;
 cursor: not-allowed;
-background-color: var(--card-bg);
+background-color: var(--input-bg);
 border-color: var(--separator-color);
 }
 
 .redistribute-btn:disabled:hover {
-background-color: var(--card-bg);
+background-color: var(--input-bg);
 border-color: var(--separator-color);
+}
+
+/* Итоговая сумма */
+.redistribute-total {
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin-top: 12px;
+padding-top: 10px;
+border-top: 2px solid var(--separator-color);
+font-size: 15px;
+font-weight: 700;
+color: var(--text-main);
+}
+
+.total-label {
+color: var(--text-secondary);
+font-size: 13px;
+}
+
+.total-value {
+color: var(--gold);
+font-size: 18px;
 }
 
 .inventory-section {
@@ -1256,6 +1282,52 @@ display: none !important;
 
 <!-- СТРАНИЦА КАП СТАТОВ -->
 <div id="page-cap" class="page">
+  
+  <!-- Карточка перераспределения - теперь первая -->
+  <div class="redistribute-card">
+    <div class="redistribute-title">Перераспределение</div>
+    
+    <div class="redistribute-header">
+      <span class="header-current">Текущее</span>
+      <span class="header-remove">Убрать</span>
+      <span class="header-price">Цена</span>
+    </div>
+    
+    <div class="redistribute-row">
+      <span class="row-current">❤️ <span id="redistribute-vit">3</span></span>
+      <span class="row-remove">
+        <input type="number" class="redistribute-input" id="remove-vit" value="1" min="1" max="0" oninput="calculateRedistributePrice('vit')">
+      </span>
+      <span class="row-price"><span id="redistribute-vit-price">2500</span>🌕</span>
+      <button class="redistribute-btn" onclick="applyRedistribute('vit')" id="redistribute-vit-btn">↓</button>
+    </div>
+    
+    <div class="redistribute-row">
+      <span class="row-current">💪 <span id="redistribute-str">3</span></span>
+      <span class="row-remove">
+        <input type="number" class="redistribute-input" id="remove-str" value="1" min="1" max="0" oninput="calculateRedistributePrice('str')">
+      </span>
+      <span class="row-price"><span id="redistribute-str-price">2500</span>🌕</span>
+      <button class="redistribute-btn" onclick="applyRedistribute('str')" id="redistribute-str-btn">↓</button>
+    </div>
+    
+    <div class="redistribute-row">
+      <span class="row-current">🤲 <span id="redistribute-agi">3</span></span>
+      <span class="row-remove">
+        <input type="number" class="redistribute-input" id="remove-agi" value="1" min="1" max="0" oninput="calculateRedistributePrice('agi')">
+      </span>
+      <span class="row-price"><span id="redistribute-agi-price">2500</span>🌕</span>
+      <button class="redistribute-btn" onclick="applyRedistribute('agi')" id="redistribute-agi-btn">↓</button>
+    </div>
+    
+    <!-- Итоговая сумма -->
+    <div class="redistribute-total">
+      <span class="total-label">Итого:</span>
+      <span class="total-value" id="redistribute-total">0🌕</span>
+    </div>
+  </div>
+  
+  <!-- Кап статов - теперь вторая -->
   <div class="profile-card">
     <div class="profile-header">
       <div class="info">
@@ -1333,44 +1405,6 @@ display: none !important;
         <span class="cap-total-label">🏹 Репутация охотников:</span>
         <span class="cap-total-value" id="cap-total-rep">42 840</span>
       </div>
-    </div>
-  </div>
-  
-  <!-- Карточка перераспределения -->
-  <div class="redistribute-card">
-    <div class="redistribute-title">Перераспределение</div>
-    
-    <div class="redistribute-header">
-      <span class="header-current">Текущее</span>
-      <span class="header-remove">Убрать</span>
-      <span class="header-price">Цена</span>
-    </div>
-    
-    <div class="redistribute-row">
-      <span class="row-current">❤️ <span id="redistribute-vit">3</span></span>
-      <span class="row-remove">
-        <input type="number" class="redistribute-input" id="remove-vit" value="1" min="1" max="0" oninput="calculateRedistributePrice('vit')">
-      </span>
-      <span class="row-price"><span id="redistribute-vit-price">2500</span>💰</span>
-      <button class="redistribute-btn" onclick="applyRedistribute('vit')" id="redistribute-vit-btn">↓</button>
-    </div>
-    
-    <div class="redistribute-row">
-      <span class="row-current">💪 <span id="redistribute-str">3</span></span>
-      <span class="row-remove">
-        <input type="number" class="redistribute-input" id="remove-str" value="1" min="1" max="0" oninput="calculateRedistributePrice('str')">
-      </span>
-      <span class="row-price"><span id="redistribute-str-price">2500</span>💰</span>
-      <button class="redistribute-btn" onclick="applyRedistribute('str')" id="redistribute-str-btn">↓</button>
-    </div>
-    
-    <div class="redistribute-row">
-      <span class="row-current">🤲 <span id="redistribute-agi">3</span></span>
-      <span class="row-remove">
-        <input type="number" class="redistribute-input" id="remove-agi" value="1" min="1" max="0" oninput="calculateRedistributePrice('agi')">
-      </span>
-      <span class="row-price"><span id="redistribute-agi-price">2500</span>💰</span>
-      <button class="redistribute-btn" onclick="applyRedistribute('agi')" id="redistribute-agi-btn">↓</button>
     </div>
   </div>
 </div>
@@ -1716,7 +1750,7 @@ function getDistributedStats(totalLeft) {
     return { str: strLeft, agi: agiLeft };
 }
 
-// Функция расчета стоимости перераспределения (прогрессивная) - СТАВКА ×10
+// Функция расчета стоимости перераспределения (прогрессивная)
 function calculateRedistributePrice(statKey) {
     const statValue = parseInt(document.querySelector(`[data-cap-key="${statKey}"]`).textContent);
     const inputElement = document.getElementById(`remove-${statKey}`);
@@ -1744,6 +1778,7 @@ function calculateRedistributePrice(statKey) {
         inputElement.disabled = true;
         btnElement.disabled = true;
         document.getElementById(`redistribute-${statKey}-price`).textContent = 0;
+        updateTotalPrice();
         return 0;
     } else {
         inputElement.disabled = false;
@@ -1751,11 +1786,11 @@ function calculateRedistributePrice(statKey) {
     }
     
     // Прогрессивная стоимость: каждый следующий стат считается от уменьшенного значения
-    // Цена = стат × 10 (НЕ 100!)
+    // Цена = стат × 10
     let totalPrice = 0;
     let currentVal = statValue;
     for (let i = 0; i < removeValue; i++) {
-        totalPrice += currentVal * 10; // ← ИСПРАВЛЕНО: было 100, стало 10
+        totalPrice += currentVal * 10;
         currentVal--;
     }
     
@@ -1763,7 +1798,18 @@ function calculateRedistributePrice(statKey) {
     totalPrice = Math.max(totalPrice, 2500);
     
     document.getElementById(`redistribute-${statKey}-price`).textContent = totalPrice;
+    updateTotalPrice();
     return totalPrice;
+}
+
+// Функция обновления итоговой суммы
+function updateTotalPrice() {
+    const vitPrice = parseInt(document.getElementById('redistribute-vit-price').textContent) || 0;
+    const strPrice = parseInt(document.getElementById('redistribute-str-price').textContent) || 0;
+    const agiPrice = parseInt(document.getElementById('redistribute-agi-price').textContent) || 0;
+    
+    const total = vitPrice + strPrice + agiPrice;
+    document.getElementById('redistribute-total').textContent = total + '🌕';
 }
 
 window.applyRedistribute = function(statKey) {
@@ -1788,7 +1834,7 @@ window.applyRedistribute = function(statKey) {
     
     const newValue = currentValue - removeValue;
     
-    if (confirm(`Уменьшить ${statKey} на ${removeValue} (с ${currentValue} до ${newValue}) за ${price}💰?`)) {
+    if (confirm(`Уменьшить ${statKey} на ${removeValue} (с ${currentValue} до ${newValue}) за ${price}🌕?`)) {
         statElement.textContent = newValue;
         
         const profileStat = document.querySelector(`.stat-value[data-key="${statKey}"]`);
