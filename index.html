@@ -1751,10 +1751,11 @@ function calculateRedistributePrice(statKey) {
     }
     
     // Прогрессивная стоимость: каждый следующий стат считается от уменьшенного значения
+    // Цена = стат × 10 (не 100!)
     let totalPrice = 0;
     let currentVal = statValue;
     for (let i = 0; i < removeValue; i++) {
-        totalPrice += currentVal * 100;
+        totalPrice += currentVal * 10; // ← ИЗМЕНЕНО: было 100, стало 10
         currentVal--;
     }
     
