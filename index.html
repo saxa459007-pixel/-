@@ -18,6 +18,29 @@
 --gold: #ffd700;
 --inventory-bg: #2f353b;
 }
+
+/* Запрет контекстного меню и выделения для всего приложения */
+* {
+-webkit-touch-callout: none; /* Запрет долгого тапа на ссылках и изображениях */
+-webkit-user-select: none; /* Запрет выделения */
+-khtml-user-select: none;
+-moz-user-select: none;
+-ms-user-select: none;
+user-select: none;
+}
+
+/* Разрешаем ввод только в полях */
+input, textarea {
+-webkit-user-select: text;
+user-select: text;
+}
+
+/* Ссылки в подвале остаются кликабельными */
+.app-footer a {
+-webkit-touch-callout: default; /* Разрешаем долгий тап только на ссылках подвала */
+pointer-events: auto;
+}
+
 body {
 font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 background-color: var(--bg-color);
@@ -1662,6 +1685,31 @@ display: none !important;
 <script src="actives.js"></script>
 <script src="books.js"></script>
 <script>
+// Запрет контекстного меню (долгий тап)
+document.addEventListener('contextmenu', function(e) {
+    // Разрешаем контекстное меню только на ссылках в подвале
+    if (e.target.closest('.app-footer a')) {
+        return true;
+    }
+    e.preventDefault();
+    return false;
+});
+
+// Запрет выделения (кроме полей ввода)
+document.addEventListener('selectstart', function(e) {
+    if (e.target.closest('input, textarea')) {
+        return true;
+    }
+    e.preventDefault();
+    return false;
+});
+
+// Запрет перетаскивания
+document.addEventListener('dragstart', function(e) {
+    e.preventDefault();
+    return false;
+});
+
 const CLASS_CONFIG = {
 "жнец душ": { type: "warlock", name: "Чернокнижник", desc: "<span class='highlight-class'>Чернокнижник</span>: Доп. снижение концентрации противника на <span class='highlight-val'>{val}%</span>" },
 "повелитель мрака": { type: "warlock", name: "Чернокнижник", desc: "<span class='highlight-class'>Чернокнижник</span>: Доп. снижение концентрации противника на <span class='highlight-val'>{val}%</span>" },
