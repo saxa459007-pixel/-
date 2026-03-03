@@ -239,7 +239,7 @@ width: 100%;
 padding: 15px;
 }
 
-/* Ползунок распределения - ФИНАЛЬНАЯ ВЕРСИЯ */
+/* Ползунок распределения */
 .distribution-slider {
 background-color: var(--input-bg);
 border-radius: 8px;
@@ -262,45 +262,39 @@ gap: 12px;
 margin-bottom: 5px;
 }
 
-/* Цифры слева и справа - БЕЛЫЕ */
 .slider-label-left,
 .slider-label-right {
-font-size: 14px !important;
-font-weight: 600 !important;
-min-width: 30px !important;
-text-align: center !important;
-color: #ffffff !important;
+font-size: 14px;
+font-weight: 600;
+min-width: 30px;
+text-align: center;
+color: var(--text-main);
 }
 
-/* Соотношение статов внизу - ПО ЦЕНТРУ И БЕЛОЕ */
 .slider-ratio {
 font-size: 12px;
 font-weight: 600;
-color: #ffffff !important;
-text-align: center !important;
+color: var(--text-main);
+text-align: center;
 margin-top: 4px;
 width: 100%;
-background: transparent;
-padding: 0;
 }
 
-/* Сам ползунок - цвет фона карточки */
 .slider {
 flex: 1;
 height: 6px;
 -webkit-appearance: none;
 appearance: none;
-background: #3f444b; /* Цвет фона карточки */
+background: var(--card-bg);
 border-radius: 10px;
 outline: none;
 width: 100%;
 }
 
-/* Дорожка ползунка */
 .slider::-webkit-slider-runnable-track {
 width: 100%;
 height: 6px;
-background: #3f444b; /* Цвет фона карточки */
+background: var(--card-bg);
 border-radius: 10px;
 border: none;
 }
@@ -308,21 +302,20 @@ border: none;
 .slider::-moz-range-track {
 width: 100%;
 height: 6px;
-background: #3f444b; /* Цвет фона карточки */
+background: var(--card-bg);
 border-radius: 10px;
 border: none;
 }
 
-/* Кружок ползунка - тоже цвет фона карточки */
 .slider::-webkit-slider-thumb {
 -webkit-appearance: none;
 appearance: none;
 width: 22px;
 height: 22px;
 border-radius: 50%;
-background: #3f444b; /* Цвет фона карточки */
+background: var(--card-bg);
 cursor: pointer;
-border: 2px solid #4a5057; /* Обводка цветом рамки */
+border: 2px solid var(--separator-color);
 box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 transition: transform 0.1s;
 margin-top: -8px;
@@ -332,14 +325,13 @@ margin-top: -8px;
 width: 22px;
 height: 22px;
 border-radius: 50%;
-background: #3f444b; /* Цвет фона карточки */
+background: var(--card-bg);
 cursor: pointer;
-border: 2px solid #4a5057; /* Обводка цветом рамки */
+border: 2px solid var(--separator-color);
 box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 transition: transform 0.1s;
 }
 
-/* Эффект при нажатии */
 .slider:active::-webkit-slider-thumb {
 transform: scale(1.1);
 }
@@ -348,7 +340,6 @@ transform: scale(1.1);
 transform: scale(1.1);
 }
 
-/* Два столбца */
 .cap-main-row {
 display: flex;
 gap: 12px;
@@ -367,7 +358,6 @@ flex-direction: column;
 gap: 6px;
 }
 
-/* Стили для левого столбца (статы) */
 .cap-stat-item {
 display: flex;
 align-items: center;
@@ -406,7 +396,6 @@ text-transform: lowercase;
 margin-left: 4px;
 }
 
-/* Обновленные стили для правого столбца (информация о капах) */
 .cap-info-block {
 padding: 8px 10px;
 background-color: var(--input-bg);
@@ -419,7 +408,6 @@ flex-direction: column;
 justify-content: center;
 }
 
-/* Новая строка для верхней части (иконка + значение) */
 .cap-info-row {
 display: flex;
 align-items: center;
@@ -474,7 +462,6 @@ font-weight: 700;
 color: var(--text-main);
 }
 
-/* Кликабельный уровень - без подсветки */
 .level-wrapper {
 display: inline-flex;
 align-items: center;
@@ -499,7 +486,164 @@ font-size: 12px;
 color: var(--text-secondary);
 }
 
-/* СТИЛИ ДЛЯ ИНВЕНТАРЯ */
+/* Карточка перераспределения */
+.redistribute-card {
+background-color: var(--input-bg);
+border-radius: 8px;
+padding: 12px 15px;
+margin: 15px 15px 5px 15px;
+border: none;
+}
+
+.redistribute-title {
+font-size: 13px;
+color: var(--text-secondary);
+margin-bottom: 12px;
+text-align: center;
+letter-spacing: 0.3px;
+}
+
+.redistribute-header {
+display: flex;
+align-items: center;
+padding: 5px 0;
+margin-bottom: 5px;
+border-bottom: 1px solid var(--separator-color);
+font-size: 11px;
+color: var(--text-secondary);
+text-transform: uppercase;
+letter-spacing: 0.5px;
+}
+
+.header-current {
+flex: 1.5;
+text-align: left;
+}
+
+.header-remove {
+flex: 1;
+text-align: center;
+}
+
+.header-price {
+flex: 1.5;
+text-align: right;
+margin-right: 35px;
+}
+
+.redistribute-row {
+display: flex;
+align-items: center;
+padding: 8px 0;
+border-bottom: 1px solid var(--separator-color);
+}
+
+.redistribute-row:last-child {
+border-bottom: none;
+}
+
+.row-current {
+flex: 1.5;
+text-align: left;
+font-size: 15px;
+font-weight: 600;
+color: var(--text-main);
+}
+
+.row-current span {
+font-weight: 700;
+margin-left: 4px;
+}
+
+.row-remove {
+flex: 1;
+text-align: center;
+}
+
+.redistribute-input {
+width: 60px;
+height: 32px;
+background-color: var(--card-bg);
+border: 1px solid var(--separator-color);
+border-radius: 6px;
+color: var(--text-main);
+font-size: 14px;
+font-weight: 600;
+text-align: center;
+padding: 0 5px;
+outline: none;
+}
+
+.redistribute-input:focus {
+border-color: var(--accent);
+}
+
+.redistribute-input[type=number] {
+-moz-appearance: textfield;
+}
+
+.redistribute-input::-webkit-outer-spin-button,
+.redistribute-input::-webkit-inner-spin-button {
+-webkit-appearance: none;
+margin: 0;
+}
+
+.redistribute-input:disabled {
+opacity: 0.5;
+cursor: not-allowed;
+}
+
+.row-price {
+flex: 1.5;
+text-align: right;
+font-size: 14px;
+color: var(--gold);
+font-weight: 600;
+margin-right: 5px;
+}
+
+.row-price span {
+margin-right: 2px;
+}
+
+.redistribute-btn {
+width: 30px;
+height: 32px;
+background-color: var(--card-bg);
+border: 1px solid var(--separator-color);
+border-radius: 6px;
+color: var(--text-main);
+font-size: 18px;
+font-weight: 600;
+cursor: pointer;
+display: flex;
+align-items: center;
+justify-content: center;
+transition: all 0.2s;
+margin-left: 5px;
+}
+
+.redistribute-btn:hover {
+background-color: var(--accent);
+border-color: var(--accent);
+}
+
+.redistribute-btn:active {
+transform: scale(0.95);
+}
+
+.redistribute-btn:disabled {
+opacity: 0.5;
+cursor: not-allowed;
+background-color: var(--card-bg);
+border-color: var(--separator-color);
+}
+
+.redistribute-btn:disabled:hover {
+background-color: var(--card-bg);
+border-color: var(--separator-color);
+}
+
 .inventory-section {
 width: 100%;
 border-top: 1px solid var(--separator-color);
@@ -634,7 +778,6 @@ margin-left: 0;
 padding-left: 0;
 }
 
-/* === СТИЛИ ДЛЯ ПОИСКА И СОРТИРОВКИ === */
 .search-container {
 width: 100%;
 padding: 15px 15px 10px 15px;
@@ -782,7 +925,6 @@ height: 20px;
 fill: currentColor;
 }
 
-/* === ПАНЕЛЬ МАССОВОГО ИЗМЕНЕНИЯ УРОВНЯ === */
 .bulk-panel {
 display: none;
 background-color: var(--card-bg);
@@ -1092,31 +1234,27 @@ display: none !important;
 </head>
 <body>
 <div class="top-nav">
-  <!-- Новая вкладка Кап статов -->
   <div class="nav-item" onclick="switchPage('cap')" id="nav-cap">
     <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
       <path d="M12,14a1,1,0,0,0-1,1v2a1,1,0,0,0,2,0V15A1,1,0,0,0,12,14Zm.38-2.92A1,1,0,0,0,11.8,11l-.18.06-.18.09-.15.12A1,1,0,0,0,11,12a1,1,0,0,0,.29.71,1,1,0,0,0,.33.21A.84.84,0,0,0,12,13a1,1,0,0,0,.71-.29A1,1,0,0,0,13,12a1,1,0,0,0-.29-.71A1.15,1.15,0,0,0,12.38,11.08ZM20,8.94a1.31,1.31,0,0,0-.06-.27l0-.09a1.07,1.07,0,0,0-.19-.28h0l-6-6h0a1.07,1.07,0,0,0-.28-.19l-.1,0A1.1,1.1,0,0,0,13.06,2H7A3,3,0,0,0,4,5V19a3,3,0,0,0,3,3H17a3,3,0,0,0,3-3V9S20,9,20,8.94ZM14,5.41,16.59,8H15a1,1,0,0,1-1-1ZM18,19a1,1,0,0,1-1,1H7a1,1,0,0,1-1-1V5A1,1,0,0,1,7,4h5V7a3,3,0,0,0,3,3h3Z"/>
     </svg>
   </div>
   
-  <!-- Профиль -->
   <div class="nav-item active" onclick="switchPage('profile')" id="nav-profile">
     <svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
   </div>
   
-  <!-- Активные -->
   <div class="nav-item" onclick="switchPage('active')" id="nav-active">
     <span>📕</span>
   </div>
   
-  <!-- Пассивные -->
   <div class="nav-item" onclick="switchPage('passive')" id="nav-passive">
     <span>📘</span>
   </div>
 </div>
 <div class="content-container">
 
-<!-- СТРАНИЦА КАП СТАТОВ (обновленная) -->
+<!-- СТРАНИЦА КАП СТАТОВ -->
 <div id="page-cap" class="page">
   <div class="profile-card">
     <div class="profile-header">
@@ -1133,7 +1271,6 @@ display: none !important;
     </div>
 
     <div class="cap-container">
-      <!-- Ползунок распределения с 9 позициями и смайликами -->
       <div class="distribution-slider">
         <div class="slider-title">Соотношение 💪:🤲</div>
         <div class="slider-container">
@@ -1144,25 +1281,20 @@ display: none !important;
         <div class="slider-ratio" id="sliderRatio">1:1</div>
       </div>
 
-      <!-- Два столбца -->
       <div class="cap-main-row">
-        <!-- Левый столбец - статы -->
         <div class="cap-stats-column">
-          <!-- Выносливость -->
           <div class="cap-stat-item" onclick="editCapStat(this, 'vit')">
             <span class="cap-stat-icon">❤️</span>
             <span class="cap-stat-value" data-cap-key="vit">3</span>
             <span class="cap-stat-name">вын</span>
           </div>
           
-          <!-- Сила -->
           <div class="cap-stat-item" onclick="editCapStat(this, 'str')">
             <span class="cap-stat-icon">💪</span>
             <span class="cap-stat-value" data-cap-key="str">3</span>
             <span class="cap-stat-name">сил</span>
           </div>
           
-          <!-- Ловкость -->
           <div class="cap-stat-item" onclick="editCapStat(this, 'agi')">
             <span class="cap-stat-icon">🤲</span>
             <span class="cap-stat-value" data-cap-key="agi">3</span>
@@ -1170,9 +1302,7 @@ display: none !important;
           </div>
         </div>
         
-        <!-- Правый столбец - информация о капах (обновленный, компактный) -->
         <div class="cap-right-column">
-          <!-- Выносливость -->
           <div class="cap-info-block">
             <div class="cap-info-row">
               <span class="cap-info-label-compact">❤️ до капа</span>
@@ -1181,7 +1311,6 @@ display: none !important;
             <div class="cap-info-rep-compact" id="cap-vit-rep">14 280 🏹</div>
           </div>
           
-          <!-- Сила -->
           <div class="cap-info-block">
             <div class="cap-info-row">
               <span class="cap-info-label-compact">💪 до капа</span>
@@ -1190,7 +1319,6 @@ display: none !important;
             <div class="cap-info-rep-compact" id="cap-str-rep">14 280 🏹</div>
           </div>
           
-          <!-- Ловкость -->
           <div class="cap-info-block">
             <div class="cap-info-row">
               <span class="cap-info-label-compact">🤲 до капа</span>
@@ -1201,11 +1329,48 @@ display: none !important;
         </div>
       </div>
       
-      <!-- Общая репутация -->
       <div class="cap-total-rep">
         <span class="cap-total-label">🏹 Репутация охотников:</span>
         <span class="cap-total-value" id="cap-total-rep">42 840</span>
       </div>
+    </div>
+  </div>
+  
+  <!-- Карточка перераспределения -->
+  <div class="redistribute-card">
+    <div class="redistribute-title">Перераспределение</div>
+    
+    <div class="redistribute-header">
+      <span class="header-current">Текущее</span>
+      <span class="header-remove">Убрать</span>
+      <span class="header-price">Цена</span>
+    </div>
+    
+    <div class="redistribute-row">
+      <span class="row-current">❤️ <span id="redistribute-vit">3</span></span>
+      <span class="row-remove">
+        <input type="number" class="redistribute-input" id="remove-vit" value="1" min="1" max="0" oninput="calculateRedistributePrice('vit')">
+      </span>
+      <span class="row-price"><span id="redistribute-vit-price">2500</span>💰</span>
+      <button class="redistribute-btn" onclick="applyRedistribute('vit')" id="redistribute-vit-btn">↓</button>
+    </div>
+    
+    <div class="redistribute-row">
+      <span class="row-current">💪 <span id="redistribute-str">3</span></span>
+      <span class="row-remove">
+        <input type="number" class="redistribute-input" id="remove-str" value="1" min="1" max="0" oninput="calculateRedistributePrice('str')">
+      </span>
+      <span class="row-price"><span id="redistribute-str-price">2500</span>💰</span>
+      <button class="redistribute-btn" onclick="applyRedistribute('str')" id="redistribute-str-btn">↓</button>
+    </div>
+    
+    <div class="redistribute-row">
+      <span class="row-current">🤲 <span id="redistribute-agi">3</span></span>
+      <span class="row-remove">
+        <input type="number" class="redistribute-input" id="remove-agi" value="1" min="1" max="0" oninput="calculateRedistributePrice('agi')">
+      </span>
+      <span class="row-price"><span id="redistribute-agi-price">2500</span>💰</span>
+      <button class="redistribute-btn" onclick="applyRedistribute('agi')" id="redistribute-agi-btn">↓</button>
     </div>
   </div>
 </div>
@@ -1213,7 +1378,6 @@ display: none !important;
 <!-- СТРАНИЦА ПРОФИЛЯ -->
 <div id="page-profile" class="page active">
 <div class="profile-card">
-  <!-- 1. ШАПКА -->
   <div class="profile-header">
     <img src="https://via.placeholder.com/50" alt="Avatar" class="avatar" id="user-avatar">
     <div class="info">
@@ -1225,7 +1389,6 @@ display: none !important;
     </div>
   </div>
   
-  <!-- 2. СТАТЫ -->
   <div class="stats-grid">
     <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🕯️</span><div class="stat-value-container"><span class="stat-value" data-key="lvl">1</span><span class="stat-label">ур</span></div></div></div>
     <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">⚔️</span><div class="stat-value-container"><span class="stat-value" data-key="atk">0</span><span class="stat-label">атк</span></div></div></div>
@@ -1241,14 +1404,12 @@ display: none !important;
     <div class="stat-cell" onclick="editStatByCell(this, false, true)"><div class="stat-row"><span class="stat-icon" id="karma-icon">😐</span><div class="stat-value-container"><span class="stat-value" data-key="karma">0</span><span class="stat-label">карма</span></div></div></div>
   </div>
   
-  <!-- 3. ОПИСАНИЕ КЛАССА -->
   <div class="class-result-box">
     <div class="result-card">
       <div class="result-description" id="res-class-desc"></div>
     </div>
   </div>
   
-  <!-- 4. ИНВЕНТАРЬ - 4 книги с SVG -->
   <div class="inventory-section">
     <div class="inventory-header" onclick="toggleInventory()">
       <span class="inventory-title">Инвентарь</span>
@@ -1257,7 +1418,6 @@ display: none !important;
     
     <div class="inventory-content" id="inventoryContent">
       <div class="books-grid">
-        <!-- Мародер -->
         <div class="book-cell" data-book="Мародер">
           <span class="book-cell-name">Мародер</span>
           <div class="book-svg">
@@ -1280,7 +1440,6 @@ display: none !important;
           </div>
         </div>
         
-        <!-- Гладиатор -->
         <div class="book-cell" data-book="Гладиатор">
           <span class="book-cell-name">Гладиатор</span>
           <div class="book-svg">
@@ -1303,7 +1462,6 @@ display: none !important;
           </div>
         </div>
         
-        <!-- Воздаяние -->
         <div class="book-cell" data-book="Воздаяние">
           <span class="book-cell-name">Воздаяние</span>
           <div class="book-svg">
@@ -1326,7 +1484,6 @@ display: none !important;
           </div>
         </div>
         
-        <!-- Атлетика -->
         <div class="book-cell" data-book="Атлетика">
           <span class="book-cell-name">Атлетика</span>
           <div class="book-svg">
@@ -1349,7 +1506,6 @@ display: none !important;
           </div>
         </div>
         
-        <!-- Пустая ячейка -->
         <div class="book-cell empty"></div>
       </div>
     </div>
@@ -1392,7 +1548,6 @@ display: none !important;
 </svg>
 </button>
 </div>
-<!-- ПАНЕЛЬ МАССОВОГО ИЗМЕНЕНИЯ УРОВНЯ -->
 <div class="bulk-panel" id="activeBulkPanel">
 <div class="bulk-panel-title">Установить уровень для всех активных умений</div>
 <div class="bulk-panel-content">
@@ -1441,7 +1596,6 @@ display: none !important;
 </svg>
 </button>
 </div>
-<!-- ПАНЕЛЬ МАССОВОГО ИЗМЕНЕНИЯ УРОВНЯ -->
 <div class="bulk-panel" id="passiveBulkPanel">
 <div class="bulk-panel-title">Установить уровень для всех пассивных книг</div>
 <div class="bulk-panel-content">
@@ -1457,7 +1611,6 @@ display: none !important;
 
 </div>
 
-<!-- ПОДВАЛ С ССЫЛКАМИ -->
 <div class="app-footer">
 <div class="footer-text">
 Приложение сообщества
@@ -1469,7 +1622,6 @@ display: none !important;
 </div>
 </div>
 
-<!-- Подключаем модули -->
 <script src="prices.js"></script>
 <script src="passives.js"></script>
 <script src="actives.js"></script>
@@ -1498,7 +1650,6 @@ const listDiv = document.getElementById('classList');
 const karmaIconSpan = document.getElementById('karma-icon');
 const INVENTORY_KEY = 'rpg_inventory_v1';
 
-// Функция для измерения ширины текста
 function measureTextWidth(text, font, padding = 0) {
     const span = document.createElement('span');
     span.style.font = font;
@@ -1514,9 +1665,8 @@ function measureTextWidth(text, font, padding = 0) {
     return width + padding;
 }
 
-// Пропорции для силы/ловкости - со смайликами для крайних значений
 const RATIOS = [
-    { str: 1, agi: 0, name: '💪' },  // ВСЁ в силу
+    { str: 1, agi: 0, name: '💪' },
     { str: 4, agi: 1, name: '4:1' },
     { str: 3, agi: 1, name: '3:1' },
     { str: 2, agi: 1, name: '2:1' },
@@ -1524,43 +1674,36 @@ const RATIOS = [
     { str: 1, agi: 2, name: '1:2' },
     { str: 1, agi: 3, name: '1:3' },
     { str: 1, agi: 4, name: '1:4' },
-    { str: 0, agi: 1, name: '🤲' }   // ВСЁ в ловкость
+    { str: 0, agi: 1, name: '🤲' }
 ];
 
-let currentRatioIndex = 4; // 1:1 по умолчанию (теперь на позиции 4)
+let currentRatioIndex = 4;
 
-// Обновленная функция с вибрацией
 window.updateDistribution = function(value) {
     currentRatioIndex = parseInt(value);
     const ratio = RATIOS[currentRatioIndex];
     document.getElementById('sliderRatio').textContent = ratio.name;
     updateCapCalculations();
     
-    // Добавляем вибрацию (слабая)
     try {
         if (window.vkBridge) {
             vkBridge.send('VKWebAppTapticImpactOccurred', {'style': 'light'});
         } else {
-            // Альтернатива для браузера - слабая вибрация, если поддерживается
             if (navigator.vibrate) {
-                navigator.vibrate(10); // 10 миллисекунд - едва заметно
+                navigator.vibrate(10);
             }
         }
     } catch (e) {
-        // Если вибрация не поддерживается, просто игнорируем
         console.log('Вибрация не доступна');
     }
 };
 
-// Обновленная функция распределения с поддержкой 1:0 и 0:1
 function getDistributedStats(totalLeft) {
     const ratio = RATIOS[currentRatioIndex];
     const total = ratio.str + ratio.agi;
     
-    // Защита от деления на ноль
     if (total === 0) return { str: 0, agi: 0 };
     
-    // Если весь вес в одном стате
     if (ratio.str === 0) {
         return { str: 0, agi: totalLeft };
     }
@@ -1568,13 +1711,121 @@ function getDistributedStats(totalLeft) {
         return { str: totalLeft, agi: 0 };
     }
     
-    // Обычное распределение
     const strLeft = Math.floor(totalLeft * ratio.str / total);
     const agiLeft = totalLeft - strLeft;
     return { str: strLeft, agi: agiLeft };
 }
 
-// ========== ФУНКЦИИ ДЛЯ КАП СТАТОВ ==========
+// Функция расчета стоимости перераспределения (прогрессивная)
+function calculateRedistributePrice(statKey) {
+    const statValue = parseInt(document.querySelector(`[data-cap-key="${statKey}"]`).textContent);
+    const inputElement = document.getElementById(`remove-${statKey}`);
+    let removeValue = parseInt(inputElement.value) || 1;
+    
+    // Максимально можно убрать (текущее - 3)
+    const maxRemove = Math.max(0, statValue - 3);
+    
+    // Если введенное значение больше максимального - ограничиваем
+    if (removeValue > maxRemove) {
+        removeValue = maxRemove;
+        inputElement.value = maxRemove;
+    }
+    
+    // Не даем ввести меньше 1
+    if (removeValue < 1) {
+        removeValue = 1;
+        inputElement.value = 1;
+    }
+    
+    // Если максимум = 0 (стат уже 3), то ничего нельзя убрать
+    const btnElement = document.getElementById(`redistribute-${statKey}-btn`);
+    if (maxRemove === 0) {
+        inputElement.value = 0;
+        inputElement.disabled = true;
+        btnElement.disabled = true;
+        document.getElementById(`redistribute-${statKey}-price`).textContent = 0;
+        return 0;
+    } else {
+        inputElement.disabled = false;
+        btnElement.disabled = false;
+    }
+    
+    // Прогрессивная стоимость: каждый следующий стат считается от уменьшенного значения
+    let totalPrice = 0;
+    let currentVal = statValue;
+    for (let i = 0; i < removeValue; i++) {
+        totalPrice += currentVal * 100;
+        currentVal--;
+    }
+    
+    // Минимум 2500 за всю операцию
+    totalPrice = Math.max(totalPrice, 2500);
+    
+    document.getElementById(`redistribute-${statKey}-price`).textContent = totalPrice;
+    return totalPrice;
+}
+
+window.applyRedistribute = function(statKey) {
+    const statElement = document.querySelector(`[data-cap-key="${statKey}"]`);
+    const currentValue = parseInt(statElement.textContent);
+    const inputElement = document.getElementById(`remove-${statKey}`);
+    let removeValue = parseInt(inputElement.value) || 1;
+    const price = calculateRedistributePrice(statKey);
+    const maxRemove = currentValue - 3;
+    
+    if (removeValue > maxRemove) {
+        alert(`Нельзя уменьшить ${statKey} ниже 3. Максимум можно убрать: ${maxRemove}`);
+        inputElement.value = maxRemove;
+        calculateRedistributePrice(statKey);
+        return;
+    }
+    
+    if (removeValue < 1) {
+        removeValue = 1;
+        inputElement.value = 1;
+    }
+    
+    const newValue = currentValue - removeValue;
+    
+    if (confirm(`Уменьшить ${statKey} на ${removeValue} (с ${currentValue} до ${newValue}) за ${price}💰?`)) {
+        statElement.textContent = newValue;
+        
+        const profileStat = document.querySelector(`.stat-value[data-key="${statKey}"]`);
+        if (profileStat) {
+            profileStat.textContent = newValue;
+        }
+        
+        document.getElementById(`redistribute-${statKey}`).textContent = newValue;
+        
+        saveStats();
+        updateCapCalculations();
+        updateRedistributeCard();
+        
+        inputElement.value = 1;
+        calculateRedistributePrice(statKey);
+        
+        alert(`Готово! ${statKey} теперь ${newValue}`);
+    }
+};
+
+function updateRedistributeCard() {
+    const vit = parseInt(document.querySelector('[data-cap-key="vit"]').textContent) || 3;
+    const str = parseInt(document.querySelector('[data-cap-key="str"]').textContent) || 3;
+    const agi = parseInt(document.querySelector('[data-cap-key="agi"]').textContent) || 3;
+    
+    document.getElementById('redistribute-vit').textContent = vit;
+    document.getElementById('redistribute-str').textContent = str;
+    document.getElementById('redistribute-agi').textContent = agi;
+    
+    document.getElementById('remove-vit').max = vit - 3;
+    document.getElementById('remove-str').max = str - 3;
+    document.getElementById('remove-agi').max = agi - 3;
+    
+    calculateRedistributePrice('vit');
+    calculateRedistributePrice('str');
+    calculateRedistributePrice('agi');
+}
+
 window.editCapLevel = function(wrapper) {
   const valueSpan = wrapper.querySelector('.stat-value');
   const iconSpan = wrapper.querySelector('.stat-icon');
@@ -1680,6 +1931,7 @@ window.editCapLevel = function(wrapper) {
     
     saveStats();
     updateCapCalculations();
+    updateRedistributeCard();
   };
   
   input.onblur = finish;
@@ -1799,6 +2051,7 @@ window.editCapStat = function(item, statKey) {
     
     saveStats();
     updateCapCalculations();
+    updateRedistributeCard();
   };
   
   input.onblur = finish;
@@ -1831,6 +2084,7 @@ function loadCapStatsFromProfile() {
   });
   
   updateCapCalculations();
+  updateRedistributeCard();
 }
 
 function updateCapCalculations() {
@@ -1877,7 +2131,6 @@ function updateCapCalculations() {
   document.getElementById('cap-total-rep').textContent = formatNumber(totalRep);
 }
 
-// ========== ФУНКЦИИ ДЛЯ ИНВЕНТАРЯ ==========
 window.toggleInventory = function() {
   const content = document.getElementById('inventoryContent');
   const arrow = document.getElementById('inventoryArrow');
@@ -1995,7 +2248,6 @@ if (inventoryOpen) {
   }, 100);
 }
 
-// ========== ФУНКЦИИ ДЛЯ РАБОТЫ С VK CLOUD STORAGE ==========
 async function saveAllDataToVK() {
 try {
 const stats = {};
@@ -2063,6 +2315,7 @@ console.log('✅ Данные загружены из облака VK');
 updateClassResult();
 updateKarmaIcon();
 loadCapStatsFromProfile();
+updateRedistributeCard();
 return true;
 }
 return false;
@@ -2082,7 +2335,6 @@ saveAllDataToVK();
 }
 });
 
-// ========== ФУНКЦИИ ПРОФИЛЯ ==========
 function getKarmaIcon(value) {
 const num = parseInt(value);
 if (num < 0) return '😈';
@@ -2248,6 +2500,7 @@ input.remove();
 if (isKarma) updateKarmaIcon();
 saveStats();
 updateCapCalculations();
+updateRedistributeCard();
 };
 input.onblur = finish;
 input.onkeydown = e => {
@@ -2320,7 +2573,7 @@ if (typeof renderPassiveBooks === 'function') renderPassiveBooks();
 if (typeof renderActiveBooks === 'function') renderActiveBooks();
 } else if (pageName === 'cap') {
 loadCapStatsFromProfile();
-updateCapCalculations();
+updateRedistributeCard();
 }
 };
 
@@ -2343,6 +2596,7 @@ saveStats();
 }
 initClassList();
 loadCapStatsFromProfile();
+updateRedistributeCard();
 } catch (error) {
 console.log('Ошибка инициализации VK Bridge:', error);
 document.getElementById('user-name').textContent = 'Тестовый пользователь';
@@ -2352,6 +2606,8 @@ if (savedClass) {
 triggerBtn.textContent = savedClass;
 }
 initClassList();
+loadCapStatsFromProfile();
+updateRedistributeCard();
 }
 };
 </script>
