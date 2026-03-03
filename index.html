@@ -486,7 +486,7 @@ font-size: 12px;
 color: var(--text-secondary);
 }
 
-/* Карточка перераспределения - цвет как у profile-card */
+/* Карточка перераспределения */
 .redistribute-card {
 background-color: var(--card-bg);
 border-radius: 8px;
@@ -1283,7 +1283,7 @@ display: none !important;
 <!-- СТРАНИЦА КАП СТАТОВ -->
 <div id="page-cap" class="page">
   
-  <!-- Карточка перераспределения - теперь первая -->
+  <!-- Карточка перераспределения -->
   <div class="redistribute-card">
     <div class="redistribute-title">Перераспределение</div>
     
@@ -1327,7 +1327,7 @@ display: none !important;
     </div>
   </div>
   
-  <!-- Кап статов - теперь вторая -->
+  <!-- Кап статов -->
   <div class="profile-card">
     <div class="profile-header">
       <div class="info">
@@ -1750,28 +1750,24 @@ function getDistributedStats(totalLeft) {
     return { str: strLeft, agi: agiLeft };
 }
 
-// Функция расчета стоимости перераспределения (прогрессивная)
+// Функция расчета стоимости перераспределения
 function calculateRedistributePrice(statKey) {
     const statValue = parseInt(document.querySelector(`[data-cap-key="${statKey}"]`).textContent);
     const inputElement = document.getElementById(`remove-${statKey}`);
     let removeValue = parseInt(inputElement.value) || 1;
     
-    // Максимально можно убрать (текущее - 3)
     const maxRemove = Math.max(0, statValue - 3);
     
-    // Если введенное значение больше максимального - ограничиваем
     if (removeValue > maxRemove) {
         removeValue = maxRemove;
         inputElement.value = maxRemove;
     }
     
-    // Не даем ввести меньше 1
     if (removeValue < 1) {
         removeValue = 1;
         inputElement.value = 1;
     }
     
-    // Если максимум = 0 (стат уже 3), то ничего нельзя убрать
     const btnElement = document.getElementById(`redistribute-${statKey}-btn`);
     if (maxRemove === 0) {
         inputElement.value = 0;
@@ -1785,8 +1781,7 @@ function calculateRedistributePrice(statKey) {
         btnElement.disabled = false;
     }
     
-    // Прогрессивная стоимость: каждый следующий стат считается от уменьшенного значения
-    // Цена = стат × 10
+    // Прогрессивная стоимость
     let totalPrice = 0;
     let currentVal = statValue;
     for (let i = 0; i < removeValue; i++) {
@@ -1794,7 +1789,6 @@ function calculateRedistributePrice(statKey) {
         currentVal--;
     }
     
-    // Минимум 2500 за всю операцию
     totalPrice = Math.max(totalPrice, 2500);
     
     document.getElementById(`redistribute-${statKey}-price`).textContent = totalPrice;
@@ -1802,7 +1796,6 @@ function calculateRedistributePrice(statKey) {
     return totalPrice;
 }
 
-// Функция обновления итоговой суммы
 function updateTotalPrice() {
     const vitPrice = parseInt(document.getElementById('redistribute-vit-price').textContent) || 0;
     const strPrice = parseInt(document.getElementById('redistribute-str-price').textContent) || 0;
@@ -1812,16 +1805,17 @@ function updateTotalPrice() {
     document.getElementById('redistribute-total').textContent = total + '🌕';
 }
 
+// Функция применения перераспределения - без подтверждения
 window.applyRedistribute = function(statKey) {
     const statElement = document.querySelector(`[data-cap-key="${statKey}"]`);
     const currentValue = parseInt(statElement.textContent);
     const inputElement = document.getElementById(`remove-${statKey}`);
     let removeValue = parseInt(inputElement.value) || 1;
-    const price = calculateRedistributePrice(statKey);
     const maxRemove = currentValue - 3;
     
+    // Проверка на максимальное значение
     if (removeValue > maxRemove) {
-        alert(`Нельзя уменьшить ${statKey} ниже 3. Максимум можно убрать: ${maxRemove}`);
+        alert(`❌ Нельзя уменьшить ${statKey} ниже 3.\nМаксимум можно убрать: ${maxRemove}`);
         inputElement.value = maxRemove;
         calculateRedistributePrice(statKey);
         return;
@@ -1832,27 +1826,27 @@ window.applyRedistribute = function(statKey) {
         inputElement.value = 1;
     }
     
+    // Применяем изменения
     const newValue = currentValue - removeValue;
+    statElement.textContent = newValue;
     
-    if (confirm(`Уменьшить ${statKey} на ${removeValue} (с ${currentValue} до ${newValue}) за ${price}🌕?`)) {
-        statElement.textContent = newValue;
-        
-        const profileStat = document.querySelector(`.stat-value[data-key="${statKey}"]`);
-        if (profileStat) {
-            profileStat.textContent = newValue;
-        }
-        
-        document.getElementById(`redistribute-${statKey}`).textContent = newValue;
-        
-        saveStats();
-        updateCapCalculations();
-        updateRedistributeCard();
-        
-        inputElement.value = 1;
-        calculateRedistributePrice(statKey);
-        
-        alert(`Готово! ${statKey} теперь ${newValue}`);
+    // Обновляем профиль
+    const profileStat = document.querySelector(`.stat-value[data-key="${statKey}"]`);
+    if (profileStat) {
+        profileStat.textContent = newValue;
     }
+    
+    // Обновляем карточку
+    document.getElementById(`redistribute-${statKey}`).textContent = newValue;
+    
+    // Сохраняем и обновляем
+    saveStats();
+    updateCapCalculations();
+    updateRedistributeCard();
+    
+    // Сбрасываем поле ввода
+    inputElement.value = 1;
+    calculateRedistributePrice(statKey);
 };
 
 function updateRedistributeCard() {
