@@ -699,7 +699,7 @@ font-size: 18px;
 display: flex;
 align-items: center;
 justify-content: space-between;
-padding: 10px 12px;
+padding: 8px 12px;
 background-color: var(--card-bg);
 border-radius: 8px;
 margin-bottom: 8px;
@@ -717,14 +717,9 @@ font-size: 18px;
 
 .speed-stat-value {
 cursor: pointer;
-padding: 2px 6px;
-border-radius: 4px;
+font-size: 14px;
 font-weight: 700;
 color: var(--text-main);
-}
-
-.speed-stat-value:hover {
-background-color: rgba(255, 255, 255, 0.1);
 }
 
 .speed-stat-time {
@@ -737,27 +732,6 @@ color: var(--text-secondary);
 .speed-time-value {
 color: var(--text-main);
 font-weight: 600;
-}
-
-.speed-book-input {
-background: transparent;
-border: none;
-color: var(--text-main);
-font-size: 14px;
-font-weight: 700;
-width: auto;
-min-width: 20px;
-max-width: 80px;
-text-align: left;
-outline: none;
--moz-appearance: textfield;
-padding: 0;
-}
-
-.speed-book-input::-webkit-outer-spin-button,
-.speed-book-input::-webkit-inner-spin-button {
--webkit-appearance: none;
-margin: 0;
 }
 
 .inventory-section {
@@ -1502,12 +1476,13 @@ display: none !important;
           ⏱️ Расчет времени на стат
         </div>
         
-        <!-- Управление с динамическим полем для уровня книги -->
+        <!-- Управление с полем как в инвентаре -->
         <div style="display: flex; align-items: center; justify-content: space-between; background-color: var(--input-bg); border-radius: 8px; padding: 10px 12px; margin-bottom: 12px;">
           <div style="display: flex; align-items: center; gap: 8px;">
             <span style="color: var(--text-secondary);">📘 Расторопность</span>
             <div class="book-level-wrapper" style="display: flex; align-items: center; gap: 2px;">
-              <input type="number" class="speed-book-input" id="speedBookLevel" value="0" min="0" max="99999" 
+              <input type="number" class="book-level-input-inventory" id="speedBookLevel" value="0" min="0" max="99999" 
+                     style="width: auto; min-width: 20px; max-width: 60px; background: transparent; border: none; color: var(--text-main); font-size: 14px; font-weight: 600; text-align: left; padding: 2px 0; -moz-appearance: textfield;"
                      oninput="adjustSpeedBookInput(this); updateSpeedCalculations()"
                      onkeydown="if(event.key==='Enter') this.blur()">
               <span style="color: var(--text-secondary); font-size: 13px;">ур.</span>
@@ -1520,40 +1495,40 @@ display: none !important;
         </div>
         
         <!-- ❤️ Выносливость -->
-        <div class="speed-stat-row">
-          <div class="speed-stat-left">
-            <span class="speed-stat-icon">❤️</span>
-            <span class="speed-stat-value" onclick="editSpeedStat('vit', this)" id="speed-vit-value">3</span>
+        <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; background-color: var(--card-bg); border-radius: 8px; margin-bottom: 8px;">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <span style="font-size: 18px;">❤️</span>
+            <span class="stat-value" onclick="editSpeedStat('vit', this)" data-speed-key="vit" style="cursor: pointer; font-size: 14px; font-weight: 700; color: var(--text-main);" id="speed-vit-value">3</span>
           </div>
-          <div class="speed-stat-time">
+          <div style="display: flex; align-items: center; gap: 6px; color: var(--text-secondary);">
             <span>⌛️</span>
-            <span class="speed-time-value" id="speed-vit-time">0.0</span>
+            <span style="color: var(--text-main); font-weight: 600;" id="speed-vit-time">0.0</span>
             <span>мин</span>
           </div>
         </div>
         
         <!-- 💪 Сила -->
-        <div class="speed-stat-row">
-          <div class="speed-stat-left">
-            <span class="speed-stat-icon">💪</span>
-            <span class="speed-stat-value" onclick="editSpeedStat('str', this)" id="speed-str-value">3</span>
+        <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; background-color: var(--card-bg); border-radius: 8px; margin-bottom: 8px;">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <span style="font-size: 18px;">💪</span>
+            <span class="stat-value" onclick="editSpeedStat('str', this)" data-speed-key="str" style="cursor: pointer; font-size: 14px; font-weight: 700; color: var(--text-main);" id="speed-str-value">3</span>
           </div>
-          <div class="speed-stat-time">
+          <div style="display: flex; align-items: center; gap: 6px; color: var(--text-secondary);">
             <span>⌛️</span>
-            <span class="speed-time-value" id="speed-str-time">0.0</span>
+            <span style="color: var(--text-main); font-weight: 600;" id="speed-str-time">0.0</span>
             <span>мин</span>
           </div>
         </div>
         
         <!-- 👐 Ловкость -->
-        <div class="speed-stat-row">
-          <div class="speed-stat-left">
-            <span class="speed-stat-icon">👐</span>
-            <span class="speed-stat-value" onclick="editSpeedStat('agi', this)" id="speed-agi-value">3</span>
+        <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; background-color: var(--card-bg); border-radius: 8px; margin-bottom: 8px;">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <span style="font-size: 18px;">👐</span>
+            <span class="stat-value" onclick="editSpeedStat('agi', this)" data-speed-key="agi" style="cursor: pointer; font-size: 14px; font-weight: 700; color: var(--text-main);" id="speed-agi-value">3</span>
           </div>
-          <div class="speed-stat-time">
+          <div style="display: flex; align-items: center; gap: 6px; color: var(--text-secondary);">
             <span>⌛️</span>
-            <span class="speed-time-value" id="speed-agi-time">0.0</span>
+            <span style="color: var(--text-main); font-weight: 600;" id="speed-agi-time">0.0</span>
             <span>мин</span>
           </div>
         </div>
@@ -2172,32 +2147,78 @@ window.syncSpeedBookLevel = function(level) {
     updateSpeedCalculations();
 };
 
-// Редактирование значения стата в блоке Расторопности
+// Редактирование значения стата в блоке Расторопности (без рамок)
 window.editSpeedStat = function(statKey, element) {
     const currentVal = element.textContent;
-    const parentDiv = element.parentElement; // .speed-stat-left
+    const parentDiv = element.parentElement; // div с иконкой и значением
+    
+    // Создаем контейнер для ввода как в профиле
+    const valueContainer = document.createElement('div');
+    valueContainer.style.position = 'relative';
+    valueContainer.style.display = 'inline-block';
+    valueContainer.style.width = 'auto';
     
     const input = document.createElement('input');
     input.type = 'number';
     input.value = currentVal;
-    input.className = 'stat-input-small';
+    input.className = 'stat-input';
     input.style.position = 'relative';
-    input.style.width = '50px';
-    input.style.background = 'var(--input-bg)';
-    input.style.border = '1px solid var(--accent)';
-    input.style.borderRadius = '4px';
+    input.style.width = 'auto';
+    input.style.minWidth = '30px';
+    input.style.maxWidth = '80px';
+    input.style.background = 'transparent';
+    input.style.border = 'none';
     input.style.color = 'var(--text-main)';
     input.style.fontSize = '14px';
     input.style.fontWeight = '700';
-    input.style.padding = '2px 4px';
+    input.style.fontFamily = 'inherit';
+    input.style.padding = '0';
+    input.style.margin = '0';
     input.style.outline = 'none';
+    input.style.textAlign = 'left';
+    input.style.appearance = 'none';
+    input.style.webkitAppearance = 'none';
+    input.style.mozAppearance = 'textfield';
     input.maxLength = 5;
     input.max = MAX_STAT_VALUE.toString();
     
-    element.style.display = 'none';
-    parentDiv.insertBefore(input, element.nextSibling);
-    input.focus();
-    input.select();
+    // Функция для измерения ширины текста
+    function getTextWidth(text) {
+        const span = document.createElement('span');
+        span.style.font = window.getComputedStyle(input).font;
+        span.style.visibility = 'hidden';
+        span.style.position = 'absolute';
+        span.style.whiteSpace = 'nowrap';
+        span.textContent = text || '1';
+        document.body.appendChild(span);
+        const width = span.offsetWidth;
+        document.body.removeChild(span);
+        return width;
+    }
+    
+    input.addEventListener('input', function() {
+        if (this.value.length > 5) {
+            this.value = this.value.slice(0, 5);
+        }
+        let num = parseInt(this.value);
+        if (!isNaN(num) && num > MAX_STAT_VALUE) {
+            this.value = MAX_STAT_VALUE.toString();
+        }
+        const textWidth = getTextWidth(this.value || '1');
+        this.style.width = (textWidth + 2) + 'px';
+    });
+    
+    element.style.visibility = 'hidden';
+    parentDiv.appendChild(valueContainer);
+    valueContainer.appendChild(input);
+    
+    // Устанавливаем начальную ширину
+    setTimeout(() => {
+        const textWidth = getTextWidth(currentVal);
+        input.style.width = (textWidth + 2) + 'px';
+        input.focus();
+        input.select();
+    }, 0);
     
     const finish = () => {
         let newVal = input.value;
@@ -2211,8 +2232,8 @@ window.editSpeedStat = function(statKey, element) {
         }
         
         element.textContent = newVal;
-        element.style.display = 'inline';
-        input.remove();
+        element.style.visibility = 'visible';
+        valueContainer.remove();
         
         // Обновляем соответствующий стат в профиле
         const profileStat = document.querySelector(`.stat-value[data-key="${statKey}"]`);
