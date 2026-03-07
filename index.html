@@ -839,7 +839,7 @@ gap: 0;
 .book-level-input-inventory {
 width: auto;
 min-width: 12px;
-max-width: 60px;
+max-width: 80px;
 background: transparent;
 border: none;
 color: var(--text-main);
@@ -1470,18 +1470,18 @@ display: none !important;
         <span class="cap-total-value" id="cap-total-rep">42 840</span>
       </div>
 
-      <!-- БЛОК РАСТОРОПНОСТИ - исправленный -->
+      <!-- БЛОК РАСТОРОПНОСТИ -->
       <div style="margin-top: 20px; border-top: 1px solid var(--separator-color); padding-top: 15px;">
         <div class="redistribute-title" style="margin-bottom: 12px; border-bottom: none; padding-bottom: 0;">
           ⏱️ Расчет времени на стат
         </div>
         
-        <!-- Управление точно как в инвентаре -->
+        <!-- Управление точно как в инвентаре с лимитом 7 чисел -->
         <div style="display: flex; align-items: center; justify-content: space-between; background-color: var(--input-bg); border-radius: 8px; padding: 8px 12px; margin-bottom: 12px;">
           <div style="display: flex; align-items: center; gap: 6px;">
             <span style="color: var(--text-secondary); font-size: 14px;">📘 Расторопность</span>
             <div class="book-level-wrapper" style="display: flex; align-items: center; width: auto;">
-              <input type="number" class="book-level-input-inventory" id="speedBookLevel" value="0" min="0" max="99999" 
+              <input type="number" class="book-level-input-inventory" id="speedBookLevel" value="0" min="0" max="9999999" 
                      style="font-size: 14px;"
                      oninput="adjustSpeedBookInput(this)"
                      onkeydown="if(event.key==='Enter') this.blur()"
@@ -1605,7 +1605,7 @@ display: none !important;
             </svg>
           </div>
           <div class="book-level-wrapper">
-            <input type="number" class="book-level-input-inventory" id="inventory-book-Мародер" value="1" min="0" max="99999" oninput="adjustInventoryInputWidth(this)" onkeydown="if(event.key==='Enter') this.blur()" onchange="syncInventoryBookLevel('Мародер', this.value)">
+            <input type="number" class="book-level-input-inventory" id="inventory-book-Мародер" value="1" min="0" max="9999999" oninput="adjustInventoryInputWidth(this)" onkeydown="if(event.key==='Enter') this.blur()" onchange="syncInventoryBookLevel('Мародер', this.value)">
             <span class="book-level-unit">ур.</span>
           </div>
         </div>
@@ -1627,7 +1627,7 @@ display: none !important;
             </svg>
           </div>
           <div class="book-level-wrapper">
-            <input type="number" class="book-level-input-inventory" id="inventory-book-Гладиатор" value="1" min="0" max="99999" oninput="adjustInventoryInputWidth(this)" onkeydown="if(event.key==='Enter') this.blur()" onchange="syncInventoryBookLevel('Гладиатор', this.value)">
+            <input type="number" class="book-level-input-inventory" id="inventory-book-Гладиатор" value="1" min="0" max="9999999" oninput="adjustInventoryInputWidth(this)" onkeydown="if(event.key==='Enter') this.blur()" onchange="syncInventoryBookLevel('Гладиатор', this.value)">
             <span class="book-level-unit">ур.</span>
           </div>
         </div>
@@ -1649,7 +1649,7 @@ display: none !important;
             </svg>
           </div>
           <div class="book-level-wrapper">
-            <input type="number" class="book-level-input-inventory" id="inventory-book-Воздаяние" value="1" min="0" max="99999" oninput="adjustInventoryInputWidth(this)" onkeydown="if(event.key==='Enter') this.blur()" onchange="syncInventoryBookLevel('Воздаяние', this.value)">
+            <input type="number" class="book-level-input-inventory" id="inventory-book-Воздаяние" value="1" min="0" max="9999999" oninput="adjustInventoryInputWidth(this)" onkeydown="if(event.key==='Enter') this.blur()" onchange="syncInventoryBookLevel('Воздаяние', this.value)">
             <span class="book-level-unit">ур.</span>
           </div>
         </div>
@@ -1671,7 +1671,7 @@ display: none !important;
             </svg>
           </div>
           <div class="book-level-wrapper">
-            <input type="number" class="book-level-input-inventory" id="inventory-book-Атлетика" value="1" min="0" max="99999" oninput="adjustInventoryInputWidth(this)" onkeydown="if(event.key==='Enter') this.blur()" onchange="syncInventoryBookLevel('Атлетика', this.value)">
+            <input type="number" class="book-level-input-inventory" id="inventory-book-Атлетика" value="1" min="0" max="9999999" oninput="adjustInventoryInputWidth(this)" onkeydown="if(event.key==='Enter') this.blur()" onchange="syncInventoryBookLevel('Атлетика', this.value)">
             <span class="book-level-unit">ур.</span>
           </div>
         </div>
@@ -1693,7 +1693,7 @@ display: none !important;
             </svg>
           </div>
           <div class="book-level-wrapper">
-            <input type="number" class="book-level-input-inventory" id="inventory-book-Расторопность" value="0" min="0" max="99999" oninput="adjustInventoryInputWidth(this)" onkeydown="if(event.key==='Enter') this.blur()" onchange="syncSpeedBookLevel(this.value)">
+            <input type="number" class="book-level-input-inventory" id="inventory-book-Расторопность" value="0" min="0" max="9999999" oninput="adjustInventoryInputWidth(this)" onkeydown="if(event.key==='Enter') this.blur()" onchange="syncSpeedBookLevel(this.value)">
             <span class="book-level-unit">ур.</span>
           </div>
         </div>
@@ -1741,7 +1741,7 @@ display: none !important;
 <div class="bulk-panel" id="activeBulkPanel">
 <div class="bulk-panel-title">Установить уровень для всех активных умений</div>
 <div class="bulk-panel-content">
-<input type="number" class="bulk-panel-input" id="activeBulkInput" placeholder="0" min="0" max="99999">
+<input type="number" class="bulk-panel-input" id="activeBulkInput" placeholder="0" min="0" max="9999999">
 <button class="bulk-panel-btn bulk-panel-btn-cancel" onclick="closeBulkPanel('active')">Отмена</button>
 <button class="bulk-panel-btn bulk-panel-btn-apply" onclick="applyBulkLevel('active')">OK</button>
 </div>
@@ -1789,7 +1789,7 @@ display: none !important;
 <div class="bulk-panel" id="passiveBulkPanel">
 <div class="bulk-panel-title">Установить уровень для всех пассивных книг</div>
 <div class="bulk-panel-content">
-<input type="number" class="bulk-panel-input" id="passiveBulkInput" placeholder="0" min="0" max="99999">
+<input type="number" class="bulk-panel-input" id="passiveBulkInput" placeholder="0" min="0" max="9999999">
 <button class="bulk-panel-btn bulk-panel-btn-cancel" onclick="closeBulkPanel('passive')">Отмена</button>
 <button class="bulk-panel-btn bulk-panel-btn-apply" onclick="applyBulkLevel('passive')">OK</button>
 </div>
@@ -1817,8 +1817,9 @@ display: none !important;
 <script src="actives.js"></script>
 <script src="books.js"></script>
 <script>
-// Константа для максимального значения (5 цифр = 99999)
-const MAX_STAT_VALUE = 99999;
+// Константы для лимитов
+const MAX_STAT_VALUE = 99999; // 5 цифр для статов
+const MAX_BOOK_VALUE = 9999999; // 7 цифр для книг
 
 // Запрет контекстного меню (долгий тап)
 document.addEventListener('contextmenu', function(e) {
@@ -1882,17 +1883,17 @@ function measureTextWidth(text, font, padding = 0) {
     return width + padding;
 }
 
-// Функция для подгона ширины поля ввода уровня книги Расторопности (как в инвентаре)
+// Функция для подгона ширины поля ввода уровня книги Расторопности (лимит 7 чисел)
 function adjustSpeedBookInput(input) {
     if (!input) return;
     
-    if (input.value.length > 5) {
-        input.value = input.value.slice(0, 5);
+    if (input.value.length > 7) {
+        input.value = input.value.slice(0, 7);
     }
     
     let num = parseInt(input.value);
-    if (!isNaN(num) && num > MAX_STAT_VALUE) {
-        input.value = MAX_STAT_VALUE.toString();
+    if (!isNaN(num) && num > MAX_BOOK_VALUE) {
+        input.value = MAX_BOOK_VALUE.toString();
     }
     
     // Измеряем ширину текста
@@ -1901,13 +1902,13 @@ function adjustSpeedBookInput(input) {
     span.style.visibility = 'hidden';
     span.style.position = 'absolute';
     span.style.whiteSpace = 'nowrap';
-    span.textContent = input.value || '1'; // Для измерения используем '1' если пусто
+    span.textContent = input.value || '1';
     document.body.appendChild(span);
     
     const textWidth = span.offsetWidth;
     document.body.removeChild(span);
     
-    const newWidth = Math.min(60, textWidth + 2);
+    const newWidth = Math.min(80, textWidth + 2);
     input.style.width = newWidth + 'px';
 }
 
@@ -2147,6 +2148,9 @@ function saveSpeedBookLevel(level) {
 // Синхронизация уровня книги из инвентаря
 window.syncSpeedBookLevel = function(level) {
     const bookLevel = parseInt(level) || 0;
+    if (bookLevel > MAX_BOOK_VALUE) {
+        bookLevel = MAX_BOOK_VALUE;
+    }
     const speedInput = document.getElementById('speedBookLevel');
     if (speedInput) {
         speedInput.value = bookLevel;
@@ -2284,15 +2288,15 @@ function updatePassiveBookDisplay(bookName, newLevel) {
     }
 }
 
-// Обновленная функция syncInventoryBookLevel
+// Обновленная функция syncInventoryBookLevel с лимитом 7 чисел
 window.syncInventoryBookLevel = function(bookName, level) {
     const savedLevels = JSON.parse(localStorage.getItem('rpg_books_levels_final_verified_v8') || '{}');
     let newLevel = parseInt(level) || 0;
     
-    if (newLevel > MAX_STAT_VALUE) {
-        newLevel = MAX_STAT_VALUE;
+    if (newLevel > MAX_BOOK_VALUE) {
+        newLevel = MAX_BOOK_VALUE;
         const input = document.getElementById(`inventory-book-${bookName}`);
-        if (input) input.value = MAX_STAT_VALUE;
+        if (input) input.value = MAX_BOOK_VALUE;
     }
     
     savedLevels[bookName] = newLevel;
@@ -2311,8 +2315,8 @@ window.syncInventoryBookLevel = function(bookName, level) {
 const originalUpdatePassiveBookLevel = window.updatePassiveBookLevel;
 window.updatePassiveBookLevel = function(name, value) {
     let newLevel = parseInt(value) || 0;
-    if (newLevel > MAX_STAT_VALUE) {
-        newLevel = MAX_STAT_VALUE;
+    if (newLevel > MAX_BOOK_VALUE) {
+        newLevel = MAX_BOOK_VALUE;
     }
     
     if (originalUpdatePassiveBookLevel) {
@@ -2650,14 +2654,15 @@ window.toggleInventory = function() {
     localStorage.setItem('inventory_open', content.classList.contains('show'));
 };
 
+// Функция для подгона ширины поля ввода в инвентаре (лимит 7 чисел)
 function adjustInventoryInputWidth(input) {
-    if (input.value.length > 5) {
-        input.value = input.value.slice(0, 5);
+    if (input.value.length > 7) {
+        input.value = input.value.slice(0, 7);
     }
     
     let num = parseInt(input.value);
-    if (!isNaN(num) && num > MAX_STAT_VALUE) {
-        input.value = MAX_STAT_VALUE.toString();
+    if (!isNaN(num) && num > MAX_BOOK_VALUE) {
+        input.value = MAX_BOOK_VALUE.toString();
     }
     
     if (input.value.match(/^0+$/)) {
@@ -2675,7 +2680,7 @@ function adjustInventoryInputWidth(input) {
     const textWidth = span.offsetWidth;
     document.body.removeChild(span);
     
-    const newWidth = Math.min(60, textWidth + 2);
+    const newWidth = Math.min(80, textWidth + 2);
     input.style.width = newWidth + 'px';
 }
 
@@ -2702,7 +2707,7 @@ function loadInventory() {
             const input = cell.querySelector('.book-level-input-inventory');
             if (input && savedPassiveLevels[name] !== undefined) {
                 let level = savedPassiveLevels[name];
-                if (level > MAX_STAT_VALUE) level = MAX_STAT_VALUE;
+                if (level > MAX_BOOK_VALUE) level = MAX_BOOK_VALUE;
                 input.value = level;
                 adjustInventoryInputWidth(input);
                 
@@ -2721,7 +2726,7 @@ function loadInventory() {
             if (inventory.books) {
                 Object.entries(inventory.books).forEach(([name, data]) => {
                     let level = data.level;
-                    if (level > MAX_STAT_VALUE) level = MAX_STAT_VALUE;
+                    if (level > MAX_BOOK_VALUE) level = MAX_BOOK_VALUE;
                     if (level !== savedPassiveLevels[name]) {
                         savedPassiveLevels[name] = level;
                     }
@@ -2811,7 +2816,7 @@ if (userData.books) {
 if (userData.books.passive) {
 const passive = {};
 Object.entries(userData.books.passive).forEach(([name, level]) => {
-if (level > MAX_STAT_VALUE) level = MAX_STAT_VALUE;
+if (level > MAX_BOOK_VALUE) level = MAX_BOOK_VALUE;
 passive[name] = level;
 });
 localStorage.setItem('rpg_books_levels_final_verified_v8', JSON.stringify(passive));
@@ -2819,7 +2824,7 @@ localStorage.setItem('rpg_books_levels_final_verified_v8', JSON.stringify(passiv
 if (userData.books.active) {
 const active = {};
 Object.entries(userData.books.active).forEach(([name, level]) => {
-if (level > MAX_STAT_VALUE) level = MAX_STAT_VALUE;
+if (level > MAX_BOOK_VALUE) level = MAX_BOOK_VALUE;
 active[name] = level;
 });
 localStorage.setItem('rpg_active_books_levels_final_verified_v8', JSON.stringify(active));
@@ -3115,9 +3120,9 @@ const originalOnChange = input.onchange;
 input.addEventListener('change', function(e) {
 const bookName = cell.dataset.book;
 let level = parseInt(this.value) || 0;
-if (level > MAX_STAT_VALUE) {
-level = MAX_STAT_VALUE;
-this.value = MAX_STAT_VALUE;
+if (level > MAX_BOOK_VALUE) {
+level = MAX_BOOK_VALUE;
+this.value = MAX_BOOK_VALUE;
 adjustInventoryInputWidth(this);
 }
 window.syncInventoryBookLevel(bookName, level);
@@ -3128,6 +3133,30 @@ originalOnChange.call(this, e);
 }
 });
 }
+
+// Обновленная функция applyBulkLevel с лимитом 7 чисел
+window.applyBulkLevel = function(tab) {
+    const input = document.getElementById(`${tab}BulkInput`);
+    const level = parseInt(input.value);
+
+    if (isNaN(level) || level < 0) {
+        alert('Введите уровень (0 или больше)');
+        return;
+    }
+
+    if (level > MAX_BOOK_VALUE) {
+        alert(`Макс. уровень: 9 999 999`);
+        return;
+    }
+
+    if (tab === 'active') {
+        applyBulkLevelToActive(level);
+    } else {
+        applyBulkLevelToPassive(level);
+    }
+
+    closeBulkPanel(tab);
+};
 
 window.switchPage = function(pageName) {
 if (typeof closeAllBulkPanels === 'function') {
