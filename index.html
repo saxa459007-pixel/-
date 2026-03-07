@@ -699,7 +699,7 @@ font-size: 18px;
 display: flex;
 align-items: center;
 justify-content: space-between;
-padding: 8px 12px;
+padding: 10px 12px;
 background-color: var(--card-bg);
 border-radius: 8px;
 margin-bottom: 8px;
@@ -1470,22 +1470,23 @@ display: none !important;
         <span class="cap-total-value" id="cap-total-rep">42 840</span>
       </div>
 
-      <!-- БЛОК РАСТОРОПНОСТИ -->
+      <!-- БЛОК РАСТОРОПНОСТИ - исправленный -->
       <div style="margin-top: 20px; border-top: 1px solid var(--separator-color); padding-top: 15px;">
         <div class="redistribute-title" style="margin-bottom: 12px; border-bottom: none; padding-bottom: 0;">
           ⏱️ Расчет времени на стат
         </div>
         
-        <!-- Управление с полем как в инвентаре -->
-        <div style="display: flex; align-items: center; justify-content: space-between; background-color: var(--input-bg); border-radius: 8px; padding: 10px 12px; margin-bottom: 12px;">
-          <div style="display: flex; align-items: center; gap: 8px;">
-            <span style="color: var(--text-secondary);">📘 Расторопность</span>
-            <div class="book-level-wrapper" style="display: flex; align-items: center; gap: 2px;">
+        <!-- Управление как в инвентаре -->
+        <div style="display: flex; align-items: center; justify-content: space-between; background-color: var(--input-bg); border-radius: 8px; padding: 8px 12px; margin-bottom: 12px;">
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <span style="color: var(--text-secondary); font-size: 14px;">📘 Расторопность</span>
+            <div class="book-level-wrapper" style="display: flex; align-items: center; width: auto;">
               <input type="number" class="book-level-input-inventory" id="speedBookLevel" value="0" min="0" max="99999" 
-                     style="width: auto; min-width: 20px; max-width: 60px; background: transparent; border: none; color: var(--text-main); font-size: 14px; font-weight: 600; text-align: left; padding: 2px 0; -moz-appearance: textfield;"
+                     style="font-size: 14px;"
                      oninput="adjustSpeedBookInput(this); updateSpeedCalculations()"
-                     onkeydown="if(event.key==='Enter') this.blur()">
-              <span style="color: var(--text-secondary); font-size: 13px;">ур.</span>
+                     onkeydown="if(event.key==='Enter') this.blur()"
+                     onblur="if(this.value==='') this.value='0'; adjustSpeedBookInput(this); updateSpeedCalculations()">
+              <span class="book-level-unit" style="font-size: 13px;">ур.</span>
             </div>
           </div>
           <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
@@ -1494,11 +1495,13 @@ display: none !important;
           </label>
         </div>
         
-        <!-- ❤️ Выносливость -->
-        <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; background-color: var(--card-bg); border-radius: 8px; margin-bottom: 8px;">
+        <!-- ❤️ Выносливость - число слева, время справа -->
+        <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; background-color: var(--card-bg); border-radius: 8px; margin-bottom: 8px;">
           <div style="display: flex; align-items: center; gap: 12px;">
             <span style="font-size: 18px;">❤️</span>
-            <span class="stat-value" onclick="editSpeedStat('vit', this)" data-speed-key="vit" style="cursor: pointer; font-size: 14px; font-weight: 700; color: var(--text-main);" id="speed-vit-value">3</span>
+            <span class="stat-value" onclick="editSpeedStat('vit', this)" 
+                  style="cursor: pointer; font-size: 14px; font-weight: 700; color: var(--text-main);" 
+                  id="speed-vit-value">3</span>
           </div>
           <div style="display: flex; align-items: center; gap: 6px; color: var(--text-secondary);">
             <span>⌛️</span>
@@ -1507,11 +1510,13 @@ display: none !important;
           </div>
         </div>
         
-        <!-- 💪 Сила -->
-        <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; background-color: var(--card-bg); border-radius: 8px; margin-bottom: 8px;">
+        <!-- 💪 Сила - число слева, время справа -->
+        <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; background-color: var(--card-bg); border-radius: 8px; margin-bottom: 8px;">
           <div style="display: flex; align-items: center; gap: 12px;">
             <span style="font-size: 18px;">💪</span>
-            <span class="stat-value" onclick="editSpeedStat('str', this)" data-speed-key="str" style="cursor: pointer; font-size: 14px; font-weight: 700; color: var(--text-main);" id="speed-str-value">3</span>
+            <span class="stat-value" onclick="editSpeedStat('str', this)" 
+                  style="cursor: pointer; font-size: 14px; font-weight: 700; color: var(--text-main);" 
+                  id="speed-str-value">3</span>
           </div>
           <div style="display: flex; align-items: center; gap: 6px; color: var(--text-secondary);">
             <span>⌛️</span>
@@ -1520,11 +1525,13 @@ display: none !important;
           </div>
         </div>
         
-        <!-- 👐 Ловкость -->
-        <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; background-color: var(--card-bg); border-radius: 8px; margin-bottom: 8px;">
+        <!-- 👐 Ловкость - число слева, время справа -->
+        <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; background-color: var(--card-bg); border-radius: 8px; margin-bottom: 8px;">
           <div style="display: flex; align-items: center; gap: 12px;">
             <span style="font-size: 18px;">👐</span>
-            <span class="stat-value" onclick="editSpeedStat('agi', this)" data-speed-key="agi" style="cursor: pointer; font-size: 14px; font-weight: 700; color: var(--text-main);" id="speed-agi-value">3</span>
+            <span class="stat-value" onclick="editSpeedStat('agi', this)" 
+                  style="cursor: pointer; font-size: 14px; font-weight: 700; color: var(--text-main);" 
+                  id="speed-agi-value">3</span>
           </div>
           <div style="display: flex; align-items: center; gap: 6px; color: var(--text-secondary);">
             <span>⌛️</span>
@@ -1874,8 +1881,15 @@ function measureTextWidth(text, font, padding = 0) {
     return width + padding;
 }
 
-// Функция для подгона ширины поля ввода уровня книги Расторопности
+// Функция для подгона ширины поля ввода уровня книги Расторопности (как в инвентаре)
 function adjustSpeedBookInput(input) {
+    if (!input) return;
+    
+    // Сохраняем значение 0 если поле пустое
+    if (input.value === '') {
+        input.value = '0';
+    }
+    
     if (input.value.length > 5) {
         input.value = input.value.slice(0, 5);
     }
@@ -1885,7 +1899,8 @@ function adjustSpeedBookInput(input) {
         input.value = MAX_STAT_VALUE.toString();
     }
     
-    if (input.value === '' || input.value.match(/^0+$/)) {
+    // Оставляем 0 как есть, не заменяем на '1'
+    if (input.value.match(/^0+$/) && input.value !== '0') {
         input.value = '0';
     }
     
@@ -1900,7 +1915,8 @@ function adjustSpeedBookInput(input) {
     const textWidth = span.offsetWidth;
     document.body.removeChild(span);
     
-    input.style.width = (textWidth + 2) + 'px';
+    const newWidth = Math.min(60, textWidth + 2);
+    input.style.width = newWidth + 'px';
 }
 
 const RATIOS = [
@@ -2147,7 +2163,7 @@ window.syncSpeedBookLevel = function(level) {
     updateSpeedCalculations();
 };
 
-// Редактирование значения стата в блоке Расторопности (без рамок)
+// Редактирование значения стата в блоке Расторопности (без рамок, число слева)
 window.editSpeedStat = function(statKey, element) {
     const currentVal = element.textContent;
     const parentDiv = element.parentElement; // div с иконкой и значением
