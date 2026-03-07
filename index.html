@@ -694,6 +694,128 @@ color: var(--gold);
 font-size: 18px;
 }
 
+/* Стили для блока Расторопности */
+.speed-block {
+margin-top: 20px;
+padding: 15px;
+background-color: var(--input-bg);
+border-radius: 8px;
+}
+
+.speed-title {
+font-size: 15px;
+font-weight: 600;
+color: var(--text-main);
+margin-bottom: 12px;
+}
+
+.speed-controls {
+display: flex;
+align-items: center;
+justify-content: space-between;
+margin-bottom: 12px;
+padding-bottom: 12px;
+border-bottom: 1px solid var(--separator-color);
+}
+
+.speed-book-level {
+display: flex;
+align-items: center;
+gap: 8px;
+}
+
+.speed-book-input {
+width: auto;
+min-width: 40px;
+max-width: 80px;
+background: transparent;
+border: none;
+color: var(--text-main);
+font-size: 14px;
+font-weight: 700;
+text-align: left;
+padding: 4px 0;
+-moz-appearance: textfield;
+}
+
+.speed-book-input::-webkit-outer-spin-button,
+.speed-book-input::-webkit-inner-spin-button {
+-webkit-appearance: none;
+margin: 0;
+}
+
+.speed-book-unit {
+color: var(--text-secondary);
+font-size: 13px;
+}
+
+.speed-ring-toggle {
+display: flex;
+align-items: center;
+gap: 6px;
+cursor: pointer;
+}
+
+.speed-ring-toggle input[type="checkbox"] {
+width: 18px;
+height: 18px;
+cursor: pointer;
+accent-color: var(--accent);
+}
+
+.speed-ring-icon {
+font-size: 18px;
+}
+
+.speed-stat-row {
+display: flex;
+align-items: center;
+justify-content: space-between;
+padding: 8px 0;
+border-bottom: 1px solid var(--separator-color);
+}
+
+.speed-stat-row:last-child {
+border-bottom: none;
+}
+
+.speed-stat-left {
+display: flex;
+align-items: center;
+gap: 12px;
+}
+
+.speed-stat-icon {
+font-size: 18px;
+width: 24px;
+}
+
+.speed-stat-value {
+font-size: 14px;
+font-weight: 700;
+color: var(--text-main);
+cursor: pointer;
+padding: 2px 6px;
+border-radius: 4px;
+}
+
+.speed-stat-value:hover {
+background-color: rgba(255,255,255,0.1);
+}
+
+.speed-stat-time {
+display: flex;
+align-items: center;
+gap: 6px;
+color: var(--text-secondary);
+font-size: 14px;
+}
+
+.speed-time-value {
+color: var(--text-main);
+font-weight: 600;
+}
+
 .inventory-section {
 width: 100%;
 border-top: 1px solid var(--separator-color);
@@ -1284,13 +1406,13 @@ display: none !important;
 </head>
 <body>
 <div class="top-nav">
-  <div class="nav-item" onclick="switchPage('cap')" id="nav-cap">
+  <div class="nav-item active" onclick="switchPage('cap')" id="nav-cap">
     <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
       <path d="M12,14a1,1,0,0,0-1,1v2a1,1,0,0,0,2,0V15A1,1,0,0,0,12,14Zm.38-2.92A1,1,0,0,0,11.8,11l-.18.06-.18.09-.15.12A1,1,0,0,0,11,12a1,1,0,0,0,.29.71,1,1,0,0,0,.33.21A.84.84,0,0,0,12,13a1,1,0,0,0,.71-.29A1,1,0,0,0,13,12a1,1,0,0,0-.29-.71A1.15,1.15,0,0,0,12.38,11.08ZM20,8.94a1.31,1.31,0,0,0-.06-.27l0-.09a1.07,1.07,0,0,0-.19-.28h0l-6-6h0a1.07,1.07,0,0,0-.28-.19l-.1,0A1.1,1.1,0,0,0,13.06,2H7A3,3,0,0,0,4,5V19a3,3,0,0,0,3,3H17a3,3,0,0,0,3-3V9S20,9,20,8.94ZM14,5.41,16.59,8H15a1,1,0,0,1-1-1ZM18,19a1,1,0,0,1-1,1H7a1,1,0,0,1-1-1V5A1,1,0,0,1,7,4h5V7a3,3,0,0,0,3,3h3Z"/>
     </svg>
   </div>
   
-  <div class="nav-item active" onclick="switchPage('profile')" id="nav-profile">
+  <div class="nav-item" onclick="switchPage('profile')" id="nav-profile">
     <svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
   </div>
   
@@ -1305,7 +1427,7 @@ display: none !important;
 <div class="content-container">
 
 <!-- СТРАНИЦА КАП СТАТОВ -->
-<div id="page-cap" class="page">
+<div id="page-cap" class="page active">
   
   <!-- Карточка перераспределения -->
   <div class="redistribute-card">
@@ -1429,12 +1551,65 @@ display: none !important;
         <span class="cap-total-label">🏹 Репутация охотников:</span>
         <span class="cap-total-value" id="cap-total-rep">42 840</span>
       </div>
+
+      <!-- БЛОК РАСТОРОПНОСТИ -->
+      <div class="speed-block">
+        <div class="speed-title">⏱️ Расчет времени на стат</div>
+        
+        <div class="speed-controls">
+          <div class="speed-book-level">
+            <span>📘 Расторопность</span>
+            <input type="number" class="speed-book-input" id="speedBookLevel" value="0" min="0" max="99999" oninput="updateSpeedCalculations()">
+            <span class="speed-book-unit">ур.</span>
+          </div>
+          <label class="speed-ring-toggle">
+            <input type="checkbox" id="speedRingCheckbox" onchange="updateSpeedCalculations()">
+            <span class="speed-ring-icon">💍</span>
+          </label>
+        </div>
+
+        <div class="speed-stat-row">
+          <div class="speed-stat-left">
+            <span class="speed-stat-icon">❤️</span>
+            <span class="speed-stat-value" onclick="editSpeedStat('vit', this)" id="speed-vit-value">1500</span>
+          </div>
+          <div class="speed-stat-time">
+            <span>⌛️</span>
+            <span class="speed-time-value" id="speed-vit-time">110.0</span>
+            <span>мин</span>
+          </div>
+        </div>
+
+        <div class="speed-stat-row">
+          <div class="speed-stat-left">
+            <span class="speed-stat-icon">💪</span>
+            <span class="speed-stat-value" onclick="editSpeedStat('str', this)" id="speed-str-value">1200</span>
+          </div>
+          <div class="speed-stat-time">
+            <span>⌛️</span>
+            <span class="speed-time-value" id="speed-str-time">87.9</span>
+            <span>мин</span>
+          </div>
+        </div>
+
+        <div class="speed-stat-row">
+          <div class="speed-stat-left">
+            <span class="speed-stat-icon">👐</span>
+            <span class="speed-stat-value" onclick="editSpeedStat('agi', this)" id="speed-agi-value">1350</span>
+          </div>
+          <div class="speed-stat-time">
+            <span>⌛️</span>
+            <span class="speed-time-value" id="speed-agi-time">98.5</span>
+            <span>мин</span>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
 
 <!-- СТРАНИЦА ПРОФИЛЯ -->
-<div id="page-profile" class="page active">
+<div id="page-profile" class="page">
 <div class="profile-card">
   <div class="profile-header">
     <img src="https://via.placeholder.com/50" alt="Avatar" class="avatar" id="user-avatar">
@@ -1564,7 +1739,27 @@ display: none !important;
           </div>
         </div>
         
-        <div class="book-cell empty"></div>
+        <div class="book-cell" data-book="Расторопность">
+          <span class="book-cell-name">Расторопность</span>
+          <div class="book-svg">
+            <svg width="40" height="40" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M55 35.1l7.5 7.4l-33.3 15.9s-4.4 2-6.5-1.2C14.5 44.4 55 35.1 55 35.1z" fill="#256382"/>
+              <path d="M28.4 49.1s-6.4 2.2-5.2 6.5c1.2 4.4 6.3 1.7 6.3 1.7l31.6-14.7s-1.8-4.7 1.4-7.8L28.4 49.1" fill="#d9e3e8"/>
+              <path fill="#42ade2" d="M33.7 5L64 34.5l-35.8 14l-23-35.8z"/>
+              <path fill="#ffffff" d="M34.6 11.7l5.8 6.2l-21.7 7.8l-5.1-7.9z"/>
+              <g fill="#94989b">
+                <path d="M61 38l-21.1 8.6l20.8-9.5z"/>
+                <path d="M60.7 40.6l-22.5 9.3l22.1-10.3z"/>
+                <path d="M60.9 42L32.2 54.5l28.3-13.4z"/>
+              </g>
+              <path d="M22.7 57.2c-3.5-7.3 5.5-8.6 5.5-8.6l-23-35.9S0 12.6 0 18c0 2.2 1 3.9 1 3.9l21.7 35.3" fill="#428bc1"/>
+            </svg>
+          </div>
+          <div class="book-level-wrapper">
+            <input type="number" class="book-level-input-inventory" id="inventory-book-Расторопность" value="0" min="0" max="99999" oninput="adjustInventoryInputWidth(this)" onkeydown="if(event.key==='Enter') this.blur()" onchange="syncSpeedBookLevel(this.value)">
+            <span class="book-level-unit">ур.</span>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -1912,12 +2107,155 @@ function updateRedistributeCard() {
     calculateRedistributePrice('agi');
 }
 
-// Функция для синхронизации при изменении уровня на странице пассивных книг
-function syncPassiveToInventory(bookName, level) {
-    const inventoryInput = document.getElementById(`inventory-book-${bookName}`);
+// Функция расчета времени Расторопности
+function calculateSpeedTime(statValue, bookLevel, hasRing) {
+    if (statValue <= 0) return 0;
+    if (bookLevel < 0) bookLevel = 0;
+    
+    // Формула: время = ceil((стат / 4) / (√(10 × ур_книги) / 50 + 2))
+    const statDiv4 = statValue / 4;
+    const sqrtVal = Math.sqrt(10 * bookLevel);
+    const denominator = (sqrtVal / 50) + 2;
+    let time = Math.ceil(statDiv4 / denominator);
+    
+    // Если есть кольцо, уменьшаем на 20%
+    if (hasRing) {
+        time = time * 0.8;
+        // Округляем до 1 знака после запятой
+        return Math.round(time * 10) / 10;
+    }
+    
+    return time;
+}
+
+// Обновление всех расчетов Расторопности
+function updateSpeedCalculations() {
+    const bookLevel = parseInt(document.getElementById('speedBookLevel').value) || 0;
+    const hasRing = document.getElementById('speedRingCheckbox').checked;
+    
+    // Получаем значения статов из профиля
+    const vitValue = parseInt(document.querySelector('.stat-value[data-key="vit"]').textContent) || 3;
+    const strValue = parseInt(document.querySelector('.stat-value[data-key="str"]').textContent) || 3;
+    const agiValue = parseInt(document.querySelector('.stat-value[data-key="agi"]').textContent) || 3;
+    
+    // Обновляем отображаемые значения
+    document.getElementById('speed-vit-value').textContent = vitValue;
+    document.getElementById('speed-str-value').textContent = strValue;
+    document.getElementById('speed-agi-value').textContent = agiValue;
+    
+    // Рассчитываем время
+    const vitTime = calculateSpeedTime(vitValue, bookLevel, hasRing);
+    const strTime = calculateSpeedTime(strValue, bookLevel, hasRing);
+    const agiTime = calculateSpeedTime(agiValue, bookLevel, hasRing);
+    
+    // Обновляем отображение времени
+    document.getElementById('speed-vit-time').textContent = vitTime.toFixed(1);
+    document.getElementById('speed-str-time').textContent = strTime.toFixed(1);
+    document.getElementById('speed-agi-time').textContent = agiTime.toFixed(1);
+    
+    // Сохраняем уровень книги
+    saveSpeedBookLevel(bookLevel);
+}
+
+// Сохранение уровня книги Расторопность
+function saveSpeedBookLevel(level) {
+    const savedLevels = JSON.parse(localStorage.getItem('rpg_books_levels_final_verified_v8') || '{}');
+    savedLevels['Расторопность'] = level;
+    localStorage.setItem('rpg_books_levels_final_verified_v8', JSON.stringify(savedLevels));
+    
+    // Обновляем в инвентаре
+    const inventoryInput = document.getElementById('inventory-book-Расторопность');
     if (inventoryInput) {
         inventoryInput.value = level;
         adjustInventoryInputWidth(inventoryInput);
+    }
+}
+
+// Синхронизация уровня книги из инвентаря
+window.syncSpeedBookLevel = function(level) {
+    const bookLevel = parseInt(level) || 0;
+    const speedInput = document.getElementById('speedBookLevel');
+    if (speedInput) {
+        speedInput.value = bookLevel;
+    }
+    updateSpeedCalculations();
+};
+
+// Редактирование значения стата в блоке Расторопности
+window.editSpeedStat = function(statKey, element) {
+    const currentVal = element.textContent;
+    const input = document.createElement('input');
+    input.type = 'number';
+    input.value = currentVal;
+    input.className = 'stat-input-small';
+    input.style.position = 'absolute';
+    input.style.left = '0';
+    input.style.top = '0';
+    input.style.width = '60px';
+    input.style.height = '100%';
+    input.style.background = 'var(--input-bg)';
+    input.style.border = '1px solid var(--accent)';
+    input.style.borderRadius = '4px';
+    input.style.color = 'var(--text-main)';
+    input.style.fontSize = '14px';
+    input.style.fontWeight = '700';
+    input.style.padding = '2px 4px';
+    input.style.zIndex = '100';
+    input.maxLength = 5;
+    input.max = MAX_STAT_VALUE.toString();
+    
+    element.style.position = 'relative';
+    element.style.visibility = 'hidden';
+    element.parentNode.appendChild(input);
+    input.focus();
+    input.select();
+    
+    const finish = () => {
+        let newVal = input.value;
+        if (newVal === '') newVal = '3';
+        
+        const num = parseInt(newVal);
+        if (!isNaN(num)) {
+            if (num < 3) newVal = '3';
+            else if (num > MAX_STAT_VALUE) newVal = MAX_STAT_VALUE.toString();
+            else newVal = num.toString();
+        }
+        
+        element.textContent = newVal;
+        element.style.visibility = 'visible';
+        input.remove();
+        
+        // Обновляем соответствующий стат в профиле
+        const profileStat = document.querySelector(`.stat-value[data-key="${statKey}"]`);
+        if (profileStat) {
+            profileStat.textContent = newVal;
+        }
+        
+        saveStats();
+        updateCapCalculations();
+        updateRedistributeCard();
+        updateSpeedCalculations();
+    };
+    
+    input.onblur = finish;
+    input.onkeydown = e => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            input.blur();
+        }
+    };
+};
+
+// Функция для синхронизации при изменении уровня на странице пассивных книг
+function syncPassiveToInventory(bookName, level) {
+    if (bookName === 'Расторопность') {
+        syncSpeedBookLevel(level);
+    } else {
+        const inventoryInput = document.getElementById(`inventory-book-${bookName}`);
+        if (inventoryInput) {
+            inventoryInput.value = level;
+            adjustInventoryInputWidth(inventoryInput);
+        }
     }
     saveInventory();
 }
@@ -1950,7 +2288,7 @@ function updatePassiveBookDisplay(bookName, newLevel) {
 // Обновленная функция syncInventoryBookLevel
 window.syncInventoryBookLevel = function(bookName, level) {
     const savedLevels = JSON.parse(localStorage.getItem('rpg_books_levels_final_verified_v8') || '{}');
-    const newLevel = parseInt(level) || 0;
+    let newLevel = parseInt(level) || 0;
     
     if (newLevel > MAX_STAT_VALUE) {
         newLevel = MAX_STAT_VALUE;
@@ -1962,7 +2300,11 @@ window.syncInventoryBookLevel = function(bookName, level) {
     localStorage.setItem('rpg_books_levels_final_verified_v8', JSON.stringify(savedLevels));
     localStorage.setItem('rpg_date_final_verified_v8', Date.now().toString());
     
-    updatePassiveBookDisplay(bookName, newLevel);
+    if (bookName === 'Расторопность') {
+        syncSpeedBookLevel(newLevel);
+    } else {
+        updatePassiveBookDisplay(bookName, newLevel);
+    }
     saveInventory();
 };
 
@@ -2217,6 +2559,7 @@ window.editCapStat = function(item, statKey) {
         saveStats();
         updateCapCalculations();
         updateRedistributeCard();
+        updateSpeedCalculations();
     };
     
     input.onblur = finish;
@@ -2250,6 +2593,7 @@ function loadCapStatsFromProfile() {
     
     updateCapCalculations();
     updateRedistributeCard();
+    updateSpeedCalculations();
 }
 
 function updateCapCalculations() {
@@ -2361,6 +2705,11 @@ function loadInventory() {
                 if (level > MAX_STAT_VALUE) level = MAX_STAT_VALUE;
                 input.value = level;
                 adjustInventoryInputWidth(input);
+                
+                // Если это Расторопность, синхронизируем с калькулятором
+                if (name === 'Расторопность') {
+                    syncSpeedBookLevel(level);
+                }
             }
         }
     });
@@ -2486,6 +2835,7 @@ updateClassResult();
 updateKarmaIcon();
 loadCapStatsFromProfile();
 updateRedistributeCard();
+updateSpeedCalculations();
 return true;
 }
 return false;
@@ -2680,6 +3030,7 @@ if (isKarma) updateKarmaIcon();
 saveStats();
 updateCapCalculations();
 updateRedistributeCard();
+updateSpeedCalculations();
 };
 input.onblur = finish;
 input.onkeydown = e => {
@@ -2793,6 +3144,7 @@ if (typeof renderActiveBooks === 'function') renderActiveBooks();
 } else if (pageName === 'cap') {
 loadCapStatsFromProfile();
 updateRedistributeCard();
+updateSpeedCalculations();
 }
 };
 
@@ -2816,6 +3168,7 @@ saveStats();
 initClassList();
 loadCapStatsFromProfile();
 updateRedistributeCard();
+updateSpeedCalculations();
 initInventorySync();
 } catch (error) {
 console.log('Ошибка инициализации VK Bridge:', error);
@@ -2828,6 +3181,7 @@ triggerBtn.textContent = savedClass;
 initClassList();
 loadCapStatsFromProfile();
 updateRedistributeCard();
+updateSpeedCalculations();
 initInventorySync();
 }
 };
