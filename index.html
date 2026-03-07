@@ -21,8 +21,8 @@
 
 /* Запрет контекстного меню и выделения для всего приложения */
 * {
--webkit-touch-callout: none; /* Запрет долгого тапа на ссылках и изображениях */
--webkit-user-select: none; /* Запрет выделения */
+-webkit-touch-callout: none;
+-webkit-user-select: none;
 -khtml-user-select: none;
 -moz-user-select: none;
 -ms-user-select: none;
@@ -37,7 +37,7 @@ user-select: text;
 
 /* Ссылки в подвале остаются кликабельными */
 .app-footer a {
--webkit-touch-callout: default; /* Разрешаем долгий тап только на ссылках подвала */
+-webkit-touch-callout: default;
 pointer-events: auto;
 }
 
@@ -1493,7 +1493,7 @@ display: none !important;
             </svg>
           </div>
           <div class="book-level-wrapper">
-            <input type="number" class="book-level-input-inventory" id="inventory-book-Мародер" value="1" min="0" max="999999" oninput="adjustInventoryInputWidth(this)" onkeydown="if(event.key==='Enter') this.blur()" onchange="syncInventoryBookLevel('Мародер', this.value)">
+            <input type="number" class="book-level-input-inventory" id="inventory-book-Мародер" value="1" min="0" max="99999" oninput="adjustInventoryInputWidth(this)" onkeydown="if(event.key==='Enter') this.blur()" onchange="syncInventoryBookLevel('Мародер', this.value)">
             <span class="book-level-unit">ур.</span>
           </div>
         </div>
@@ -1515,7 +1515,7 @@ display: none !important;
             </svg>
           </div>
           <div class="book-level-wrapper">
-            <input type="number" class="book-level-input-inventory" id="inventory-book-Гладиатор" value="1" min="0" max="999999" oninput="adjustInventoryInputWidth(this)" onkeydown="if(event.key==='Enter') this.blur()" onchange="syncInventoryBookLevel('Гладиатор', this.value)">
+            <input type="number" class="book-level-input-inventory" id="inventory-book-Гладиатор" value="1" min="0" max="99999" oninput="adjustInventoryInputWidth(this)" onkeydown="if(event.key==='Enter') this.blur()" onchange="syncInventoryBookLevel('Гладиатор', this.value)">
             <span class="book-level-unit">ур.</span>
           </div>
         </div>
@@ -1537,7 +1537,7 @@ display: none !important;
             </svg>
           </div>
           <div class="book-level-wrapper">
-            <input type="number" class="book-level-input-inventory" id="inventory-book-Воздаяние" value="1" min="0" max="999999" oninput="adjustInventoryInputWidth(this)" onkeydown="if(event.key==='Enter') this.blur()" onchange="syncInventoryBookLevel('Воздаяние', this.value)">
+            <input type="number" class="book-level-input-inventory" id="inventory-book-Воздаяние" value="1" min="0" max="99999" oninput="adjustInventoryInputWidth(this)" onkeydown="if(event.key==='Enter') this.blur()" onchange="syncInventoryBookLevel('Воздаяние', this.value)">
             <span class="book-level-unit">ур.</span>
           </div>
         </div>
@@ -1559,7 +1559,7 @@ display: none !important;
             </svg>
           </div>
           <div class="book-level-wrapper">
-            <input type="number" class="book-level-input-inventory" id="inventory-book-Атлетика" value="1" min="0" max="999999" oninput="adjustInventoryInputWidth(this)" onkeydown="if(event.key==='Enter') this.blur()" onchange="syncInventoryBookLevel('Атлетика', this.value)">
+            <input type="number" class="book-level-input-inventory" id="inventory-book-Атлетика" value="1" min="0" max="99999" oninput="adjustInventoryInputWidth(this)" onkeydown="if(event.key==='Enter') this.blur()" onchange="syncInventoryBookLevel('Атлетика', this.value)">
             <span class="book-level-unit">ур.</span>
           </div>
         </div>
@@ -1609,7 +1609,7 @@ display: none !important;
 <div class="bulk-panel" id="activeBulkPanel">
 <div class="bulk-panel-title">Установить уровень для всех активных умений</div>
 <div class="bulk-panel-content">
-<input type="number" class="bulk-panel-input" id="activeBulkInput" placeholder="0" min="0" max="9999999">
+<input type="number" class="bulk-panel-input" id="activeBulkInput" placeholder="0" min="0" max="99999">
 <button class="bulk-panel-btn bulk-panel-btn-cancel" onclick="closeBulkPanel('active')">Отмена</button>
 <button class="bulk-panel-btn bulk-panel-btn-apply" onclick="applyBulkLevel('active')">OK</button>
 </div>
@@ -1657,7 +1657,7 @@ display: none !important;
 <div class="bulk-panel" id="passiveBulkPanel">
 <div class="bulk-panel-title">Установить уровень для всех пассивных книг</div>
 <div class="bulk-panel-content">
-<input type="number" class="bulk-panel-input" id="passiveBulkInput" placeholder="0" min="0" max="9999999">
+<input type="number" class="bulk-panel-input" id="passiveBulkInput" placeholder="0" min="0" max="99999">
 <button class="bulk-panel-btn bulk-panel-btn-cancel" onclick="closeBulkPanel('passive')">Отмена</button>
 <button class="bulk-panel-btn bulk-panel-btn-apply" onclick="applyBulkLevel('passive')">OK</button>
 </div>
@@ -1685,9 +1685,11 @@ display: none !important;
 <script src="actives.js"></script>
 <script src="books.js"></script>
 <script>
+// Константа для максимального значения (5 цифр = 99999)
+const MAX_STAT_VALUE = 99999;
+
 // Запрет контекстного меню (долгий тап)
 document.addEventListener('contextmenu', function(e) {
-    // Разрешаем контекстное меню только на ссылках в подвале
     if (e.target.closest('.app-footer a')) {
         return true;
     }
@@ -1854,7 +1856,7 @@ function updateTotalPrice() {
     document.getElementById('redistribute-total').textContent = total + '🌕';
 }
 
-// Функция применения перераспределения - без подтверждения
+// Функция применения перераспределения
 window.applyRedistribute = function(statKey) {
     const statElement = document.querySelector(`[data-cap-key="${statKey}"]`);
     const currentValue = parseInt(statElement.textContent);
@@ -1862,7 +1864,6 @@ window.applyRedistribute = function(statKey) {
     let removeValue = parseInt(inputElement.value) || 1;
     const maxRemove = currentValue - 3;
     
-    // Проверка на максимальное значение
     if (removeValue > maxRemove) {
         alert(`❌ Нельзя уменьшить ${statKey} ниже 3.\nМаксимум можно убрать: ${maxRemove}`);
         inputElement.value = maxRemove;
@@ -1875,25 +1876,20 @@ window.applyRedistribute = function(statKey) {
         inputElement.value = 1;
     }
     
-    // Применяем изменения
     const newValue = currentValue - removeValue;
     statElement.textContent = newValue;
     
-    // Обновляем профиль
     const profileStat = document.querySelector(`.stat-value[data-key="${statKey}"]`);
     if (profileStat) {
         profileStat.textContent = newValue;
     }
     
-    // Обновляем карточку
     document.getElementById(`redistribute-${statKey}`).textContent = newValue;
     
-    // Сохраняем и обновляем
     saveStats();
     updateCapCalculations();
     updateRedistributeCard();
     
-    // Сбрасываем поле ввода
     inputElement.value = 1;
     calculateRedistributePrice(statKey);
 };
@@ -1916,426 +1912,491 @@ function updateRedistributeCard() {
     calculateRedistributePrice('agi');
 }
 
+// Функция для синхронизации при изменении уровня на странице пассивных книг
+function syncPassiveToInventory(bookName, level) {
+    const inventoryInput = document.getElementById(`inventory-book-${bookName}`);
+    if (inventoryInput) {
+        inventoryInput.value = level;
+        adjustInventoryInputWidth(inventoryInput);
+    }
+    saveInventory();
+}
+
+// Функция для обновления отображения пассивной книги
+function updatePassiveBookDisplay(bookName, newLevel) {
+    const passiveItems = document.querySelectorAll('#passiveBooksContainer .book-item');
+    for (const item of passiveItems) {
+        if (item.dataset.bookName === bookName.toLowerCase()) {
+            const input = item.querySelector('.book-level-input');
+            if (input) {
+                input.value = newLevel;
+                const font = window.getComputedStyle(input).font;
+                const width = measureTextWidth(input.value || '1', font, 2);
+                input.style.width = (width + 2) + 'px';
+            }
+            
+            if (typeof updatePassiveBookDescription === 'function') {
+                updatePassiveBookDescription(item, bookName, newLevel);
+            }
+            
+            if (typeof updatePassiveBookPrice === 'function') {
+                updatePassiveBookPrice(item, bookName, newLevel);
+            }
+            break;
+        }
+    }
+}
+
+// Обновленная функция syncInventoryBookLevel
+window.syncInventoryBookLevel = function(bookName, level) {
+    const savedLevels = JSON.parse(localStorage.getItem('rpg_books_levels_final_verified_v8') || '{}');
+    const newLevel = parseInt(level) || 0;
+    
+    if (newLevel > MAX_STAT_VALUE) {
+        newLevel = MAX_STAT_VALUE;
+        const input = document.getElementById(`inventory-book-${bookName}`);
+        if (input) input.value = MAX_STAT_VALUE;
+    }
+    
+    savedLevels[bookName] = newLevel;
+    localStorage.setItem('rpg_books_levels_final_verified_v8', JSON.stringify(savedLevels));
+    localStorage.setItem('rpg_date_final_verified_v8', Date.now().toString());
+    
+    updatePassiveBookDisplay(bookName, newLevel);
+    saveInventory();
+};
+
+// Переопределяем функцию updatePassiveBookLevel для синхронизации с инвентарем
+const originalUpdatePassiveBookLevel = window.updatePassiveBookLevel;
+window.updatePassiveBookLevel = function(name, value) {
+    let newLevel = parseInt(value) || 0;
+    if (newLevel > MAX_STAT_VALUE) {
+        newLevel = MAX_STAT_VALUE;
+    }
+    
+    if (originalUpdatePassiveBookLevel) {
+        originalUpdatePassiveBookLevel(name, newLevel);
+    }
+    
+    syncPassiveToInventory(name, newLevel);
+};
+
 window.editCapLevel = function(wrapper) {
-  const valueSpan = wrapper.querySelector('.stat-value');
-  const iconSpan = wrapper.querySelector('.stat-icon');
-  const labelSpan = wrapper.querySelector('.stat-label');
-  const currentVal = valueSpan.textContent;
-  
-  const iconWidth = iconSpan.offsetWidth;
-  
-  const container = document.createElement('div');
-  container.style.display = 'flex';
-  container.style.alignItems = 'center';
-  container.style.gap = '2px';
-  container.style.position = 'absolute';
-  container.style.top = '0';
-  container.style.left = (iconWidth + 6) + 'px';
-  container.style.height = '100%';
-  container.style.padding = '2px 4px 2px 0';
-  container.style.boxSizing = 'border-box';
-  container.style.pointerEvents = 'none';
-  
-  function getTextWidth(text) {
-    const span = document.createElement('span');
-    span.style.font = window.getComputedStyle(input).font;
-    span.style.visibility = 'hidden';
-    span.style.position = 'absolute';
-    span.style.whiteSpace = 'nowrap';
-    span.textContent = text || '1';
-    document.body.appendChild(span);
-    const width = span.offsetWidth;
-    document.body.removeChild(span);
-    return width;
-  }
-  
-  const input = document.createElement('input');
-  input.type = 'number';
-  input.value = currentVal;
-  input.className = 'stat-input';
-  input.style.position = 'relative';
-  input.style.width = 'auto';
-  input.style.minWidth = 'auto';
-  input.style.maxWidth = '60px';
-  input.style.background = 'transparent';
-  input.style.color = 'var(--text-main)';
-  input.style.fontSize = '17px';
-  input.style.fontWeight = '600';
-  input.style.fontFamily = 'inherit';
-  input.style.padding = '0';
-  input.style.margin = '0';
-  input.style.textAlign = 'left';
-  input.style.appearance = 'none';
-  input.style.webkitAppearance = 'none';
-  input.style.mozAppearance = 'textfield';
-  input.style.pointerEvents = 'auto';
-  input.maxLength = 5;
-  
-  const labelSpan2 = document.createElement('span');
-  labelSpan2.className = 'stat-label';
-  labelSpan2.style.marginLeft = '0';
-  labelSpan2.style.pointerEvents = 'none';
-  labelSpan2.textContent = 'ур';
-  
-  input.addEventListener('input', function() {
-    if (this.value.length > 5) {
-      this.value = this.value.slice(0, 5);
-    }
-    const textWidth = getTextWidth(this.value || '1');
-    this.style.width = textWidth + 'px';
-  });
-  
-  valueSpan.style.visibility = 'hidden';
-  labelSpan.style.visibility = 'hidden';
-  
-  container.appendChild(input);
-  container.appendChild(labelSpan2);
-  wrapper.style.position = 'relative';
-  wrapper.appendChild(container);
-  
-  const initialWidth = getTextWidth(currentVal);
-  input.style.width = initialWidth + 'px';
-  input.focus();
-  input.select();
-  
-  const finish = () => {
-    let newVal = input.value;
-    if (newVal === '') newVal = '1';
-    let finalValue = newVal;
-    const num = parseInt(newVal);
-    if (!isNaN(num)) {
-      if (num < 1) finalValue = '1';
-      else if (num > 99999) finalValue = '99999';
-      else finalValue = num.toString();
+    const valueSpan = wrapper.querySelector('.stat-value');
+    const iconSpan = wrapper.querySelector('.stat-icon');
+    const labelSpan = wrapper.querySelector('.stat-label');
+    const currentVal = valueSpan.textContent;
+    
+    const iconWidth = iconSpan.offsetWidth;
+    
+    const container = document.createElement('div');
+    container.style.display = 'flex';
+    container.style.alignItems = 'center';
+    container.style.gap = '2px';
+    container.style.position = 'absolute';
+    container.style.top = '0';
+    container.style.left = (iconWidth + 6) + 'px';
+    container.style.height = '100%';
+    container.style.padding = '2px 4px 2px 0';
+    container.style.boxSizing = 'border-box';
+    container.style.pointerEvents = 'none';
+    
+    function getTextWidth(text) {
+        const span = document.createElement('span');
+        span.style.font = window.getComputedStyle(input).font;
+        span.style.visibility = 'hidden';
+        span.style.position = 'absolute';
+        span.style.whiteSpace = 'nowrap';
+        span.textContent = text || '1';
+        document.body.appendChild(span);
+        const width = span.offsetWidth;
+        document.body.removeChild(span);
+        return width;
     }
     
-    valueSpan.textContent = finalValue;
-    valueSpan.style.visibility = 'visible';
-    labelSpan.style.visibility = 'visible';
-    container.remove();
+    const input = document.createElement('input');
+    input.type = 'number';
+    input.value = currentVal;
+    input.className = 'stat-input';
+    input.style.position = 'relative';
+    input.style.width = 'auto';
+    input.style.minWidth = 'auto';
+    input.style.maxWidth = '60px';
+    input.style.background = 'transparent';
+    input.style.color = 'var(--text-main)';
+    input.style.fontSize = '17px';
+    input.style.fontWeight = '600';
+    input.style.fontFamily = 'inherit';
+    input.style.padding = '0';
+    input.style.margin = '0';
+    input.style.textAlign = 'left';
+    input.style.appearance = 'none';
+    input.style.webkitAppearance = 'none';
+    input.style.mozAppearance = 'textfield';
+    input.style.pointerEvents = 'auto';
+    input.maxLength = 5;
+    input.max = MAX_STAT_VALUE.toString();
     
-    const profileLvl = document.querySelector('.stat-value[data-key="lvl"]');
-    if (profileLvl) {
-      profileLvl.textContent = finalValue;
-    }
+    const labelSpan2 = document.createElement('span');
+    labelSpan2.className = 'stat-label';
+    labelSpan2.style.marginLeft = '0';
+    labelSpan2.style.pointerEvents = 'none';
+    labelSpan2.textContent = 'ур';
     
-    saveStats();
-    updateCapCalculations();
-    updateRedistributeCard();
-  };
-  
-  input.onblur = finish;
-  input.onkeydown = e => {
-    if(e.key === 'Enter') {
-      e.preventDefault();
-      input.blur();
-    }
-  };
+    input.addEventListener('input', function() {
+        if (this.value.length > 5) {
+            this.value = this.value.slice(0, 5);
+        }
+        let num = parseInt(this.value);
+        if (!isNaN(num) && num > MAX_STAT_VALUE) {
+            this.value = MAX_STAT_VALUE.toString();
+        }
+        const textWidth = getTextWidth(this.value || '1');
+        this.style.width = textWidth + 'px';
+    });
+    
+    valueSpan.style.visibility = 'hidden';
+    labelSpan.style.visibility = 'hidden';
+    
+    container.appendChild(input);
+    container.appendChild(labelSpan2);
+    wrapper.style.position = 'relative';
+    wrapper.appendChild(container);
+    
+    const initialWidth = getTextWidth(currentVal);
+    input.style.width = initialWidth + 'px';
+    input.focus();
+    input.select();
+    
+    const finish = () => {
+        let newVal = input.value;
+        if (newVal === '') newVal = '1';
+        let finalValue = newVal;
+        const num = parseInt(newVal);
+        if (!isNaN(num)) {
+            if (num < 1) finalValue = '1';
+            else if (num > MAX_STAT_VALUE) finalValue = MAX_STAT_VALUE.toString();
+            else finalValue = num.toString();
+        }
+        
+        valueSpan.textContent = finalValue;
+        valueSpan.style.visibility = 'visible';
+        labelSpan.style.visibility = 'visible';
+        container.remove();
+        
+        const profileLvl = document.querySelector('.stat-value[data-key="lvl"]');
+        if (profileLvl) {
+            profileLvl.textContent = finalValue;
+        }
+        
+        saveStats();
+        updateCapCalculations();
+        updateRedistributeCard();
+    };
+    
+    input.onblur = finish;
+    input.onkeydown = e => {
+        if(e.key === 'Enter') {
+            e.preventDefault();
+            input.blur();
+        }
+    };
 };
 
 window.editCapStat = function(item, statKey) {
-  const valueSpan = item.querySelector('.cap-stat-value');
-  const nameSpan = item.querySelector('.cap-stat-name');
-  const iconSpan = item.querySelector('.cap-stat-icon');
-  const currentVal = valueSpan.textContent;
-  const currentName = nameSpan.textContent;
-  
-  const iconWidth = iconSpan.offsetWidth;
-  
-  const container = document.createElement('div');
-  container.style.display = 'flex';
-  container.style.alignItems = 'center';
-  container.style.gap = '4px';
-  container.style.position = 'absolute';
-  container.style.top = '0';
-  container.style.left = (iconWidth + 8) + 'px';
-  container.style.height = '100%';
-  container.style.padding = '8px 12px 8px 8px';
-  container.style.boxSizing = 'border-box';
-  container.style.pointerEvents = 'none';
-  
-  function getTextWidth(text) {
+    const valueSpan = item.querySelector('.cap-stat-value');
+    const nameSpan = item.querySelector('.cap-stat-name');
+    const iconSpan = item.querySelector('.cap-stat-icon');
+    const currentVal = valueSpan.textContent;
+    const currentName = nameSpan.textContent;
+    
+    const iconWidth = iconSpan.offsetWidth;
+    
+    const container = document.createElement('div');
+    container.style.display = 'flex';
+    container.style.alignItems = 'center';
+    container.style.gap = '4px';
+    container.style.position = 'absolute';
+    container.style.top = '0';
+    container.style.left = (iconWidth + 8) + 'px';
+    container.style.height = '100%';
+    container.style.padding = '8px 12px 8px 8px';
+    container.style.boxSizing = 'border-box';
+    container.style.pointerEvents = 'none';
+    
+    function getTextWidth(text) {
+        const span = document.createElement('span');
+        span.style.font = window.getComputedStyle(input).font;
+        span.style.visibility = 'hidden';
+        span.style.position = 'absolute';
+        span.style.whiteSpace = 'nowrap';
+        span.textContent = text || '1';
+        document.body.appendChild(span);
+        const width = span.offsetWidth;
+        document.body.removeChild(span);
+        return width;
+    }
+    
+    const input = document.createElement('input');
+    input.type = 'number';
+    input.value = currentVal;
+    input.className = 'stat-input';
+    input.style.position = 'relative';
+    input.style.width = 'auto';
+    input.style.minWidth = 'auto';
+    input.style.maxWidth = '60px';
+    input.style.background = 'transparent';
+    input.style.border = 'none';
+    input.style.color = 'var(--text-main)';
+    input.style.fontSize = '14px';
+    input.style.fontWeight = '700';
+    input.style.fontFamily = 'inherit';
+    input.style.padding = '0';
+    input.style.margin = '0';
+    input.style.borderRadius = '0';
+    input.style.outline = 'none';
+    input.style.textAlign = 'left';
+    input.style.appearance = 'none';
+    input.style.webkitAppearance = 'none';
+    input.style.mozAppearance = 'textfield';
+    input.style.pointerEvents = 'auto';
+    input.maxLength = 5;
+    input.max = MAX_STAT_VALUE.toString();
+    
+    const nameSpan2 = document.createElement('span');
+    nameSpan2.className = 'cap-stat-name';
+    nameSpan2.style.marginLeft = '0';
+    nameSpan2.style.pointerEvents = 'none';
+    nameSpan2.textContent = currentName;
+    
+    input.addEventListener('input', function() {
+        if (this.value.length > 5) {
+            this.value = this.value.slice(0, 5);
+        }
+        let num = parseInt(this.value);
+        if (!isNaN(num) && num > MAX_STAT_VALUE) {
+            this.value = MAX_STAT_VALUE.toString();
+        }
+        const textWidth = getTextWidth(this.value || '1');
+        this.style.width = textWidth + 'px';
+    });
+    
+    valueSpan.style.visibility = 'hidden';
+    nameSpan.style.visibility = 'hidden';
+    
+    container.appendChild(input);
+    container.appendChild(nameSpan2);
+    item.appendChild(container);
+    
+    const initialWidth = getTextWidth(currentVal);
+    input.style.width = initialWidth + 'px';
+    input.focus();
+    input.select();
+    
+    const finish = () => {
+        let newVal = input.value;
+        if (newVal === '') newVal = '3';
+        let finalValue = newVal;
+        const num = parseInt(newVal);
+        if (!isNaN(num)) {
+            if (num < 3) finalValue = '3';
+            else if (num > MAX_STAT_VALUE) finalValue = MAX_STAT_VALUE.toString();
+            else finalValue = num.toString();
+        }
+        
+        valueSpan.textContent = finalValue;
+        valueSpan.style.visibility = 'visible';
+        nameSpan.style.visibility = 'visible';
+        container.remove();
+        
+        const profileStat = document.querySelector(`.stat-value[data-key="${statKey}"]`);
+        if (profileStat) {
+            profileStat.textContent = finalValue;
+        }
+        
+        saveStats();
+        updateCapCalculations();
+        updateRedistributeCard();
+    };
+    
+    input.onblur = finish;
+    input.onkeydown = e => {
+        if(e.key === 'Enter') {
+            e.preventDefault();
+            input.blur();
+        }
+    };
+};
+
+function loadCapStatsFromProfile() {
+    const lvlEl = document.querySelector('.stat-value[data-key="lvl"]');
+    const vitEl = document.querySelector('.stat-value[data-key="vit"]');
+    const strEl = document.querySelector('.stat-value[data-key="str"]');
+    const agiEl = document.querySelector('.stat-value[data-key="agi"]');
+    
+    if (lvlEl) {
+        document.querySelector('[data-cap-key="lvl"]').textContent = lvlEl.textContent;
+    }
+    
+    document.querySelectorAll('[data-cap-key="vit"]').forEach(el => {
+        if (vitEl) el.textContent = vitEl.textContent;
+    });
+    document.querySelectorAll('[data-cap-key="str"]').forEach(el => {
+        if (strEl) el.textContent = strEl.textContent;
+    });
+    document.querySelectorAll('[data-cap-key="agi"]').forEach(el => {
+        if (agiEl) el.textContent = agiEl.textContent;
+    });
+    
+    updateCapCalculations();
+    updateRedistributeCard();
+}
+
+function updateCapCalculations() {
+    const lvl = parseInt(document.querySelector('[data-cap-key="lvl"]')?.textContent) || 1;
+    const vit = parseInt(document.querySelector('[data-cap-key="vit"]').textContent) || 3;
+    const str = parseInt(document.querySelector('[data-cap-key="str"]').textContent) || 3;
+    const agi = parseInt(document.querySelector('[data-cap-key="agi"]').textContent) || 3;
+    
+    const vitCap = lvl * 3 + 45;
+    const strAgiCap = lvl * 6 + 90;
+    const strAgiSum = str + agi;
+    
+    const vitLeft = Math.max(0, vitCap - vit);
+    const strAgiLeft = Math.max(0, strAgiCap - strAgiSum);
+    
+    const distributed = getDistributedStats(strAgiLeft);
+    
+    function calculateRepCost(current, left) {
+        let total = 0;
+        for (let i = 0; i < left; i++) {
+            total += (current + i) * 10;
+        }
+        return total;
+    }
+    
+    const vitRep = calculateRepCost(vit, vitLeft);
+    const strRep = calculateRepCost(str, distributed.str);
+    const agiRep = calculateRepCost(agi, distributed.agi);
+    const totalRep = vitRep + strRep + agiRep;
+    
+    function formatNumber(num) {
+        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+    }
+    
+    document.getElementById('cap-vit-left').textContent = vitLeft;
+    document.getElementById('cap-vit-rep').textContent = formatNumber(vitRep) + ' 🏹';
+    
+    document.getElementById('cap-str-left').textContent = distributed.str;
+    document.getElementById('cap-str-rep').textContent = formatNumber(strRep) + ' 🏹';
+    
+    document.getElementById('cap-agi-left').textContent = distributed.agi;
+    document.getElementById('cap-agi-rep').textContent = formatNumber(agiRep) + ' 🏹';
+    
+    document.getElementById('cap-total-rep').textContent = formatNumber(totalRep);
+}
+
+window.toggleInventory = function() {
+    const content = document.getElementById('inventoryContent');
+    const arrow = document.getElementById('inventoryArrow');
+    
+    content.classList.toggle('show');
+    arrow.classList.toggle('open');
+    
+    localStorage.setItem('inventory_open', content.classList.contains('show'));
+};
+
+function adjustInventoryInputWidth(input) {
+    if (input.value.length > 5) {
+        input.value = input.value.slice(0, 5);
+    }
+    
+    let num = parseInt(input.value);
+    if (!isNaN(num) && num > MAX_STAT_VALUE) {
+        input.value = MAX_STAT_VALUE.toString();
+    }
+    
+    if (input.value.match(/^0+$/)) {
+        input.value = '0';
+    }
+    
     const span = document.createElement('span');
     span.style.font = window.getComputedStyle(input).font;
     span.style.visibility = 'hidden';
     span.style.position = 'absolute';
     span.style.whiteSpace = 'nowrap';
-    span.textContent = text || '1';
+    span.textContent = input.value || '1';
     document.body.appendChild(span);
-    const width = span.offsetWidth;
+    
+    const textWidth = span.offsetWidth;
     document.body.removeChild(span);
-    return width;
-  }
-  
-  const input = document.createElement('input');
-  input.type = 'number';
-  input.value = currentVal;
-  input.className = 'stat-input';
-  input.style.position = 'relative';
-  input.style.width = 'auto';
-  input.style.minWidth = 'auto';
-  input.style.maxWidth = '60px';
-  input.style.background = 'transparent';
-  input.style.border = 'none';
-  input.style.color = 'var(--text-main)';
-  input.style.fontSize = '14px';
-  input.style.fontWeight = '700';
-  input.style.fontFamily = 'inherit';
-  input.style.padding = '0';
-  input.style.margin = '0';
-  input.style.borderRadius = '0';
-  input.style.outline = 'none';
-  input.style.textAlign = 'left';
-  input.style.appearance = 'none';
-  input.style.webkitAppearance = 'none';
-  input.style.mozAppearance = 'textfield';
-  input.style.pointerEvents = 'auto';
-  input.maxLength = 5;
-  
-  const nameSpan2 = document.createElement('span');
-  nameSpan2.className = 'cap-stat-name';
-  nameSpan2.style.marginLeft = '0';
-  nameSpan2.style.pointerEvents = 'none';
-  nameSpan2.textContent = currentName;
-  
-  input.addEventListener('input', function() {
-    if (this.value.length > 5) {
-      this.value = this.value.slice(0, 5);
-    }
-    const textWidth = getTextWidth(this.value || '1');
-    this.style.width = textWidth + 'px';
-  });
-  
-  valueSpan.style.visibility = 'hidden';
-  nameSpan.style.visibility = 'hidden';
-  
-  container.appendChild(input);
-  container.appendChild(nameSpan2);
-  item.appendChild(container);
-  
-  const initialWidth = getTextWidth(currentVal);
-  input.style.width = initialWidth + 'px';
-  input.focus();
-  input.select();
-  
-  const finish = () => {
-    let newVal = input.value;
-    if (newVal === '') newVal = '3';
-    let finalValue = newVal;
-    const num = parseInt(newVal);
-    if (!isNaN(num)) {
-      if (num < 3) finalValue = '3';
-      else if (num > 99999) finalValue = '99999';
-      else finalValue = num.toString();
-    }
     
-    valueSpan.textContent = finalValue;
-    valueSpan.style.visibility = 'visible';
-    nameSpan.style.visibility = 'visible';
-    container.remove();
-    
-    const profileStat = document.querySelector(`.stat-value[data-key="${statKey}"]`);
-    if (profileStat) {
-      profileStat.textContent = finalValue;
-    }
-    
-    saveStats();
-    updateCapCalculations();
-    updateRedistributeCard();
-  };
-  
-  input.onblur = finish;
-  input.onkeydown = e => {
-    if(e.key === 'Enter') {
-      e.preventDefault();
-      input.blur();
-    }
-  };
-};
-
-function loadCapStatsFromProfile() {
-  const lvlEl = document.querySelector('.stat-value[data-key="lvl"]');
-  const vitEl = document.querySelector('.stat-value[data-key="vit"]');
-  const strEl = document.querySelector('.stat-value[data-key="str"]');
-  const agiEl = document.querySelector('.stat-value[data-key="agi"]');
-  
-  if (lvlEl) {
-    document.querySelector('[data-cap-key="lvl"]').textContent = lvlEl.textContent;
-  }
-  
-  document.querySelectorAll('[data-cap-key="vit"]').forEach(el => {
-    if (vitEl) el.textContent = vitEl.textContent;
-  });
-  document.querySelectorAll('[data-cap-key="str"]').forEach(el => {
-    if (strEl) el.textContent = strEl.textContent;
-  });
-  document.querySelectorAll('[data-cap-key="agi"]').forEach(el => {
-    if (agiEl) el.textContent = agiEl.textContent;
-  });
-  
-  updateCapCalculations();
-  updateRedistributeCard();
+    const newWidth = Math.min(60, textWidth + 2);
+    input.style.width = newWidth + 'px';
 }
-
-function updateCapCalculations() {
-  const lvl = parseInt(document.querySelector('[data-cap-key="lvl"]')?.textContent) || 1;
-  const vit = parseInt(document.querySelector('[data-cap-key="vit"]').textContent) || 3;
-  const str = parseInt(document.querySelector('[data-cap-key="str"]').textContent) || 3;
-  const agi = parseInt(document.querySelector('[data-cap-key="agi"]').textContent) || 3;
-  
-  const vitCap = lvl * 3 + 45;
-  const strAgiCap = lvl * 6 + 90;
-  const strAgiSum = str + agi;
-  
-  const vitLeft = Math.max(0, vitCap - vit);
-  const strAgiLeft = Math.max(0, strAgiCap - strAgiSum);
-  
-  const distributed = getDistributedStats(strAgiLeft);
-  
-  function calculateRepCost(current, left) {
-    let total = 0;
-    for (let i = 0; i < left; i++) {
-      total += (current + i) * 10;
-    }
-    return total;
-  }
-  
-  const vitRep = calculateRepCost(vit, vitLeft);
-  const strRep = calculateRepCost(str, distributed.str);
-  const agiRep = calculateRepCost(agi, distributed.agi);
-  const totalRep = vitRep + strRep + agiRep;
-  
-  function formatNumber(num) {
-    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
-  }
-  
-  document.getElementById('cap-vit-left').textContent = vitLeft;
-  document.getElementById('cap-vit-rep').textContent = formatNumber(vitRep) + ' 🏹';
-  
-  document.getElementById('cap-str-left').textContent = distributed.str;
-  document.getElementById('cap-str-rep').textContent = formatNumber(strRep) + ' 🏹';
-  
-  document.getElementById('cap-agi-left').textContent = distributed.agi;
-  document.getElementById('cap-agi-rep').textContent = formatNumber(agiRep) + ' 🏹';
-  
-  document.getElementById('cap-total-rep').textContent = formatNumber(totalRep);
-}
-
-window.toggleInventory = function() {
-  const content = document.getElementById('inventoryContent');
-  const arrow = document.getElementById('inventoryArrow');
-  
-  content.classList.toggle('show');
-  arrow.classList.toggle('open');
-  
-  localStorage.setItem('inventory_open', content.classList.contains('show'));
-};
-
-function adjustInventoryInputWidth(input) {
-  if (input.value.length > 6) {
-    input.value = input.value.slice(0, 6);
-  }
-  
-  if (input.value.match(/^0+$/)) {
-    input.value = '0';
-  }
-  
-  const span = document.createElement('span');
-  span.style.font = window.getComputedStyle(input).font;
-  span.style.visibility = 'hidden';
-  span.style.position = 'absolute';
-  span.style.whiteSpace = 'nowrap';
-  span.textContent = input.value || '1';
-  document.body.appendChild(span);
-  
-  const textWidth = span.offsetWidth;
-  document.body.removeChild(span);
-  
-  const newWidth = Math.min(60, textWidth + 2);
-  input.style.width = newWidth + 'px';
-}
-
-window.syncInventoryBookLevel = function(bookName, level) {
-  const savedLevels = JSON.parse(localStorage.getItem('rpg_books_levels_final_verified_v8') || '{}');
-  const newLevel = parseInt(level) || 0;
-  
-  savedLevels[bookName] = newLevel;
-  localStorage.setItem('rpg_books_levels_final_verified_v8', JSON.stringify(savedLevels));
-  localStorage.setItem('rpg_date_final_verified_v8', Date.now().toString());
-  
-  const passiveItems = document.querySelectorAll('#passiveBooksContainer .book-item');
-  for (const item of passiveItems) {
-    if (item.dataset.bookName === bookName.toLowerCase()) {
-      const input = item.querySelector('.book-level-input');
-      if (input) {
-        input.value = newLevel;
-        const font = window.getComputedStyle(input).font;
-        const width = measureTextWidth(input.value || '1', font, 2);
-        input.style.width = (width + 2) + 'px';
-      }
-      if (typeof updatePassiveBookDescription === 'function') {
-        updatePassiveBookDescription(item, bookName, newLevel);
-      }
-      if (typeof updatePassiveBookPrice === 'function') {
-        updatePassiveBookPrice(item, bookName, newLevel);
-      }
-      break;
-    }
-  }
-  
-  saveInventory();
-};
 
 function saveInventory() {
-  const inventory = { books: {} };
-  
-  document.querySelectorAll('.book-cell').forEach((cell) => {
-    if (!cell.classList.contains('empty')) {
-      const name = cell.dataset.book;
-      const level = cell.querySelector('.book-level-input-inventory').value;
-      inventory.books[name] = { level };
-    }
-  });
-  
-  localStorage.setItem(INVENTORY_KEY, JSON.stringify(inventory));
+    const inventory = { books: {} };
+    
+    document.querySelectorAll('.book-cell').forEach((cell) => {
+        if (!cell.classList.contains('empty')) {
+            const name = cell.dataset.book;
+            const level = cell.querySelector('.book-level-input-inventory').value;
+            inventory.books[name] = { level };
+        }
+    });
+    
+    localStorage.setItem(INVENTORY_KEY, JSON.stringify(inventory));
 }
 
 function loadInventory() {
-  const savedPassiveLevels = JSON.parse(localStorage.getItem('rpg_books_levels_final_verified_v8') || '{}');
-  
-  document.querySelectorAll('.book-cell').forEach(cell => {
-    if (!cell.classList.contains('empty')) {
-      const name = cell.dataset.book;
-      const input = cell.querySelector('.book-level-input-inventory');
-      if (input && savedPassiveLevels[name] !== undefined) {
-        input.value = savedPassiveLevels[name];
-        adjustInventoryInputWidth(input);
-      }
+    const savedPassiveLevels = JSON.parse(localStorage.getItem('rpg_books_levels_final_verified_v8') || '{}');
+    
+    document.querySelectorAll('.book-cell').forEach(cell => {
+        if (!cell.classList.contains('empty')) {
+            const name = cell.dataset.book;
+            const input = cell.querySelector('.book-level-input-inventory');
+            if (input && savedPassiveLevels[name] !== undefined) {
+                let level = savedPassiveLevels[name];
+                if (level > MAX_STAT_VALUE) level = MAX_STAT_VALUE;
+                input.value = level;
+                adjustInventoryInputWidth(input);
+            }
+        }
+    });
+    
+    const savedInventory = localStorage.getItem(INVENTORY_KEY);
+    if (savedInventory) {
+        try {
+            const inventory = JSON.parse(savedInventory);
+            if (inventory.books) {
+                Object.entries(inventory.books).forEach(([name, data]) => {
+                    let level = data.level;
+                    if (level > MAX_STAT_VALUE) level = MAX_STAT_VALUE;
+                    if (level !== savedPassiveLevels[name]) {
+                        savedPassiveLevels[name] = level;
+                    }
+                });
+                localStorage.setItem('rpg_books_levels_final_verified_v8', JSON.stringify(savedPassiveLevels));
+            }
+        } catch (e) {
+            console.log('Ошибка загрузки инвентаря', e);
+        }
     }
-  });
-  
-  const savedInventory = localStorage.getItem(INVENTORY_KEY);
-  if (savedInventory) {
-    try {
-      const inventory = JSON.parse(savedInventory);
-    } catch (e) {
-      console.log('Ошибка загрузки инвентаря', e);
-    }
-  }
 }
 
 document.addEventListener('change', function(e) {
-  if (e.target.classList.contains('book-level-input-inventory')) {
-    saveInventory();
-  }
+    if (e.target.classList.contains('book-level-input-inventory')) {
+        saveInventory();
+    }
 });
 
 const inventoryOpen = localStorage.getItem('inventory_open') === 'true';
 if (inventoryOpen) {
-  setTimeout(() => {
-    document.getElementById('inventoryContent')?.classList.add('show');
-    document.getElementById('inventoryArrow')?.classList.add('open');
-  }, 100);
+    setTimeout(() => {
+        document.getElementById('inventoryContent')?.classList.add('show');
+        document.getElementById('inventoryArrow')?.classList.add('open');
+    }, 100);
 }
 
 async function saveAllDataToVK() {
@@ -2381,7 +2442,16 @@ const userData = JSON.parse(response.keys[0].value);
 if (userData.stats) {
 Object.entries(userData.stats).forEach(([key, value]) => {
 const el = document.querySelector(`.stat-value[data-key="${key}"]`);
-if (el) el.textContent = value;
+if (el) {
+let val = value;
+if (key !== 'resist' && key !== 'karma') {
+const num = parseInt(val);
+if (!isNaN(num) && num > MAX_STAT_VALUE) {
+val = MAX_STAT_VALUE.toString();
+}
+}
+el.textContent = val;
+}
 });
 }
 if (userData.class) {
@@ -2390,10 +2460,20 @@ triggerBtn.textContent = userData.class;
 }
 if (userData.books) {
 if (userData.books.passive) {
-localStorage.setItem('rpg_books_levels_final_verified_v8', JSON.stringify(userData.books.passive));
+const passive = {};
+Object.entries(userData.books.passive).forEach(([name, level]) => {
+if (level > MAX_STAT_VALUE) level = MAX_STAT_VALUE;
+passive[name] = level;
+});
+localStorage.setItem('rpg_books_levels_final_verified_v8', JSON.stringify(passive));
 }
 if (userData.books.active) {
-localStorage.setItem('rpg_active_books_levels_final_verified_v8', JSON.stringify(userData.books.active));
+const active = {};
+Object.entries(userData.books.active).forEach(([name, level]) => {
+if (level > MAX_STAT_VALUE) level = MAX_STAT_VALUE;
+active[name] = level;
+});
+localStorage.setItem('rpg_active_books_levels_final_verified_v8', JSON.stringify(active));
 }
 }
 if (userData.inventory) {
@@ -2545,11 +2625,15 @@ const input = document.createElement('input');
 input.type = 'number';
 input.value = cleanVal === '0' ? '' : cleanVal;
 input.className = 'stat-input';
-input.maxLength = 7;
-input.max = '9999999';
+input.maxLength = 5;
+input.max = MAX_STAT_VALUE.toString();
 input.addEventListener('input', function() {
-if (this.value.length > 7) {
-this.value = this.value.slice(0, 7);
+if (this.value.length > 5) {
+this.value = this.value.slice(0, 5);
+}
+let num = parseInt(this.value);
+if (!isNaN(num) && num > MAX_STAT_VALUE) {
+this.value = MAX_STAT_VALUE.toString();
 }
 });
 valueSpan.style.visibility = 'hidden';
@@ -2563,7 +2647,7 @@ if (newVal === '') newVal = '0';
 let finalValue = newVal;
 const num = parseFloat(newVal);
 if (!isNaN(num)) {
-if (num > 9999999) finalValue = '9999999';
+if (num > MAX_STAT_VALUE) finalValue = MAX_STAT_VALUE.toString();
 else finalValue = Math.floor(num).toString();
 }
 if (isResist) {
@@ -2578,9 +2662,14 @@ finalValue = karmaNum.toString();
 } else {
 if (key === 'class_lvl') {
 if (parseInt(finalValue) < 50) finalValue = '50';
+if (parseInt(finalValue) > MAX_STAT_VALUE) finalValue = MAX_STAT_VALUE.toString();
 }
 else if (key === 'str' || key === 'agi' || key === 'vit') {
 if (parseInt(finalValue) < 3) finalValue = '3';
+if (parseInt(finalValue) > MAX_STAT_VALUE) finalValue = MAX_STAT_VALUE.toString();
+}
+else {
+if (parseInt(finalValue) > MAX_STAT_VALUE) finalValue = MAX_STAT_VALUE.toString();
 }
 }
 valueSpan.textContent = finalValue;
@@ -2606,7 +2695,16 @@ input.onclick = e => e.stopPropagation();
 
 function saveStats() {
 const data = {};
-document.querySelectorAll('.stat-value').forEach(el => data[el.dataset.key] = el.textContent);
+document.querySelectorAll('.stat-value').forEach(el => {
+let val = el.textContent;
+if (el.dataset.key !== 'resist' && el.dataset.key !== 'karma') {
+const num = parseInt(val);
+if (!isNaN(num) && num > MAX_STAT_VALUE) {
+val = MAX_STAT_VALUE.toString();
+}
+}
+data[el.dataset.key] = val;
+});
 localStorage.setItem(DB_KEY, JSON.stringify(data));
 localStorage.setItem(DATE_KEY, Date.now().toString());
 updateClassResult();
@@ -2618,7 +2716,16 @@ const raw = localStorage.getItem(DB_KEY);
 if (!raw) return;
 const data = JSON.parse(raw);
 document.querySelectorAll('.stat-value').forEach(el => {
-if (data[el.dataset.key]) el.textContent = data[el.dataset.key];
+if (data[el.dataset.key]) {
+let val = data[el.dataset.key];
+if (el.dataset.key !== 'resist' && el.dataset.key !== 'karma') {
+const num = parseInt(val);
+if (!isNaN(num) && num > MAX_STAT_VALUE) {
+val = MAX_STAT_VALUE.toString();
+}
+}
+el.textContent = val;
+}
 });
 updateClassResult();
 updateKarmaIcon();
@@ -2647,6 +2754,28 @@ selectClass(cls);
 listDiv.appendChild(div);
 });
 updateClassResult();
+}
+
+function initInventorySync() {
+document.querySelectorAll('.book-cell:not(.empty)').forEach(cell => {
+const input = cell.querySelector('.book-level-input-inventory');
+if (input) {
+const originalOnChange = input.onchange;
+input.addEventListener('change', function(e) {
+const bookName = cell.dataset.book;
+let level = parseInt(this.value) || 0;
+if (level > MAX_STAT_VALUE) {
+level = MAX_STAT_VALUE;
+this.value = MAX_STAT_VALUE;
+adjustInventoryInputWidth(this);
+}
+window.syncInventoryBookLevel(bookName, level);
+if (originalOnChange) {
+originalOnChange.call(this, e);
+}
+});
+}
+});
 }
 
 window.switchPage = function(pageName) {
@@ -2687,6 +2816,7 @@ saveStats();
 initClassList();
 loadCapStatsFromProfile();
 updateRedistributeCard();
+initInventorySync();
 } catch (error) {
 console.log('Ошибка инициализации VK Bridge:', error);
 document.getElementById('user-name').textContent = 'Тестовый пользователь';
@@ -2698,6 +2828,7 @@ triggerBtn.textContent = savedClass;
 initClassList();
 loadCapStatsFromProfile();
 updateRedistributeCard();
+initInventorySync();
 }
 };
 </script>
