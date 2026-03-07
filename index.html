@@ -695,88 +695,14 @@ font-size: 18px;
 }
 
 /* Стили для блока Расторопности */
-.speed-block {
-margin-top: 20px;
-padding: 15px;
-background-color: var(--input-bg);
-border-radius: 8px;
-}
-
-.speed-title {
-font-size: 15px;
-font-weight: 600;
-color: var(--text-main);
-margin-bottom: 12px;
-}
-
-.speed-controls {
-display: flex;
-align-items: center;
-justify-content: space-between;
-margin-bottom: 12px;
-padding-bottom: 12px;
-border-bottom: 1px solid var(--separator-color);
-}
-
-.speed-book-level {
-display: flex;
-align-items: center;
-gap: 8px;
-}
-
-.speed-book-input {
-width: auto;
-min-width: 40px;
-max-width: 80px;
-background: transparent;
-border: none;
-color: var(--text-main);
-font-size: 14px;
-font-weight: 700;
-text-align: left;
-padding: 4px 0;
--moz-appearance: textfield;
-}
-
-.speed-book-input::-webkit-outer-spin-button,
-.speed-book-input::-webkit-inner-spin-button {
--webkit-appearance: none;
-margin: 0;
-}
-
-.speed-book-unit {
-color: var(--text-secondary);
-font-size: 13px;
-}
-
-.speed-ring-toggle {
-display: flex;
-align-items: center;
-gap: 6px;
-cursor: pointer;
-}
-
-.speed-ring-toggle input[type="checkbox"] {
-width: 18px;
-height: 18px;
-cursor: pointer;
-accent-color: var(--accent);
-}
-
-.speed-ring-icon {
-font-size: 18px;
-}
-
 .speed-stat-row {
 display: flex;
 align-items: center;
 justify-content: space-between;
-padding: 8px 0;
-border-bottom: 1px solid var(--separator-color);
-}
-
-.speed-stat-row:last-child {
-border-bottom: none;
+padding: 10px 12px;
+background-color: var(--card-bg);
+border-radius: 8px;
+margin-bottom: 8px;
 }
 
 .speed-stat-left {
@@ -787,20 +713,18 @@ gap: 12px;
 
 .speed-stat-icon {
 font-size: 18px;
-width: 24px;
 }
 
 .speed-stat-value {
-font-size: 14px;
-font-weight: 700;
-color: var(--text-main);
 cursor: pointer;
 padding: 2px 6px;
 border-radius: 4px;
+font-weight: 700;
+color: var(--text-main);
 }
 
 .speed-stat-value:hover {
-background-color: rgba(255,255,255,0.1);
+background-color: rgba(255, 255, 255, 0.1);
 }
 
 .speed-stat-time {
@@ -808,12 +732,32 @@ display: flex;
 align-items: center;
 gap: 6px;
 color: var(--text-secondary);
-font-size: 14px;
 }
 
 .speed-time-value {
 color: var(--text-main);
 font-weight: 600;
+}
+
+.speed-book-input {
+background: transparent;
+border: none;
+color: var(--text-main);
+font-size: 14px;
+font-weight: 700;
+width: auto;
+min-width: 20px;
+max-width: 80px;
+text-align: left;
+outline: none;
+-moz-appearance: textfield;
+padding: 0;
+}
+
+.speed-book-input::-webkit-outer-spin-button,
+.speed-book-input::-webkit-inner-spin-button {
+-webkit-appearance: none;
+margin: 0;
 }
 
 .inventory-section {
@@ -1553,53 +1497,63 @@ display: none !important;
       </div>
 
       <!-- БЛОК РАСТОРОПНОСТИ -->
-      <div class="speed-block">
-        <div class="speed-title">⏱️ Расчет времени на стат</div>
+      <div style="margin-top: 20px; border-top: 1px solid var(--separator-color); padding-top: 15px;">
+        <div class="redistribute-title" style="margin-bottom: 12px; border-bottom: none; padding-bottom: 0;">
+          ⏱️ Расчет времени на стат
+        </div>
         
-        <div class="speed-controls">
-          <div class="speed-book-level">
-            <span>📘 Расторопность</span>
-            <input type="number" class="speed-book-input" id="speedBookLevel" value="0" min="0" max="99999" oninput="updateSpeedCalculations()">
-            <span class="speed-book-unit">ур.</span>
+        <!-- Управление с динамическим полем для уровня книги -->
+        <div style="display: flex; align-items: center; justify-content: space-between; background-color: var(--input-bg); border-radius: 8px; padding: 10px 12px; margin-bottom: 12px;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="color: var(--text-secondary);">📘 Расторопность</span>
+            <div class="book-level-wrapper" style="display: flex; align-items: center; gap: 2px;">
+              <input type="number" class="speed-book-input" id="speedBookLevel" value="0" min="0" max="99999" 
+                     oninput="adjustSpeedBookInput(this); updateSpeedCalculations()"
+                     onkeydown="if(event.key==='Enter') this.blur()">
+              <span style="color: var(--text-secondary); font-size: 13px;">ур.</span>
+            </div>
           </div>
-          <label class="speed-ring-toggle">
-            <input type="checkbox" id="speedRingCheckbox" onchange="updateSpeedCalculations()">
-            <span class="speed-ring-icon">💍</span>
+          <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+            <input type="checkbox" id="speedRingCheckbox" style="width: 18px; height: 18px; accent-color: var(--accent);" onchange="updateSpeedCalculations()">
+            <span style="font-size: 18px;">💍</span>
           </label>
         </div>
-
+        
+        <!-- ❤️ Выносливость -->
         <div class="speed-stat-row">
           <div class="speed-stat-left">
             <span class="speed-stat-icon">❤️</span>
-            <span class="speed-stat-value" onclick="editSpeedStat('vit', this)" id="speed-vit-value">1500</span>
+            <span class="speed-stat-value" onclick="editSpeedStat('vit', this)" id="speed-vit-value">3</span>
           </div>
           <div class="speed-stat-time">
             <span>⌛️</span>
-            <span class="speed-time-value" id="speed-vit-time">110.0</span>
+            <span class="speed-time-value" id="speed-vit-time">0.0</span>
             <span>мин</span>
           </div>
         </div>
-
+        
+        <!-- 💪 Сила -->
         <div class="speed-stat-row">
           <div class="speed-stat-left">
             <span class="speed-stat-icon">💪</span>
-            <span class="speed-stat-value" onclick="editSpeedStat('str', this)" id="speed-str-value">1200</span>
+            <span class="speed-stat-value" onclick="editSpeedStat('str', this)" id="speed-str-value">3</span>
           </div>
           <div class="speed-stat-time">
             <span>⌛️</span>
-            <span class="speed-time-value" id="speed-str-time">87.9</span>
+            <span class="speed-time-value" id="speed-str-time">0.0</span>
             <span>мин</span>
           </div>
         </div>
-
+        
+        <!-- 👐 Ловкость -->
         <div class="speed-stat-row">
           <div class="speed-stat-left">
             <span class="speed-stat-icon">👐</span>
-            <span class="speed-stat-value" onclick="editSpeedStat('agi', this)" id="speed-agi-value">1350</span>
+            <span class="speed-stat-value" onclick="editSpeedStat('agi', this)" id="speed-agi-value">3</span>
           </div>
           <div class="speed-stat-time">
             <span>⌛️</span>
-            <span class="speed-time-value" id="speed-agi-time">98.5</span>
+            <span class="speed-time-value" id="speed-agi-time">0.0</span>
             <span>мин</span>
           </div>
         </div>
@@ -1945,6 +1899,35 @@ function measureTextWidth(text, font, padding = 0) {
     return width + padding;
 }
 
+// Функция для подгона ширины поля ввода уровня книги Расторопности
+function adjustSpeedBookInput(input) {
+    if (input.value.length > 5) {
+        input.value = input.value.slice(0, 5);
+    }
+    
+    let num = parseInt(input.value);
+    if (!isNaN(num) && num > MAX_STAT_VALUE) {
+        input.value = MAX_STAT_VALUE.toString();
+    }
+    
+    if (input.value === '' || input.value.match(/^0+$/)) {
+        input.value = '0';
+    }
+    
+    const span = document.createElement('span');
+    span.style.font = window.getComputedStyle(input).font;
+    span.style.visibility = 'hidden';
+    span.style.position = 'absolute';
+    span.style.whiteSpace = 'nowrap';
+    span.textContent = input.value || '0';
+    document.body.appendChild(span);
+    
+    const textWidth = span.offsetWidth;
+    document.body.removeChild(span);
+    
+    input.style.width = (textWidth + 2) + 'px';
+}
+
 const RATIOS = [
     { str: 1, agi: 0, name: '💪' },
     { str: 4, agi: 1, name: '4:1' },
@@ -2107,6 +2090,15 @@ function updateRedistributeCard() {
     calculateRedistributePrice('agi');
 }
 
+// Функция получения текущих значений статов из профиля
+function getCurrentStats() {
+    return {
+        vit: parseInt(document.querySelector('.stat-value[data-key="vit"]').textContent) || 3,
+        str: parseInt(document.querySelector('.stat-value[data-key="str"]').textContent) || 3,
+        agi: parseInt(document.querySelector('.stat-value[data-key="agi"]').textContent) || 3
+    };
+}
+
 // Функция расчета времени Расторопности
 function calculateSpeedTime(statValue, bookLevel, hasRing) {
     if (statValue <= 0) return 0;
@@ -2121,7 +2113,6 @@ function calculateSpeedTime(statValue, bookLevel, hasRing) {
     // Если есть кольцо, уменьшаем на 20%
     if (hasRing) {
         time = time * 0.8;
-        // Округляем до 1 знака после запятой
         return Math.round(time * 10) / 10;
     }
     
@@ -2130,28 +2121,27 @@ function calculateSpeedTime(statValue, bookLevel, hasRing) {
 
 // Обновление всех расчетов Расторопности
 function updateSpeedCalculations() {
-    const bookLevel = parseInt(document.getElementById('speedBookLevel').value) || 0;
+    const bookLevelInput = document.getElementById('speedBookLevel');
+    if (!bookLevelInput) return;
+    
+    const bookLevel = parseInt(bookLevelInput.value) || 0;
     const hasRing = document.getElementById('speedRingCheckbox').checked;
     
-    // Получаем значения статов из профиля
-    const vitValue = parseInt(document.querySelector('.stat-value[data-key="vit"]').textContent) || 3;
-    const strValue = parseInt(document.querySelector('.stat-value[data-key="str"]').textContent) || 3;
-    const agiValue = parseInt(document.querySelector('.stat-value[data-key="agi"]').textContent) || 3;
+    // Подгоняем ширину поля ввода
+    adjustSpeedBookInput(bookLevelInput);
+    
+    // Берем значения из профиля
+    const stats = getCurrentStats();
     
     // Обновляем отображаемые значения
-    document.getElementById('speed-vit-value').textContent = vitValue;
-    document.getElementById('speed-str-value').textContent = strValue;
-    document.getElementById('speed-agi-value').textContent = agiValue;
+    document.getElementById('speed-vit-value').textContent = stats.vit;
+    document.getElementById('speed-str-value').textContent = stats.str;
+    document.getElementById('speed-agi-value').textContent = stats.agi;
     
-    // Рассчитываем время
-    const vitTime = calculateSpeedTime(vitValue, bookLevel, hasRing);
-    const strTime = calculateSpeedTime(strValue, bookLevel, hasRing);
-    const agiTime = calculateSpeedTime(agiValue, bookLevel, hasRing);
-    
-    // Обновляем отображение времени
-    document.getElementById('speed-vit-time').textContent = vitTime.toFixed(1);
-    document.getElementById('speed-str-time').textContent = strTime.toFixed(1);
-    document.getElementById('speed-agi-time').textContent = agiTime.toFixed(1);
+    // Рассчитываем и отображаем время
+    document.getElementById('speed-vit-time').textContent = calculateSpeedTime(stats.vit, bookLevel, hasRing).toFixed(1);
+    document.getElementById('speed-str-time').textContent = calculateSpeedTime(stats.str, bookLevel, hasRing).toFixed(1);
+    document.getElementById('speed-agi-time').textContent = calculateSpeedTime(stats.agi, bookLevel, hasRing).toFixed(1);
     
     // Сохраняем уровень книги
     saveSpeedBookLevel(bookLevel);
@@ -2177,6 +2167,7 @@ window.syncSpeedBookLevel = function(level) {
     const speedInput = document.getElementById('speedBookLevel');
     if (speedInput) {
         speedInput.value = bookLevel;
+        adjustSpeedBookInput(speedInput);
     }
     updateSpeedCalculations();
 };
@@ -2184,15 +2175,14 @@ window.syncSpeedBookLevel = function(level) {
 // Редактирование значения стата в блоке Расторопности
 window.editSpeedStat = function(statKey, element) {
     const currentVal = element.textContent;
+    const parentDiv = element.parentElement; // .speed-stat-left
+    
     const input = document.createElement('input');
     input.type = 'number';
     input.value = currentVal;
     input.className = 'stat-input-small';
-    input.style.position = 'absolute';
-    input.style.left = '0';
-    input.style.top = '0';
-    input.style.width = '60px';
-    input.style.height = '100%';
+    input.style.position = 'relative';
+    input.style.width = '50px';
     input.style.background = 'var(--input-bg)';
     input.style.border = '1px solid var(--accent)';
     input.style.borderRadius = '4px';
@@ -2200,13 +2190,12 @@ window.editSpeedStat = function(statKey, element) {
     input.style.fontSize = '14px';
     input.style.fontWeight = '700';
     input.style.padding = '2px 4px';
-    input.style.zIndex = '100';
+    input.style.outline = 'none';
     input.maxLength = 5;
     input.max = MAX_STAT_VALUE.toString();
     
-    element.style.position = 'relative';
-    element.style.visibility = 'hidden';
-    element.parentNode.appendChild(input);
+    element.style.display = 'none';
+    parentDiv.insertBefore(input, element.nextSibling);
     input.focus();
     input.select();
     
@@ -2222,13 +2211,19 @@ window.editSpeedStat = function(statKey, element) {
         }
         
         element.textContent = newVal;
-        element.style.visibility = 'visible';
+        element.style.display = 'inline';
         input.remove();
         
         // Обновляем соответствующий стат в профиле
         const profileStat = document.querySelector(`.stat-value[data-key="${statKey}"]`);
         if (profileStat) {
             profileStat.textContent = newVal;
+        }
+        
+        // Обновляем в капе статов
+        const capStat = document.querySelector(`[data-cap-key="${statKey}"]`);
+        if (capStat) {
+            capStat.textContent = newVal;
         }
         
         saveStats();
@@ -2434,6 +2429,7 @@ window.editCapLevel = function(wrapper) {
         saveStats();
         updateCapCalculations();
         updateRedistributeCard();
+        updateSpeedCalculations();
     };
     
     input.onblur = finish;
@@ -3183,6 +3179,12 @@ loadCapStatsFromProfile();
 updateRedistributeCard();
 updateSpeedCalculations();
 initInventorySync();
+}
+
+// Инициализация поля ввода уровня книги Расторопности
+const speedInput = document.getElementById('speedBookLevel');
+if (speedInput) {
+adjustSpeedBookInput(speedInput);
 }
 };
 </script>
