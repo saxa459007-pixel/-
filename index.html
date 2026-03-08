@@ -1506,14 +1506,12 @@ display: none !important;
         </label>
       </div>
       
-      <!-- ❤️ Выносливость - с динамическим смещением названия -->
+      <!-- ❤️ Выносливость - как в капе статов (название двигается с числом) -->
       <div class="cap-stat-item" style="margin-bottom: 6px; height: 42px; padding: 8px 10px; display: flex; align-items: center; justify-content: space-between; cursor: default; background-color: var(--input-bg); border-radius: 6px;" onclick="event.stopPropagation()">
         <div style="display: flex; align-items: center; gap: 0;">
           <span class="cap-stat-icon" style="font-size: 16px; width: 24px; text-align: center; flex-shrink: 0;">❤️</span>
-          <div style="display: flex; align-items: center; margin-left: 4px;">
-            <div style="position: relative; display: inline-block;">
-              <span class="cap-stat-value" onclick="editSpeedStat('vit', event)" style="font-size: 14px; font-weight: 700; color: var(--text-main); cursor: pointer; display: inline-block; white-space: nowrap;" id="speed-vit-value">3</span>
-            </div>
+          <div style="display: flex; align-items: center; margin-left: 4px; white-space: nowrap;">
+            <span class="cap-stat-value" onclick="editSpeedStat('vit', event)" style="font-size: 14px; font-weight: 700; color: var(--text-main); cursor: pointer; display: inline-block;" id="speed-vit-value">3</span>
             <span class="cap-stat-name" style="font-size: 12px; color: var(--text-secondary); text-transform: lowercase; margin-left: 4px; display: inline-block;" id="speed-vit-name">вын</span>
           </div>
         </div>
@@ -1524,14 +1522,12 @@ display: none !important;
         </div>
       </div>
       
-      <!-- 💪 Сила - с динамическим смещением названия -->
+      <!-- 💪 Сила - как в капе статов (название двигается с числом) -->
       <div class="cap-stat-item" style="margin-bottom: 6px; height: 42px; padding: 8px 10px; display: flex; align-items: center; justify-content: space-between; cursor: default; background-color: var(--input-bg); border-radius: 6px;" onclick="event.stopPropagation()">
         <div style="display: flex; align-items: center; gap: 0;">
           <span class="cap-stat-icon" style="font-size: 16px; width: 24px; text-align: center; flex-shrink: 0;">💪</span>
-          <div style="display: flex; align-items: center; margin-left: 4px;">
-            <div style="position: relative; display: inline-block;">
-              <span class="cap-stat-value" onclick="editSpeedStat('str', event)" style="font-size: 14px; font-weight: 700; color: var(--text-main); cursor: pointer; display: inline-block; white-space: nowrap;" id="speed-str-value">3</span>
-            </div>
+          <div style="display: flex; align-items: center; margin-left: 4px; white-space: nowrap;">
+            <span class="cap-stat-value" onclick="editSpeedStat('str', event)" style="font-size: 14px; font-weight: 700; color: var(--text-main); cursor: pointer; display: inline-block;" id="speed-str-value">3</span>
             <span class="cap-stat-name" style="font-size: 12px; color: var(--text-secondary); text-transform: lowercase; margin-left: 4px; display: inline-block;" id="speed-str-name">сил</span>
           </div>
         </div>
@@ -1542,14 +1538,12 @@ display: none !important;
         </div>
       </div>
       
-      <!-- 🤲 Ловкость - с динамическим смещением названия -->
+      <!-- 🤲 Ловкость - как в капе статов (название двигается с числом) -->
       <div class="cap-stat-item" style="margin-bottom: 0; height: 42px; padding: 8px 10px; display: flex; align-items: center; justify-content: space-between; cursor: default; background-color: var(--input-bg); border-radius: 6px;" onclick="event.stopPropagation()">
         <div style="display: flex; align-items: center; gap: 0;">
           <span class="cap-stat-icon" style="font-size: 16px; width: 24px; text-align: center; flex-shrink: 0;">🤲</span>
-          <div style="display: flex; align-items: center; margin-left: 4px;">
-            <div style="position: relative; display: inline-block;">
-              <span class="cap-stat-value" onclick="editSpeedStat('agi', event)" style="font-size: 14px; font-weight: 700; color: var(--text-main); cursor: pointer; display: inline-block; white-space: nowrap;" id="speed-agi-value">3</span>
-            </div>
+          <div style="display: flex; align-items: center; margin-left: 4px; white-space: nowrap;">
+            <span class="cap-stat-value" onclick="editSpeedStat('agi', event)" style="font-size: 14px; font-weight: 700; color: var(--text-main); cursor: pointer; display: inline-block;" id="speed-agi-value">3</span>
             <span class="cap-stat-name" style="font-size: 12px; color: var(--text-secondary); text-transform: lowercase; margin-left: 4px; display: inline-block;" id="speed-agi-name">лвк</span>
           </div>
         </div>
@@ -2168,39 +2162,43 @@ function loadSpeedSettings() {
     return { bookLevel, bookEquipped };
 }
 
-// Редактирование значения стата в блоке Расторопности (с динамическим смещением названия)
+// Редактирование значения стата в блоке Расторопности (как в капе статов - название двигается с числом)
 window.editSpeedStat = function(statKey, event) {
     event.stopPropagation();
     const element = event.target;
+    if (!element.classList.contains('cap-stat-value')) return;
+    
     const container = element.parentElement;
-    const nameSpan = container.nextElementSibling; // Название стата (вын/сил/лвк)
+    const nameSpan = container.querySelector('.cap-stat-name');
     const currentVal = element.textContent;
     
-    // Сохраняем оригинальный текст названия
+    // Сохраняем название
     const originalName = nameSpan.textContent;
     
-    // Скрываем название на время редактирования
-    nameSpan.style.visibility = 'hidden';
+    // Создаем временный контейнер для измерения ширины
+    function getTextWidth(text) {
+        const span = document.createElement('span');
+        span.style.font = window.getComputedStyle(element).font;
+        span.style.visibility = 'hidden';
+        span.style.position = 'absolute';
+        span.style.whiteSpace = 'nowrap';
+        span.textContent = text || '1';
+        document.body.appendChild(span);
+        const width = span.offsetWidth;
+        document.body.removeChild(span);
+        return width;
+    }
     
-    // Создаем контейнер для ввода
-    const inputContainer = document.createElement('div');
-    inputContainer.style.position = 'absolute';
-    inputContainer.style.top = '0';
-    inputContainer.style.left = '0';
-    inputContainer.style.width = '100%';
-    inputContainer.style.height = '100%';
-    inputContainer.style.display = 'flex';
-    inputContainer.style.alignItems = 'center';
-    inputContainer.style.pointerEvents = 'none';
-    
+    // Создаем поле ввода
     const input = document.createElement('input');
     input.type = 'number';
     input.value = currentVal === '0' ? '' : currentVal;
     input.className = 'stat-input';
-    input.style.position = 'relative';
-    input.style.width = 'auto';
-    input.style.minWidth = '20px';
-    input.style.maxWidth = '100px';
+    input.style.position = 'absolute';
+    input.style.top = '0';
+    input.style.left = '0';
+    input.style.width = '100%';
+    input.style.height = '100%';
     input.style.background = 'transparent';
     input.style.border = 'none';
     input.style.color = 'var(--text-main)';
@@ -2214,25 +2212,10 @@ window.editSpeedStat = function(statKey, event) {
     input.style.appearance = 'none';
     input.style.webkitAppearance = 'none';
     input.style.mozAppearance = 'textfield';
-    input.style.pointerEvents = 'auto';
     input.maxLength = 5;
     input.max = MAX_STAT_VALUE.toString();
     
-    // Функция для измерения ширины текста
-    function getTextWidth(text) {
-        const span = document.createElement('span');
-        span.style.font = window.getComputedStyle(input).font;
-        span.style.visibility = 'hidden';
-        span.style.position = 'absolute';
-        span.style.whiteSpace = 'nowrap';
-        span.textContent = text || '1';
-        document.body.appendChild(span);
-        const width = span.offsetWidth;
-        document.body.removeChild(span);
-        return width;
-    }
-    
-    // Обработчик ввода для динамического изменения ширины
+    // Обработчик ввода
     input.addEventListener('input', function() {
         if (this.value.length > 5) {
             this.value = this.value.slice(0, 5);
@@ -2241,27 +2224,16 @@ window.editSpeedStat = function(statKey, event) {
         if (!isNaN(num) && num > MAX_STAT_VALUE) {
             this.value = MAX_STAT_VALUE.toString();
         }
-        
-        // Изменяем ширину поля ввода
-        const textWidth = getTextWidth(this.value || '1');
-        this.style.width = (textWidth + 2) + 'px';
     });
     
     // Скрываем оригинальное число
     element.style.visibility = 'hidden';
     
-    // Добавляем элементы в DOM
+    // Добавляем поле ввода
     container.style.position = 'relative';
-    container.appendChild(inputContainer);
-    inputContainer.appendChild(input);
-    
-    // Устанавливаем начальную ширину и фокус
-    setTimeout(() => {
-        const textWidth = getTextWidth(currentVal);
-        input.style.width = (textWidth + 2) + 'px';
-        input.focus();
-        input.select();
-    }, 0);
+    container.appendChild(input);
+    input.focus();
+    input.select();
     
     const finish = () => {
         let newVal = input.value;
@@ -2274,13 +2246,12 @@ window.editSpeedStat = function(statKey, event) {
             else newVal = num.toString();
         }
         
-        // Восстанавливаем видимость элементов
+        // Обновляем значение
         element.textContent = newVal;
         element.style.visibility = 'visible';
-        nameSpan.style.visibility = 'visible';
         
-        // Удаляем временные элементы
-        inputContainer.remove();
+        // Удаляем поле ввода
+        input.remove();
         container.style.position = 'static';
         
         // Обновляем соответствующий стат в профиле
