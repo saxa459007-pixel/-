@@ -2073,18 +2073,22 @@ function getCurrentStats() {
     };
 }
 
-// Функция расчета времени Расторопности (исправленная логика)
+// Функция расчета времени Расторопности (исправленная)
 function calculateSpeedTime(statValue, bookLevel, hasRing, bookEquipped) {
     if (statValue <= 0) return 0;
     
-    // Если книга надета, используем её уровень, иначе уровень = 0 (книга есть, но не надета)
-    const effectiveBookLevel = bookEquipped ? bookLevel : 0;
+    let time;
     
-    // Формула: время = ceil((стат / 4) / (√(10 × ур_книги) / 50 + 2))
-    const statDiv4 = statValue / 4;
-    const sqrtVal = Math.sqrt(10 * effectiveBookLevel);
-    const denominator = (sqrtVal / 50) + 2;
-    let time = Math.ceil(statDiv4 / denominator);
+    if (bookEquipped) {
+        // Книга надета - используем формулу с книгой
+        const statDiv4 = statValue / 4;
+        const sqrtVal = Math.sqrt(10 * bookLevel);
+        const denominator = (sqrtVal / 50) + 2;
+        time = Math.ceil(statDiv4 / denominator);
+    } else {
+        // Книга не надета - просто стат / 4
+        time = Math.ceil(statValue / 4);
+    }
     
     // Если есть кольцо, уменьшаем на 20%
     if (hasRing) {
