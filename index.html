@@ -1506,7 +1506,7 @@ display: none !important;
         </label>
       </div>
       
-      <!-- ❤️ Выносливость - как в профиле -->
+      <!-- ❤️ Выносливость -->
       <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; background-color: var(--card-bg); border-radius: 8px; margin-bottom: 8px;">
         <div style="display: flex; align-items: center; gap: 12px; position: relative;">
           <span style="font-size: 18px;">❤️</span>
@@ -1521,7 +1521,7 @@ display: none !important;
         </div>
       </div>
       
-      <!-- 💪 Сила - как в профиле -->
+      <!-- 💪 Сила -->
       <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; background-color: var(--card-bg); border-radius: 8px; margin-bottom: 8px;">
         <div style="display: flex; align-items: center; gap: 12px; position: relative;">
           <span style="font-size: 18px;">💪</span>
@@ -1536,10 +1536,10 @@ display: none !important;
         </div>
       </div>
       
-      <!-- 👐 Ловкость - как в профиле -->
+      <!-- 🤲 Ловкость (как в капе статов) -->
       <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; background-color: var(--card-bg); border-radius: 8px; margin-bottom: 8px;">
         <div style="display: flex; align-items: center; gap: 12px; position: relative;">
-          <span style="font-size: 18px;">👐</span>
+          <span style="font-size: 18px;">🤲</span>
           <div class="stat-value-container" style="position: relative; width: 55px; display: flex; align-items: center; gap: 2px;">
             <span class="stat-value" onclick="editSpeedStat('agi', this)" style="cursor: pointer; font-size: 14px; font-weight: 700; color: var(--text-main);" id="speed-agi-value">3</span>
           </div>
@@ -2073,17 +2073,16 @@ function getCurrentStats() {
     };
 }
 
-// Функция расчета времени Расторопности
+// Функция расчета времени Расторопности (исправленная логика)
 function calculateSpeedTime(statValue, bookLevel, hasRing, bookEquipped) {
     if (statValue <= 0) return 0;
-    if (bookLevel < 0) bookLevel = 0;
     
-    // Если книга не надета, время = 0
-    if (!bookEquipped) return 0;
+    // Если книга надета, используем её уровень, иначе уровень = 0 (книга есть, но не надета)
+    const effectiveBookLevel = bookEquipped ? bookLevel : 0;
     
     // Формула: время = ceil((стат / 4) / (√(10 × ур_книги) / 50 + 2))
     const statDiv4 = statValue / 4;
-    const sqrtVal = Math.sqrt(10 * bookLevel);
+    const sqrtVal = Math.sqrt(10 * effectiveBookLevel);
     const denominator = (sqrtVal / 50) + 2;
     let time = Math.ceil(statDiv4 / denominator);
     
