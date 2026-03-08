@@ -1497,7 +1497,7 @@ display: none !important;
                    onkeydown="if(event.key==='Enter') this.blur()"
                    onchange="updateSpeedCalculations()"
                    onblur="if(this.value==='') this.value='0'; adjustSpeedBookInput(this); updateSpeedCalculations()">
-            <span class="book-level-unit" style="font-size: 11px; color: var(--text-secondary);">ур.</span>
+            <span class="book-level-unit" style="font-size: 11px; color: var(--text-secondary); margin-left: 2px;">ур.</span>
           </div>
         </div>
         <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
@@ -1506,48 +1506,45 @@ display: none !important;
         </label>
       </div>
       
-      <!-- ❤️ Выносливость -->
-      <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; background-color: var(--card-bg); border-radius: 8px; margin-bottom: 8px;">
-        <div style="display: flex; align-items: center; gap: 12px; position: relative;">
-          <span style="font-size: 18px;">❤️</span>
-          <div class="stat-value-container" style="position: relative; width: 55px; display: flex; align-items: center; gap: 2px;">
-            <span class="stat-value" onclick="editSpeedStat('vit', this)" style="cursor: pointer; font-size: 14px; font-weight: 700; color: var(--text-main);" id="speed-vit-value">3</span>
-          </div>
+      <!-- ❤️ Выносливость - как в капе статов -->
+      <div class="cap-stat-item" style="margin-bottom: 6px; height: 42px; padding: 8px 10px; display: flex; align-items: center; justify-content: space-between; cursor: default; background-color: var(--input-bg); border-radius: 6px;" onclick="event.stopPropagation()">
+        <div style="display: flex; align-items: center; gap: 0;">
+          <span class="cap-stat-icon" style="font-size: 16px; width: 24px; text-align: center; flex-shrink: 0;">❤️</span>
+          <span class="cap-stat-value" onclick="editSpeedStat('vit', event)" style="font-size: 14px; font-weight: 700; color: var(--text-main); cursor: pointer; margin-left: 4px;" id="speed-vit-value">3</span>
+          <span class="cap-stat-name" style="font-size: 12px; color: var(--text-secondary); text-transform: lowercase; margin-left: 4px;">вын</span>
         </div>
         <div style="display: flex; align-items: center; gap: 6px; color: var(--text-secondary);">
-          <span>⌛️</span>
+          <span style="font-size: 16px;">⌛️</span>
           <span style="color: var(--text-main); font-weight: 600; font-size: 14px;" id="speed-vit-time">0.0</span>
-          <span style="font-size: 11px;">мин</span>
+          <span style="font-size: 11px; color: var(--text-secondary);">мин</span>
         </div>
       </div>
       
-      <!-- 💪 Сила -->
-      <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; background-color: var(--card-bg); border-radius: 8px; margin-bottom: 8px;">
-        <div style="display: flex; align-items: center; gap: 12px; position: relative;">
-          <span style="font-size: 18px;">💪</span>
-          <div class="stat-value-container" style="position: relative; width: 55px; display: flex; align-items: center; gap: 2px;">
-            <span class="stat-value" onclick="editSpeedStat('str', this)" style="cursor: pointer; font-size: 14px; font-weight: 700; color: var(--text-main);" id="speed-str-value">3</span>
-          </div>
+      <!-- 💪 Сила - как в капе статов -->
+      <div class="cap-stat-item" style="margin-bottom: 6px; height: 42px; padding: 8px 10px; display: flex; align-items: center; justify-content: space-between; cursor: default; background-color: var(--input-bg); border-radius: 6px;" onclick="event.stopPropagation()">
+        <div style="display: flex; align-items: center; gap: 0;">
+          <span class="cap-stat-icon" style="font-size: 16px; width: 24px; text-align: center; flex-shrink: 0;">💪</span>
+          <span class="cap-stat-value" onclick="editSpeedStat('str', event)" style="font-size: 14px; font-weight: 700; color: var(--text-main); cursor: pointer; margin-left: 4px;" id="speed-str-value">3</span>
+          <span class="cap-stat-name" style="font-size: 12px; color: var(--text-secondary); text-transform: lowercase; margin-left: 4px;">сил</span>
         </div>
         <div style="display: flex; align-items: center; gap: 6px; color: var(--text-secondary);">
-          <span>⌛️</span>
+          <span style="font-size: 16px;">⌛️</span>
           <span style="color: var(--text-main); font-weight: 600; font-size: 14px;" id="speed-str-time">0.0</span>
-          <span style="font-size: 11px;">мин</span>
+          <span style="font-size: 11px; color: var(--text-secondary);">мин</span>
         </div>
       </div>
       
-      <!-- 🤲 Ловкость (как в капе статов) -->
-      <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; background-color: var(--card-bg); border-radius: 8px; margin-bottom: 8px;">
-        <div style="display: flex; align-items: center; gap: 12px; position: relative;">
-          <span style="font-size: 18px;">🤲</span>
-          <div class="stat-value-container" style="position: relative; width: 55px; display: flex; align-items: center; gap: 2px;">
-            <span class="stat-value" onclick="editSpeedStat('agi', this)" style="cursor: pointer; font-size: 14px; font-weight: 700; color: var(--text-main);" id="speed-agi-value">3</span>
-          </div>
+      <!-- 🤲 Ловкость - как в капе статов -->
+      <div class="cap-stat-item" style="margin-bottom: 0; height: 42px; padding: 8px 10px; display: flex; align-items: center; justify-content: space-between; cursor: default; background-color: var(--input-bg); border-radius: 6px;" onclick="event.stopPropagation()">
+        <div style="display: flex; align-items: center; gap: 0;">
+          <span class="cap-stat-icon" style="font-size: 16px; width: 24px; text-align: center; flex-shrink: 0;">🤲</span>
+          <span class="cap-stat-value" onclick="editSpeedStat('agi', event)" style="font-size: 14px; font-weight: 700; color: var(--text-main); cursor: pointer; margin-left: 4px;" id="speed-agi-value">3</span>
+          <span class="cap-stat-name" style="font-size: 12px; color: var(--text-secondary); text-transform: lowercase; margin-left: 4px;">лвк</span>
         </div>
         <div style="display: flex; align-items: center; gap: 6px; color: var(--text-secondary);">
-          <span>⌛️</span>
+          <span style="font-size: 16px;">⌛️</span>
           <span style="color: var(--text-main); font-weight: 600; font-size: 14px;" id="speed-agi-time">0.0</span>
-          <span style="font-size: 11px;">мин</span>
+          <span style="font-size: 11px; color: var(--text-secondary);">мин</span>
         </div>
       </div>
     </div>
@@ -2160,7 +2157,9 @@ function loadSpeedSettings() {
 }
 
 // Редактирование значения стата в блоке Расторопности (точно как в профиле)
-window.editSpeedStat = function(statKey, element) {
+window.editSpeedStat = function(statKey, event) {
+    event.stopPropagation();
+    const element = event.target;
     const valueContainer = element.parentElement;
     const currentVal = element.textContent;
     
