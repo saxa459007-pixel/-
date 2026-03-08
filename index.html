@@ -1508,12 +1508,14 @@ display: none !important;
       
       <!-- ❤️ Выносливость - как в капе статов -->
       <div class="cap-stat-item" style="margin-bottom: 6px; height: 42px; padding: 8px 10px; display: flex; align-items: center; justify-content: space-between; cursor: default; background-color: var(--input-bg); border-radius: 6px;" onclick="event.stopPropagation()">
-        <div style="display: flex; align-items: center; gap: 0; position: relative;">
+        <div style="display: flex; align-items: center; gap: 0;">
           <span class="cap-stat-icon" style="font-size: 16px; width: 24px; text-align: center; flex-shrink: 0;">❤️</span>
-          <div style="position: relative; width: 60px; margin-left: 4px;">
-            <span class="cap-stat-value" onclick="editSpeedStat('vit', event)" style="font-size: 14px; font-weight: 700; color: var(--text-main); cursor: pointer; display: block;" id="speed-vit-value">3</span>
+          <div style="display: flex; align-items: center; gap: 4px; margin-left: 4px;">
+            <div style="position: relative; min-width: 20px;">
+              <span class="cap-stat-value" onclick="editSpeedStat('vit', event)" style="font-size: 14px; font-weight: 700; color: var(--text-main); cursor: pointer; display: block; white-space: nowrap;" id="speed-vit-value">3</span>
+            </div>
+            <span class="cap-stat-name" style="font-size: 12px; color: var(--text-secondary); text-transform: lowercase; white-space: nowrap;">вын</span>
           </div>
-          <span class="cap-stat-name" style="font-size: 12px; color: var(--text-secondary); text-transform: lowercase; margin-left: 4px;">вын</span>
         </div>
         <div style="display: flex; align-items: center; gap: 6px; color: var(--text-secondary);">
           <span style="font-size: 16px;">⌛️</span>
@@ -1524,12 +1526,14 @@ display: none !important;
       
       <!-- 💪 Сила - как в капе статов -->
       <div class="cap-stat-item" style="margin-bottom: 6px; height: 42px; padding: 8px 10px; display: flex; align-items: center; justify-content: space-between; cursor: default; background-color: var(--input-bg); border-radius: 6px;" onclick="event.stopPropagation()">
-        <div style="display: flex; align-items: center; gap: 0; position: relative;">
+        <div style="display: flex; align-items: center; gap: 0;">
           <span class="cap-stat-icon" style="font-size: 16px; width: 24px; text-align: center; flex-shrink: 0;">💪</span>
-          <div style="position: relative; width: 60px; margin-left: 4px;">
-            <span class="cap-stat-value" onclick="editSpeedStat('str', event)" style="font-size: 14px; font-weight: 700; color: var(--text-main); cursor: pointer; display: block;" id="speed-str-value">3</span>
+          <div style="display: flex; align-items: center; gap: 4px; margin-left: 4px;">
+            <div style="position: relative; min-width: 20px;">
+              <span class="cap-stat-value" onclick="editSpeedStat('str', event)" style="font-size: 14px; font-weight: 700; color: var(--text-main); cursor: pointer; display: block; white-space: nowrap;" id="speed-str-value">3</span>
+            </div>
+            <span class="cap-stat-name" style="font-size: 12px; color: var(--text-secondary); text-transform: lowercase; white-space: nowrap;">сил</span>
           </div>
-          <span class="cap-stat-name" style="font-size: 12px; color: var(--text-secondary); text-transform: lowercase; margin-left: 4px;">сил</span>
         </div>
         <div style="display: flex; align-items: center; gap: 6px; color: var(--text-secondary);">
           <span style="font-size: 16px;">⌛️</span>
@@ -1540,12 +1544,14 @@ display: none !important;
       
       <!-- 🤲 Ловкость - как в капе статов -->
       <div class="cap-stat-item" style="margin-bottom: 0; height: 42px; padding: 8px 10px; display: flex; align-items: center; justify-content: space-between; cursor: default; background-color: var(--input-bg); border-radius: 6px;" onclick="event.stopPropagation()">
-        <div style="display: flex; align-items: center; gap: 0; position: relative;">
+        <div style="display: flex; align-items: center; gap: 0;">
           <span class="cap-stat-icon" style="font-size: 16px; width: 24px; text-align: center; flex-shrink: 0;">🤲</span>
-          <div style="position: relative; width: 60px; margin-left: 4px;">
-            <span class="cap-stat-value" onclick="editSpeedStat('agi', event)" style="font-size: 14px; font-weight: 700; color: var(--text-main); cursor: pointer; display: block;" id="speed-agi-value">3</span>
+          <div style="display: flex; align-items: center; gap: 4px; margin-left: 4px;">
+            <div style="position: relative; min-width: 20px;">
+              <span class="cap-stat-value" onclick="editSpeedStat('agi', event)" style="font-size: 14px; font-weight: 700; color: var(--text-main); cursor: pointer; display: block; white-space: nowrap;" id="speed-agi-value">3</span>
+            </div>
+            <span class="cap-stat-name" style="font-size: 12px; color: var(--text-secondary); text-transform: lowercase; white-space: nowrap;">лвк</span>
           </div>
-          <span class="cap-stat-name" style="font-size: 12px; color: var(--text-secondary); text-transform: lowercase; margin-left: 4px;">лвк</span>
         </div>
         <div style="display: flex; align-items: center; gap: 6px; color: var(--text-secondary);">
           <span style="font-size: 16px;">⌛️</span>
