@@ -1476,28 +1476,28 @@ display: none !important;
   <div class="profile-card" style="margin-top: 15px;">
     <div class="profile-header">
       <div class="info">
-        <h1 class="player-name" style="font-size: 17px;">⏱️ Расчет времени на стат</h1>
+        <h1 class="player-name" style="font-size: 17px; font-weight: 600; margin: 0;">⏱️ Расчет времени на стат</h1>
       </div>
     </div>
     <div class="cap-container">
       <!-- Управление с галочкой для книги -->
-      <div style="display: flex; align-items: center; justify-content: space-between; background-color: var(--input-bg); border-radius: 8px; padding: 8px 12px; margin-bottom: 12px;">
+      <div style="display: flex; align-items: center; justify-content: space-between; background-color: var(--input-bg); border-radius: 8px; padding: 10px 12px; margin-bottom: 12px;">
         <div style="display: flex; align-items: center; gap: 12px;">
           <div style="display: flex; align-items: center; gap: 6px;">
             <label style="display: flex; align-items: center; gap: 4px; cursor: pointer;">
               <input type="checkbox" id="speedBookEquipped" style="width: 18px; height: 18px; accent-color: var(--accent);" onchange="updateSpeedCalculations()">
               <span style="font-size: 20px;">📘</span>
             </label>
-            <span style="color: var(--text-secondary); font-size: 14px;">Расторопность</span>
+            <span style="color: var(--text-secondary); font-size: 13px;">Расторопность</span>
           </div>
           <div class="book-level-wrapper" style="display: flex; align-items: center; width: auto;">
             <input type="number" class="book-level-input-inventory" id="speedBookLevel" value="0" min="0" max="9999999" 
-                   style="font-size: 14px;"
+                   style="font-size: 14px; font-weight: 600;"
                    oninput="adjustSpeedBookInput(this)"
                    onkeydown="if(event.key==='Enter') this.blur()"
                    onchange="updateSpeedCalculations()"
                    onblur="if(this.value==='') this.value='0'; adjustSpeedBookInput(this); updateSpeedCalculations()">
-            <span class="book-level-unit" style="font-size: 13px;">ур.</span>
+            <span class="book-level-unit" style="font-size: 11px; color: var(--text-secondary);">ур.</span>
           </div>
         </div>
         <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
@@ -1516,8 +1516,8 @@ display: none !important;
         </div>
         <div style="display: flex; align-items: center; gap: 6px; color: var(--text-secondary);">
           <span>⌛️</span>
-          <span style="color: var(--text-main); font-weight: 600;" id="speed-vit-time">0.0</span>
-          <span>мин</span>
+          <span style="color: var(--text-main); font-weight: 600; font-size: 14px;" id="speed-vit-time">0.0</span>
+          <span style="font-size: 11px;">мин</span>
         </div>
       </div>
       
@@ -1531,8 +1531,8 @@ display: none !important;
         </div>
         <div style="display: flex; align-items: center; gap: 6px; color: var(--text-secondary);">
           <span>⌛️</span>
-          <span style="color: var(--text-main); font-weight: 600;" id="speed-str-time">0.0</span>
-          <span>мин</span>
+          <span style="color: var(--text-main); font-weight: 600; font-size: 14px;" id="speed-str-time">0.0</span>
+          <span style="font-size: 11px;">мин</span>
         </div>
       </div>
       
@@ -1546,8 +1546,8 @@ display: none !important;
         </div>
         <div style="display: flex; align-items: center; gap: 6px; color: var(--text-secondary);">
           <span>⌛️</span>
-          <span style="color: var(--text-main); font-weight: 600;" id="speed-agi-time">0.0</span>
-          <span>мин</span>
+          <span style="color: var(--text-main); font-weight: 600; font-size: 14px;" id="speed-agi-time">0.0</span>
+          <span style="font-size: 11px;">мин</span>
         </div>
       </div>
     </div>
@@ -2073,7 +2073,7 @@ function getCurrentStats() {
     };
 }
 
-// Функция расчета времени Расторопности (исправленная)
+// Функция расчета времени Расторопности (исправленная логика)
 function calculateSpeedTime(statValue, bookLevel, hasRing, bookEquipped) {
     if (statValue <= 0) return 0;
     
@@ -2086,7 +2086,7 @@ function calculateSpeedTime(statValue, bookLevel, hasRing, bookEquipped) {
         const denominator = (sqrtVal / 50) + 2;
         time = Math.ceil(statDiv4 / denominator);
     } else {
-        // Книга не надета - просто стат / 4
+        // Книга не надета - просто стат / 4 (без знаменателя)
         time = Math.ceil(statValue / 4);
     }
     
