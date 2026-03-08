@@ -1469,76 +1469,85 @@ display: none !important;
         <span class="cap-total-label">🏹 Репутация охотников:</span>
         <span class="cap-total-value" id="cap-total-rep">42 840</span>
       </div>
-
-      <!-- БЛОК РАСТОРОПНОСТИ -->
-      <div style="margin-top: 20px; border-top: 1px solid var(--separator-color); padding-top: 15px;">
-        <div class="redistribute-title" style="margin-bottom: 12px; border-bottom: none; padding-bottom: 0;">
-          ⏱️ Расчет времени на стат
-        </div>
-        
-        <!-- Управление точно как в инвентаре с лимитом 7 чисел -->
-        <div style="display: flex; align-items: center; justify-content: space-between; background-color: var(--input-bg); border-radius: 8px; padding: 8px 12px; margin-bottom: 12px;">
+    </div>
+  </div>
+  
+  <!-- БЛОК РАСТОРОПНОСТИ (отдельный блок) -->
+  <div class="profile-card" style="margin-top: 15px;">
+    <div class="profile-header">
+      <div class="info">
+        <h1 class="player-name" style="font-size: 17px;">⏱️ Расчет времени на стат</h1>
+      </div>
+    </div>
+    <div class="cap-container">
+      <!-- Управление с галочкой для книги -->
+      <div style="display: flex; align-items: center; justify-content: space-between; background-color: var(--input-bg); border-radius: 8px; padding: 8px 12px; margin-bottom: 12px;">
+        <div style="display: flex; align-items: center; gap: 12px;">
           <div style="display: flex; align-items: center; gap: 6px;">
-            <span style="color: var(--text-secondary); font-size: 14px;">📘 Расторопность</span>
-            <div class="book-level-wrapper" style="display: flex; align-items: center; width: auto;">
-              <input type="number" class="book-level-input-inventory" id="speedBookLevel" value="0" min="0" max="9999999" 
-                     style="font-size: 14px;"
-                     oninput="adjustSpeedBookInput(this)"
-                     onkeydown="if(event.key==='Enter') this.blur()"
-                     onchange="updateSpeedCalculations()"
-                     onblur="if(this.value==='') this.value='0'; adjustSpeedBookInput(this); updateSpeedCalculations()">
-              <span class="book-level-unit" style="font-size: 13px;">ур.</span>
-            </div>
+            <label style="display: flex; align-items: center; gap: 4px; cursor: pointer;">
+              <input type="checkbox" id="speedBookEquipped" style="width: 18px; height: 18px; accent-color: var(--accent);" onchange="updateSpeedCalculations()">
+              <span style="font-size: 20px;">📘</span>
+            </label>
+            <span style="color: var(--text-secondary); font-size: 14px;">Расторопность</span>
           </div>
-          <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
-            <input type="checkbox" id="speedRingCheckbox" style="width: 18px; height: 18px; accent-color: var(--accent);" onchange="updateSpeedCalculations()">
-            <span style="font-size: 18px;">💍</span>
-          </label>
-        </div>
-        
-        <!-- ❤️ Выносливость - как в профиле -->
-        <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; background-color: var(--card-bg); border-radius: 8px; margin-bottom: 8px;">
-          <div style="display: flex; align-items: center; gap: 12px; position: relative;">
-            <span style="font-size: 18px;">❤️</span>
-            <div class="stat-value-container" style="position: relative; width: 55px; display: flex; align-items: center; gap: 2px;">
-              <span class="stat-value" onclick="editSpeedStat('vit', this)" style="cursor: pointer; font-size: 14px; font-weight: 700; color: var(--text-main);" id="speed-vit-value">3</span>
-            </div>
-          </div>
-          <div style="display: flex; align-items: center; gap: 6px; color: var(--text-secondary);">
-            <span>⌛️</span>
-            <span style="color: var(--text-main); font-weight: 600;" id="speed-vit-time">0.0</span>
-            <span>мин</span>
+          <div class="book-level-wrapper" style="display: flex; align-items: center; width: auto;">
+            <input type="number" class="book-level-input-inventory" id="speedBookLevel" value="0" min="0" max="9999999" 
+                   style="font-size: 14px;"
+                   oninput="adjustSpeedBookInput(this)"
+                   onkeydown="if(event.key==='Enter') this.blur()"
+                   onchange="updateSpeedCalculations()"
+                   onblur="if(this.value==='') this.value='0'; adjustSpeedBookInput(this); updateSpeedCalculations()">
+            <span class="book-level-unit" style="font-size: 13px;">ур.</span>
           </div>
         </div>
-        
-        <!-- 💪 Сила - как в профиле -->
-        <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; background-color: var(--card-bg); border-radius: 8px; margin-bottom: 8px;">
-          <div style="display: flex; align-items: center; gap: 12px; position: relative;">
-            <span style="font-size: 18px;">💪</span>
-            <div class="stat-value-container" style="position: relative; width: 55px; display: flex; align-items: center; gap: 2px;">
-              <span class="stat-value" onclick="editSpeedStat('str', this)" style="cursor: pointer; font-size: 14px; font-weight: 700; color: var(--text-main);" id="speed-str-value">3</span>
-            </div>
-          </div>
-          <div style="display: flex; align-items: center; gap: 6px; color: var(--text-secondary);">
-            <span>⌛️</span>
-            <span style="color: var(--text-main); font-weight: 600;" id="speed-str-time">0.0</span>
-            <span>мин</span>
+        <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+          <input type="checkbox" id="speedRingCheckbox" style="width: 18px; height: 18px; accent-color: var(--accent);" onchange="updateSpeedCalculations()">
+          <span style="font-size: 18px;">💍</span>
+        </label>
+      </div>
+      
+      <!-- ❤️ Выносливость - как в профиле -->
+      <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; background-color: var(--card-bg); border-radius: 8px; margin-bottom: 8px;">
+        <div style="display: flex; align-items: center; gap: 12px; position: relative;">
+          <span style="font-size: 18px;">❤️</span>
+          <div class="stat-value-container" style="position: relative; width: 55px; display: flex; align-items: center; gap: 2px;">
+            <span class="stat-value" onclick="editSpeedStat('vit', this)" style="cursor: pointer; font-size: 14px; font-weight: 700; color: var(--text-main);" id="speed-vit-value">3</span>
           </div>
         </div>
-        
-        <!-- 👐 Ловкость - как в профиле -->
-        <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; background-color: var(--card-bg); border-radius: 8px; margin-bottom: 8px;">
-          <div style="display: flex; align-items: center; gap: 12px; position: relative;">
-            <span style="font-size: 18px;">👐</span>
-            <div class="stat-value-container" style="position: relative; width: 55px; display: flex; align-items: center; gap: 2px;">
-              <span class="stat-value" onclick="editSpeedStat('agi', this)" style="cursor: pointer; font-size: 14px; font-weight: 700; color: var(--text-main);" id="speed-agi-value">3</span>
-            </div>
+        <div style="display: flex; align-items: center; gap: 6px; color: var(--text-secondary);">
+          <span>⌛️</span>
+          <span style="color: var(--text-main); font-weight: 600;" id="speed-vit-time">0.0</span>
+          <span>мин</span>
+        </div>
+      </div>
+      
+      <!-- 💪 Сила - как в профиле -->
+      <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; background-color: var(--card-bg); border-radius: 8px; margin-bottom: 8px;">
+        <div style="display: flex; align-items: center; gap: 12px; position: relative;">
+          <span style="font-size: 18px;">💪</span>
+          <div class="stat-value-container" style="position: relative; width: 55px; display: flex; align-items: center; gap: 2px;">
+            <span class="stat-value" onclick="editSpeedStat('str', this)" style="cursor: pointer; font-size: 14px; font-weight: 700; color: var(--text-main);" id="speed-str-value">3</span>
           </div>
-          <div style="display: flex; align-items: center; gap: 6px; color: var(--text-secondary);">
-            <span>⌛️</span>
-            <span style="color: var(--text-main); font-weight: 600;" id="speed-agi-time">0.0</span>
-            <span>мин</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 6px; color: var(--text-secondary);">
+          <span>⌛️</span>
+          <span style="color: var(--text-main); font-weight: 600;" id="speed-str-time">0.0</span>
+          <span>мин</span>
+        </div>
+      </div>
+      
+      <!-- 👐 Ловкость - как в профиле -->
+      <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; background-color: var(--card-bg); border-radius: 8px; margin-bottom: 8px;">
+        <div style="display: flex; align-items: center; gap: 12px; position: relative;">
+          <span style="font-size: 18px;">👐</span>
+          <div class="stat-value-container" style="position: relative; width: 55px; display: flex; align-items: center; gap: 2px;">
+            <span class="stat-value" onclick="editSpeedStat('agi', this)" style="cursor: pointer; font-size: 14px; font-weight: 700; color: var(--text-main);" id="speed-agi-value">3</span>
           </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 6px; color: var(--text-secondary);">
+          <span>⌛️</span>
+          <span style="color: var(--text-main); font-weight: 600;" id="speed-agi-time">0.0</span>
+          <span>мин</span>
         </div>
       </div>
     </div>
@@ -1676,7 +1685,7 @@ display: none !important;
           </div>
         </div>
         
-        <!-- Пустая ячейка вместо Расторопности -->
+        <!-- Пустая ячейка -->
         <div class="book-cell empty"></div>
       </div>
     </div>
@@ -2065,9 +2074,12 @@ function getCurrentStats() {
 }
 
 // Функция расчета времени Расторопности
-function calculateSpeedTime(statValue, bookLevel, hasRing) {
+function calculateSpeedTime(statValue, bookLevel, hasRing, bookEquipped) {
     if (statValue <= 0) return 0;
     if (bookLevel < 0) bookLevel = 0;
+    
+    // Если книга не надета, время = 0
+    if (!bookEquipped) return 0;
     
     // Формула: время = ceil((стат / 4) / (√(10 × ур_книги) / 50 + 2))
     const statDiv4 = statValue / 4;
@@ -2091,6 +2103,7 @@ function updateSpeedCalculations() {
     
     const bookLevel = parseInt(bookLevelInput.value) || 0;
     const hasRing = document.getElementById('speedRingCheckbox').checked;
+    const bookEquipped = document.getElementById('speedBookEquipped').checked;
     
     // Подгоняем ширину поля ввода
     adjustSpeedBookInput(bookLevelInput);
@@ -2104,35 +2117,44 @@ function updateSpeedCalculations() {
     document.getElementById('speed-agi-value').textContent = stats.agi;
     
     // Рассчитываем и отображаем время
-    document.getElementById('speed-vit-time').textContent = calculateSpeedTime(stats.vit, bookLevel, hasRing).toFixed(1);
-    document.getElementById('speed-str-time').textContent = calculateSpeedTime(stats.str, bookLevel, hasRing).toFixed(1);
-    document.getElementById('speed-agi-time').textContent = calculateSpeedTime(stats.agi, bookLevel, hasRing).toFixed(1);
+    document.getElementById('speed-vit-time').textContent = calculateSpeedTime(stats.vit, bookLevel, hasRing, bookEquipped).toFixed(1);
+    document.getElementById('speed-str-time').textContent = calculateSpeedTime(stats.str, bookLevel, hasRing, bookEquipped).toFixed(1);
+    document.getElementById('speed-agi-time').textContent = calculateSpeedTime(stats.agi, bookLevel, hasRing, bookEquipped).toFixed(1);
     
-    // Сохраняем уровень книги
-    saveSpeedBookLevel(bookLevel);
+    // Сохраняем настройки
+    saveSpeedSettings(bookLevel, bookEquipped);
 }
 
-// Сохранение уровня книги Расторопность
-function saveSpeedBookLevel(level) {
+// Сохранение настроек Расторопности
+function saveSpeedSettings(level, equipped) {
     const savedLevels = JSON.parse(localStorage.getItem('rpg_books_levels_final_verified_v8') || '{}');
     savedLevels['Расторопность'] = level;
     localStorage.setItem('rpg_books_levels_final_verified_v8', JSON.stringify(savedLevels));
+    
+    // Сохраняем состояние надетой книги
+    localStorage.setItem('rpg_speed_book_equipped', equipped ? 'true' : 'false');
     localStorage.setItem('rpg_date_final_verified_v8', Date.now().toString());
 }
 
-// Синхронизация уровня книги из инвентаря (теперь не нужна, но оставляем для совместимости)
-window.syncSpeedBookLevel = function(level) {
-    const bookLevel = parseInt(level) || 0;
-    if (bookLevel > MAX_BOOK_VALUE) {
-        bookLevel = MAX_BOOK_VALUE;
-    }
+// Загрузка настроек Расторопности
+function loadSpeedSettings() {
+    const savedLevels = JSON.parse(localStorage.getItem('rpg_books_levels_final_verified_v8') || '{}');
+    const bookLevel = savedLevels['Расторопность'] || 0;
+    const bookEquipped = localStorage.getItem('rpg_speed_book_equipped') === 'true';
+    
     const speedInput = document.getElementById('speedBookLevel');
     if (speedInput) {
         speedInput.value = bookLevel;
         adjustSpeedBookInput(speedInput);
     }
-    updateSpeedCalculations();
-};
+    
+    const equippedCheckbox = document.getElementById('speedBookEquipped');
+    if (equippedCheckbox) {
+        equippedCheckbox.checked = bookEquipped;
+    }
+    
+    return { bookLevel, bookEquipped };
+}
 
 // Редактирование значения стата в блоке Расторопности (точно как в профиле)
 window.editSpeedStat = function(statKey, element) {
@@ -2274,11 +2296,7 @@ window.syncInventoryBookLevel = function(bookName, level) {
     localStorage.setItem('rpg_books_levels_final_verified_v8', JSON.stringify(savedLevels));
     localStorage.setItem('rpg_date_final_verified_v8', Date.now().toString());
     
-    if (bookName === 'Расторопность') {
-        syncSpeedBookLevel(newLevel);
-    } else {
-        updatePassiveBookDisplay(bookName, newLevel);
-    }
+    updatePassiveBookDisplay(bookName, newLevel);
     saveInventory();
 };
 
@@ -2568,6 +2586,9 @@ function loadCapStatsFromProfile() {
     
     updateCapCalculations();
     updateRedistributeCard();
+    
+    // Загружаем настройки Расторопности и обновляем расчеты
+    loadSpeedSettings();
     updateSpeedCalculations();
 }
 
@@ -2729,6 +2750,7 @@ const classData = localStorage.getItem(CLASS_KEY) || "жнец душ";
 const passiveBooks = JSON.parse(localStorage.getItem('rpg_books_levels_final_verified_v8') || '{}');
 const activeBooks = JSON.parse(localStorage.getItem('rpg_active_books_levels_final_verified_v8') || '{}');
 const inventory = localStorage.getItem(INVENTORY_KEY) || '{}';
+const speedEquipped = localStorage.getItem('rpg_speed_book_equipped') || 'false';
 const userData = {
 stats: stats,
 class: classData,
@@ -2737,8 +2759,9 @@ passive: passiveBooks,
 active: activeBooks
 },
 inventory: JSON.parse(inventory),
+speedEquipped: speedEquipped === 'true',
 lastSave: Date.now(),
-version: '1.1'
+version: '1.2'
 };
 await vkBridge.send('VKWebAppStorageSet', {
 key: VK_STORAGE_KEY,
@@ -2800,12 +2823,16 @@ if (userData.inventory) {
 localStorage.setItem(INVENTORY_KEY, JSON.stringify(userData.inventory));
 loadInventory();
 }
+if (userData.speedEquipped !== undefined) {
+localStorage.setItem('rpg_speed_book_equipped', userData.speedEquipped ? 'true' : 'false');
+}
 localStorage.setItem(DATE_KEY, Date.now().toString());
 console.log('✅ Данные загружены из облака VK');
 updateClassResult();
 updateKarmaIcon();
 loadCapStatsFromProfile();
 updateRedistributeCard();
+loadSpeedSettings();
 updateSpeedCalculations();
 return true;
 }
@@ -3139,6 +3166,7 @@ if (typeof renderActiveBooks === 'function') renderActiveBooks();
 } else if (pageName === 'cap') {
 loadCapStatsFromProfile();
 updateRedistributeCard();
+loadSpeedSettings();
 updateSpeedCalculations();
 }
 };
@@ -3163,6 +3191,7 @@ saveStats();
 initClassList();
 loadCapStatsFromProfile();
 updateRedistributeCard();
+loadSpeedSettings();
 updateSpeedCalculations();
 initInventorySync();
 } catch (error) {
@@ -3176,6 +3205,7 @@ triggerBtn.textContent = savedClass;
 initClassList();
 loadCapStatsFromProfile();
 updateRedistributeCard();
+loadSpeedSettings();
 updateSpeedCalculations();
 initInventorySync();
 }
