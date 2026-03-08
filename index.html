@@ -1508,9 +1508,11 @@ display: none !important;
       
       <!-- ❤️ Выносливость - как в капе статов -->
       <div class="cap-stat-item" style="margin-bottom: 6px; height: 42px; padding: 8px 10px; display: flex; align-items: center; justify-content: space-between; cursor: default; background-color: var(--input-bg); border-radius: 6px;" onclick="event.stopPropagation()">
-        <div style="display: flex; align-items: center; gap: 0;">
+        <div style="display: flex; align-items: center; gap: 0; position: relative;">
           <span class="cap-stat-icon" style="font-size: 16px; width: 24px; text-align: center; flex-shrink: 0;">❤️</span>
-          <span class="cap-stat-value" onclick="editSpeedStat('vit', event)" style="font-size: 14px; font-weight: 700; color: var(--text-main); cursor: pointer; margin-left: 4px;" id="speed-vit-value">3</span>
+          <div style="position: relative; width: 60px; margin-left: 4px;">
+            <span class="cap-stat-value" onclick="editSpeedStat('vit', event)" style="font-size: 14px; font-weight: 700; color: var(--text-main); cursor: pointer; display: block;" id="speed-vit-value">3</span>
+          </div>
           <span class="cap-stat-name" style="font-size: 12px; color: var(--text-secondary); text-transform: lowercase; margin-left: 4px;">вын</span>
         </div>
         <div style="display: flex; align-items: center; gap: 6px; color: var(--text-secondary);">
@@ -1522,9 +1524,11 @@ display: none !important;
       
       <!-- 💪 Сила - как в капе статов -->
       <div class="cap-stat-item" style="margin-bottom: 6px; height: 42px; padding: 8px 10px; display: flex; align-items: center; justify-content: space-between; cursor: default; background-color: var(--input-bg); border-radius: 6px;" onclick="event.stopPropagation()">
-        <div style="display: flex; align-items: center; gap: 0;">
+        <div style="display: flex; align-items: center; gap: 0; position: relative;">
           <span class="cap-stat-icon" style="font-size: 16px; width: 24px; text-align: center; flex-shrink: 0;">💪</span>
-          <span class="cap-stat-value" onclick="editSpeedStat('str', event)" style="font-size: 14px; font-weight: 700; color: var(--text-main); cursor: pointer; margin-left: 4px;" id="speed-str-value">3</span>
+          <div style="position: relative; width: 60px; margin-left: 4px;">
+            <span class="cap-stat-value" onclick="editSpeedStat('str', event)" style="font-size: 14px; font-weight: 700; color: var(--text-main); cursor: pointer; display: block;" id="speed-str-value">3</span>
+          </div>
           <span class="cap-stat-name" style="font-size: 12px; color: var(--text-secondary); text-transform: lowercase; margin-left: 4px;">сил</span>
         </div>
         <div style="display: flex; align-items: center; gap: 6px; color: var(--text-secondary);">
@@ -1536,9 +1540,11 @@ display: none !important;
       
       <!-- 🤲 Ловкость - как в капе статов -->
       <div class="cap-stat-item" style="margin-bottom: 0; height: 42px; padding: 8px 10px; display: flex; align-items: center; justify-content: space-between; cursor: default; background-color: var(--input-bg); border-radius: 6px;" onclick="event.stopPropagation()">
-        <div style="display: flex; align-items: center; gap: 0;">
+        <div style="display: flex; align-items: center; gap: 0; position: relative;">
           <span class="cap-stat-icon" style="font-size: 16px; width: 24px; text-align: center; flex-shrink: 0;">🤲</span>
-          <span class="cap-stat-value" onclick="editSpeedStat('agi', event)" style="font-size: 14px; font-weight: 700; color: var(--text-main); cursor: pointer; margin-left: 4px;" id="speed-agi-value">3</span>
+          <div style="position: relative; width: 60px; margin-left: 4px;">
+            <span class="cap-stat-value" onclick="editSpeedStat('agi', event)" style="font-size: 14px; font-weight: 700; color: var(--text-main); cursor: pointer; display: block;" id="speed-agi-value">3</span>
+          </div>
           <span class="cap-stat-name" style="font-size: 12px; color: var(--text-secondary); text-transform: lowercase; margin-left: 4px;">лвк</span>
         </div>
         <div style="display: flex; align-items: center; gap: 6px; color: var(--text-secondary);">
@@ -2156,21 +2162,30 @@ function loadSpeedSettings() {
     return { bookLevel, bookEquipped };
 }
 
-// Редактирование значения стата в блоке Расторопности (точно как в профиле)
+// Редактирование значения стата в блоке Расторопности (точно как в капе статов)
 window.editSpeedStat = function(statKey, event) {
     event.stopPropagation();
     const element = event.target;
     const valueContainer = element.parentElement;
     const currentVal = element.textContent;
     
+    // Создаем контейнер как в капе статов
+    const container = document.createElement('div');
+    container.style.position = 'absolute';
+    container.style.top = '0';
+    container.style.left = '0';
+    container.style.width = '100%';
+    container.style.height = '100%';
+    container.style.display = 'flex';
+    container.style.alignItems = 'center';
+    container.style.pointerEvents = 'none';
+    
     const input = document.createElement('input');
     input.type = 'number';
     input.value = currentVal === '0' ? '' : currentVal;
     input.className = 'stat-input';
-    input.style.position = 'absolute';
-    input.style.top = '0';
-    input.style.left = '0';
-    input.style.width = '100%';
+    input.style.position = 'relative';
+    input.style.width = '60px'; // Фиксированная ширина как в капе
     input.style.height = '100%';
     input.style.background = 'transparent';
     input.style.border = 'none';
@@ -2185,9 +2200,11 @@ window.editSpeedStat = function(statKey, event) {
     input.style.appearance = 'none';
     input.style.webkitAppearance = 'none';
     input.style.mozAppearance = 'textfield';
+    input.style.pointerEvents = 'auto';
     input.maxLength = 5;
     input.max = MAX_STAT_VALUE.toString();
     
+    // Добавляем обработчик как в капе статов
     input.addEventListener('input', function() {
         if (this.value.length > 5) {
             this.value = this.value.slice(0, 5);
@@ -2199,7 +2216,9 @@ window.editSpeedStat = function(statKey, event) {
     });
     
     element.style.visibility = 'hidden';
-    valueContainer.appendChild(input);
+    valueContainer.style.position = 'relative';
+    valueContainer.appendChild(container);
+    container.appendChild(input);
     input.focus();
     input.select();
     
@@ -2216,7 +2235,8 @@ window.editSpeedStat = function(statKey, event) {
         
         element.textContent = newVal;
         element.style.visibility = 'visible';
-        input.remove();
+        container.remove();
+        valueContainer.style.position = 'static';
         
         // Обновляем соответствующий стат в профиле
         const profileStat = document.querySelector(`.stat-value[data-key="${statKey}"]`);
