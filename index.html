@@ -1472,41 +1472,43 @@ display: none !important;
     </div>
   </div>
   
-  <!-- БЛОК РАСТОРОПНОСТИ (отдельный блок) -->
-  <div class="profile-card" style="margin-top: 15px;">
-    <div class="profile-header">
-      <div class="info">
-        <h1 class="player-name" style="font-size: 17px; font-weight: 600; margin: 0;">⏱️ Расчет времени на стат</h1>
-      </div>
+<!-- БЛОК РАСТОРОПНОСТИ (отдельный блок) -->
+<div class="profile-card" style="margin-top: 15px;">
+  <div class="profile-header">
+    <div class="info">
+      <h1 class="player-name" style="font-size: 17px; font-weight: 600; margin: 0;">⏱️ Расчет времени на стат</h1>
     </div>
-    <div class="cap-container">
-      <!-- Управление с галочкой для книги -->
-      <div style="display: flex; align-items: center; justify-content: space-between; background-color: var(--input-bg); border-radius: 8px; padding: 10px 12px; margin-bottom: 12px;">
-        <div style="display: flex; align-items: center; gap: 12px;">
-          <div style="display: flex; align-items: center; gap: 6px;">
-            <label style="display: flex; align-items: center; gap: 4px; cursor: pointer;">
-              <input type="checkbox" id="speedBookEquipped" style="width: 18px; height: 18px; accent-color: var(--accent);" onchange="updateSpeedCalculations()">
-              <span style="font-size: 20px;">📘</span>
-            </label>
-            <span style="color: var(--text-secondary); font-size: 13px;">Расторопность</span>
-          </div>
-          <div class="book-level-wrapper" style="display: flex; align-items: center; width: auto;">
-            <input type="number" class="book-level-input-inventory" id="speedBookLevel" value="0" min="0" max="9999999" 
-                   style="font-size: 14px; font-weight: 600;"
-                   oninput="adjustSpeedBookInput(this)"
-                   onkeydown="if(event.key==='Enter') this.blur()"
-                   onchange="updateSpeedCalculations()"
-                   onblur="if(this.value==='') this.value='0'; adjustSpeedBookInput(this); updateSpeedCalculations()">
-            <span class="book-level-unit" style="font-size: 11px; color: var(--text-secondary); margin-left: 2px;">ур.</span>
-          </div>
+  </div>
+  <div class="cap-container">
+    <!-- Управление с галочкой для книги -->
+    <div style="display: flex; align-items: center; justify-content: space-between; background-color: var(--input-bg); border-radius: 8px; padding: 10px 12px; margin-bottom: 12px;">
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <div style="display: flex; align-items: center; gap: 6px;">
+          <label style="display: flex; align-items: center; gap: 4px; cursor: pointer;">
+            <input type="checkbox" id="speedBookEquipped" style="width: 18px; height: 18px; accent-color: var(--accent);" onchange="updateSpeedCalculations()">
+            <span style="font-size: 20px;">📘</span>
+          </label>
+          <span style="color: var(--text-secondary); font-size: 13px;">Расторопность</span>
         </div>
-        <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
-          <input type="checkbox" id="speedRingCheckbox" style="width: 18px; height: 18px; accent-color: var(--accent);" onchange="updateSpeedCalculations()">
-          <span style="font-size: 18px;">💍</span>
-        </label>
+        <div class="book-level-wrapper" style="display: flex; align-items: center; width: auto;">
+          <input type="number" class="book-level-input-inventory" id="speedBookLevel" value="0" min="0" max="9999999" 
+                 style="font-size: 14px; font-weight: 600;"
+                 oninput="adjustSpeedBookInput(this)"
+                 onkeydown="if(event.key==='Enter') this.blur()"
+                 onchange="updateSpeedCalculations()"
+                 onblur="if(this.value==='') this.value='0'; adjustSpeedBookInput(this); updateSpeedCalculations()">
+          <span class="book-level-unit" style="font-size: 11px; color: var(--text-secondary); margin-left: 2px;">ур.</span>
+        </div>
       </div>
-      
-      <!-- ❤️ Выносливость - как в капе статов -->
+      <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+        <input type="checkbox" id="speedRingCheckbox" style="width: 18px; height: 18px; accent-color: var(--accent);" onchange="updateSpeedCalculations()">
+        <span style="font-size: 18px;">💍</span>
+      </label>
+    </div>
+    
+    <!-- Контейнер для статов с вертикальным отступом как в капе -->
+    <div class="cap-stats-column">
+      <!-- ❤️ Выносливость -->
       <div class="cap-stat-item" onclick="editSpeedStat('vit', event)">
         <span class="cap-stat-icon">❤️</span>
         <span class="cap-stat-value" id="speed-vit-value">3</span>
@@ -1518,7 +1520,7 @@ display: none !important;
         </div>
       </div>
       
-      <!-- 💪 Сила - как в капе статов -->
+      <!-- 💪 Сила -->
       <div class="cap-stat-item" onclick="editSpeedStat('str', event)">
         <span class="cap-stat-icon">💪</span>
         <span class="cap-stat-value" id="speed-str-value">3</span>
@@ -1530,7 +1532,7 @@ display: none !important;
         </div>
       </div>
       
-      <!-- 🤲 Ловкость - как в капе статов -->
+      <!-- 🤲 Ловкость -->
       <div class="cap-stat-item" onclick="editSpeedStat('agi', event)">
         <span class="cap-stat-icon">🤲</span>
         <span class="cap-stat-value" id="speed-agi-value">3</span>
