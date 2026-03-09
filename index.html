@@ -734,25 +734,26 @@ color: var(--text-main);
 font-weight: 600;
 }
 
+/* Стили для инвентаря */
 .inventory-section {
 width: 100%;
-border-top: 1px solid var(--separator-color);
 margin-top: 15px;
 }
 .inventory-header {
-padding: 12px 15px;
+padding: 15px;
 display: flex;
 justify-content: space-between;
 align-items: center;
 cursor: pointer;
 background-color: var(--card-bg);
+border-radius: 8px 8px 0 0;
 border-bottom: 1px solid var(--separator-color);
 }
 .inventory-header:hover {
 background-color: var(--input-bg);
 }
 .inventory-title {
-font-size: 15px;
+font-size: 17px;
 font-weight: 600;
 color: var(--text-main);
 }
@@ -768,10 +769,21 @@ transform: rotate(180deg);
 display: none;
 padding: 15px;
 background-color: var(--inventory-bg);
-border-bottom: 1px solid var(--separator-color);
+border-radius: 0 0 8px 8px;
 }
 .inventory-content.show {
 display: block;
+animation: slideDown 0.3s ease-out;
+}
+@keyframes slideDown {
+from {
+opacity: 0;
+transform: translateY(-10px);
+}
+to {
+opacity: 1;
+transform: translateY(0);
+}
 }
 .books-grid {
 display: grid;
@@ -791,7 +803,8 @@ min-height: 75px;
 width: 100%;
 }
 .book-cell:hover {
-background-color: transparent;
+background-color: rgba(255, 255, 255, 0.05);
+border-radius: 4px;
 }
 .book-cell.empty {
 background-color: transparent;
@@ -839,7 +852,7 @@ gap: 0;
 .book-level-input-inventory {
 width: auto;
 min-width: 12px;
-max-width: 80px;
+max-width: 60px;
 background: transparent;
 border: none;
 color: var(--text-main);
@@ -1324,28 +1337,32 @@ display: none !important;
 </head>
 <body>
 <div class="top-nav">
-  <div class="nav-item active" onclick="switchPage('cap')" id="nav-cap">
+  <!-- 1. КАП СТАТОВ (слева) -->
+  <div class="nav-item" onclick="switchPage('cap')" id="nav-cap">
     <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
       <path d="M12,14a1,1,0,0,0-1,1v2a1,1,0,0,0,2,0V15A1,1,0,0,0,12,14Zm.38-2.92A1,1,0,0,0,11.8,11l-.18.06-.18.09-.15.12A1,1,0,0,0,11,12a1,1,0,0,0,.29.71,1,1,0,0,0,.33.21A.84.84,0,0,0,12,13a1,1,0,0,0,.71-.29A1,1,0,0,0,13,12a1,1,0,0,0-.29-.71A1.15,1.15,0,0,0,12.38,11.08ZM20,8.94a1.31,1.31,0,0,0-.06-.27l0-.09a1.07,1.07,0,0,0-.19-.28h0l-6-6h0a1.07,1.07,0,0,0-.28-.19l-.1,0A1.1,1.1,0,0,0,13.06,2H7A3,3,0,0,0,4,5V19a3,3,0,0,0,3,3H17a3,3,0,0,0,3-3V9S20,9,20,8.94ZM14,5.41,16.59,8H15a1,1,0,0,1-1-1ZM18,19a1,1,0,0,1-1,1H7a1,1,0,0,1-1-1V5A1,1,0,0,1,7,4h5V7a3,3,0,0,0,3,3h3Z"/>
     </svg>
   </div>
   
-  <div class="nav-item" onclick="switchPage('profile')" id="nav-profile">
+  <!-- 2. ПРОФИЛЬ (активный по умолчанию) -->
+  <div class="nav-item active" onclick="switchPage('profile')" id="nav-profile">
     <svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
   </div>
   
+  <!-- 3. АКТИВНЫЕ -->
   <div class="nav-item" onclick="switchPage('active')" id="nav-active">
     <span>📕</span>
   </div>
   
+  <!-- 4. ПАССИВНЫЕ -->
   <div class="nav-item" onclick="switchPage('passive')" id="nav-passive">
     <span>📘</span>
   </div>
 </div>
 <div class="content-container">
 
-<!-- СТРАНИЦА КАП СТАТОВ -->
-<div id="page-cap" class="page active">
+<!-- 1. СТРАНИЦА КАП СТАТОВ -->
+<div id="page-cap" class="page">
   
   <!-- Карточка перераспределения -->
   <div class="redistribute-card">
@@ -1358,54 +1375,36 @@ display: none !important;
     </div>
     
     <div class="redistribute-row">
-      <span class="row-current">
-        <span style="font-size: 16px; width: 24px; display: inline-block; text-align: center;">❤️</span>
-        <span style="font-size: 14px; font-weight: 700; color: var(--text-main); margin-left: 4px;" id="redistribute-vit">3</span>
-      </span>
+      <span class="row-current">❤️ <span id="redistribute-vit">3</span></span>
       <span class="row-remove">
-        <input type="number" class="redistribute-input" id="remove-vit" value="1" min="1" max="0" oninput="calculateRedistributePrice('vit')" style="font-size: 14px; font-weight: 600;">
+        <input type="number" class="redistribute-input" id="remove-vit" value="1" min="1" max="0" oninput="calculateRedistributePrice('vit')">
       </span>
-      <span class="row-price">
-        <span style="font-size: 14px; font-weight: 600; color: var(--gold);" id="redistribute-vit-price">2500</span>
-        <span style="font-size: 14px;">🌕</span>
-      </span>
-      <button class="redistribute-btn" onclick="applyRedistribute('vit')" id="redistribute-vit-btn" style="font-size: 18px; font-weight: 600;">↓</button>
+      <span class="row-price"><span id="redistribute-vit-price">2500</span>🌕</span>
+      <button class="redistribute-btn" onclick="applyRedistribute('vit')" id="redistribute-vit-btn">↓</button>
     </div>
     
     <div class="redistribute-row">
-      <span class="row-current">
-        <span style="font-size: 16px; width: 24px; display: inline-block; text-align: center;">💪</span>
-        <span style="font-size: 14px; font-weight: 700; color: var(--text-main); margin-left: 4px;" id="redistribute-str">3</span>
-      </span>
+      <span class="row-current">💪 <span id="redistribute-str">3</span></span>
       <span class="row-remove">
-        <input type="number" class="redistribute-input" id="remove-str" value="1" min="1" max="0" oninput="calculateRedistributePrice('str')" style="font-size: 14px; font-weight: 600;">
+        <input type="number" class="redistribute-input" id="remove-str" value="1" min="1" max="0" oninput="calculateRedistributePrice('str')">
       </span>
-      <span class="row-price">
-        <span style="font-size: 14px; font-weight: 600; color: var(--gold);" id="redistribute-str-price">2500</span>
-        <span style="font-size: 14px;">🌕</span>
-      </span>
-      <button class="redistribute-btn" onclick="applyRedistribute('str')" id="redistribute-str-btn" style="font-size: 18px; font-weight: 600;">↓</button>
+      <span class="row-price"><span id="redistribute-str-price">2500</span>🌕</span>
+      <button class="redistribute-btn" onclick="applyRedistribute('str')" id="redistribute-str-btn">↓</button>
     </div>
     
     <div class="redistribute-row">
-      <span class="row-current">
-        <span style="font-size: 16px; width: 24px; display: inline-block; text-align: center;">🤲</span>
-        <span style="font-size: 14px; font-weight: 700; color: var(--text-main); margin-left: 4px;" id="redistribute-agi">3</span>
-      </span>
+      <span class="row-current">🤲 <span id="redistribute-agi">3</span></span>
       <span class="row-remove">
-        <input type="number" class="redistribute-input" id="remove-agi" value="1" min="1" max="0" oninput="calculateRedistributePrice('agi')" style="font-size: 14px; font-weight: 600;">
+        <input type="number" class="redistribute-input" id="remove-agi" value="1" min="1" max="0" oninput="calculateRedistributePrice('agi')">
       </span>
-      <span class="row-price">
-        <span style="font-size: 14px; font-weight: 600; color: var(--gold);" id="redistribute-agi-price">2500</span>
-        <span style="font-size: 14px;">🌕</span>
-      </span>
-      <button class="redistribute-btn" onclick="applyRedistribute('agi')" id="redistribute-agi-btn" style="font-size: 18px; font-weight: 600;">↓</button>
+      <span class="row-price"><span id="redistribute-agi-price">2500</span>🌕</span>
+      <button class="redistribute-btn" onclick="applyRedistribute('agi')" id="redistribute-agi-btn">↓</button>
     </div>
     
     <!-- Итоговая сумма -->
     <div class="redistribute-total">
-      <span class="total-label" style="font-size: 13px; color: var(--text-secondary);">Итого:</span>
-      <span class="total-value" style="font-size: 16px; font-weight: 700; color: var(--gold);" id="redistribute-total">0🌕</span>
+      <span class="total-label">Итого:</span>
+      <span class="total-value" id="redistribute-total">0🌕</span>
     </div>
   </div>
   
@@ -1487,78 +1486,78 @@ display: none !important;
         <span class="cap-total-label">🏹 Репутация охотников:</span>
         <span class="cap-total-value" id="cap-total-rep">42 840</span>
       </div>
-    </div>
-  </div>
-  
-  <!-- БЛОК РАСТОРОПНОСТИ (отдельный блок) -->
-  <div class="profile-card" style="margin-top: 15px;">
-    <div class="profile-header">
-      <div class="info">
-        <h1 class="player-name" style="font-size: 17px; font-weight: 600; margin: 0;">⏱️ Расчет времени на стат</h1>
-      </div>
-    </div>
-    <div class="cap-container">
-      <!-- Управление с галочкой для книги -->
-      <div style="display: flex; align-items: center; justify-content: space-between; background-color: var(--input-bg); border-radius: 8px; padding: 10px 12px; margin-bottom: 12px;">
-        <div style="display: flex; align-items: center; gap: 12px;">
-          <div style="display: flex; align-items: center; gap: 6px;">
-            <label style="display: flex; align-items: center; gap: 4px; cursor: pointer;">
-              <input type="checkbox" id="speedBookEquipped" style="width: 18px; height: 18px; accent-color: var(--accent);" onchange="updateSpeedCalculations()">
-              <span style="font-size: 20px;">📘</span>
-            </label>
-            <span style="color: var(--text-secondary); font-size: 13px;">Расторопность</span>
-          </div>
-          <div class="book-level-wrapper" style="display: flex; align-items: center; width: auto;">
-            <input type="number" class="book-level-input-inventory" id="speedBookLevel" value="0" min="0" max="9999999" 
-                   style="font-size: 14px; font-weight: 600;"
-                   oninput="adjustSpeedBookInput(this)"
-                   onkeydown="if(event.key==='Enter') this.blur()"
-                   onchange="updateSpeedCalculations()"
-                   onblur="if(this.value==='') this.value='0'; adjustSpeedBookInput(this); updateSpeedCalculations()">
-            <span class="book-level-unit" style="font-size: 11px; color: var(--text-secondary); margin-left: 2px;">ур.</span>
-          </div>
+
+      <!-- БЛОК РАСТОРОПНОСТИ -->
+      <div style="margin-top: 20px; border-top: 1px solid var(--separator-color); padding-top: 15px;">
+        <div class="redistribute-title" style="margin-bottom: 12px; border-bottom: none; padding-bottom: 0;">
+          ⏱️ Расчет времени на стат
         </div>
-        <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
-          <input type="checkbox" id="speedRingCheckbox" style="width: 18px; height: 18px; accent-color: var(--accent);" onchange="updateSpeedCalculations()">
-          <span style="font-size: 18px;">💍</span>
-        </label>
-      </div>
-      
-      <!-- Контейнер для статов с вертикальным отступом как в капе -->
-      <div class="cap-stats-column">
+        
+        <!-- Управление с галочкой для книги -->
+        <div style="display: flex; align-items: center; justify-content: space-between; background-color: var(--input-bg); border-radius: 8px; padding: 8px 12px; margin-bottom: 12px;">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <label style="display: flex; align-items: center; gap: 4px; cursor: pointer;">
+                <input type="checkbox" id="speedBookEquipped" style="width: 18px; height: 18px; accent-color: var(--accent);" onchange="updateSpeedCalculations()">
+                <span style="font-size: 20px;">📘</span>
+              </label>
+              <span style="color: var(--text-secondary); font-size: 13px;">Расторопность</span>
+            </div>
+            <div class="book-level-wrapper" style="display: flex; align-items: center; width: auto;">
+              <input type="number" class="book-level-input-inventory" id="speedBookLevel" value="0" min="0" max="9999999" 
+                     style="font-size: 14px; font-weight: 600;"
+                     oninput="adjustSpeedBookInput(this)"
+                     onkeydown="if(event.key==='Enter') this.blur()"
+                     onchange="updateSpeedCalculations()"
+                     onblur="if(this.value==='') this.value='0'; adjustSpeedBookInput(this); updateSpeedCalculations()">
+              <span class="book-level-unit" style="font-size: 11px; color: var(--text-secondary); margin-left: 2px;">ур.</span>
+            </div>
+          </div>
+          <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+            <input type="checkbox" id="speedRingCheckbox" style="width: 18px; height: 18px; accent-color: var(--accent);" onchange="updateSpeedCalculations()">
+            <span style="font-size: 18px;">💍</span>
+          </label>
+        </div>
+        
         <!-- ❤️ Выносливость -->
-        <div class="cap-stat-item" onclick="editSpeedStat('vit', event)">
-          <span class="cap-stat-icon">❤️</span>
-          <span class="cap-stat-value" id="speed-vit-value">3</span>
-          <span class="cap-stat-name">вын</span>
-          <div style="flex: 1; text-align: right; display: flex; align-items: center; justify-content: flex-end; gap: 6px;">
-            <span style="font-size: 16px;">⌛️</span>
+        <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; background-color: var(--input-bg); border-radius: 6px; margin-bottom: 6px; height: 42px;">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <span style="font-size: 18px;">❤️</span>
+            <span class="stat-value" onclick="editSpeedStat('vit', this)" style="cursor: pointer; font-size: 14px; font-weight: 700; color: var(--text-main);" id="speed-vit-value">3</span>
+            <span style="font-size: 12px; color: var(--text-secondary);">вын</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 6px; color: var(--text-secondary);">
+            <span>⌛️</span>
             <span style="color: var(--text-main); font-weight: 600; font-size: 14px;" id="speed-vit-time">0.0</span>
-            <span style="font-size: 11px; color: var(--text-secondary);">мин</span>
+            <span style="font-size: 11px;">мин</span>
           </div>
         </div>
         
         <!-- 💪 Сила -->
-        <div class="cap-stat-item" onclick="editSpeedStat('str', event)">
-          <span class="cap-stat-icon">💪</span>
-          <span class="cap-stat-value" id="speed-str-value">3</span>
-          <span class="cap-stat-name">сил</span>
-          <div style="flex: 1; text-align: right; display: flex; align-items: center; justify-content: flex-end; gap: 6px;">
-            <span style="font-size: 16px;">⌛️</span>
+        <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; background-color: var(--input-bg); border-radius: 6px; margin-bottom: 6px; height: 42px;">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <span style="font-size: 18px;">💪</span>
+            <span class="stat-value" onclick="editSpeedStat('str', this)" style="cursor: pointer; font-size: 14px; font-weight: 700; color: var(--text-main);" id="speed-str-value">3</span>
+            <span style="font-size: 12px; color: var(--text-secondary);">сил</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 6px; color: var(--text-secondary);">
+            <span>⌛️</span>
             <span style="color: var(--text-main); font-weight: 600; font-size: 14px;" id="speed-str-time">0.0</span>
-            <span style="font-size: 11px; color: var(--text-secondary);">мин</span>
+            <span style="font-size: 11px;">мин</span>
           </div>
         </div>
         
         <!-- 🤲 Ловкость -->
-        <div class="cap-stat-item" onclick="editSpeedStat('agi', event)">
-          <span class="cap-stat-icon">🤲</span>
-          <span class="cap-stat-value" id="speed-agi-value">3</span>
-          <span class="cap-stat-name">лвк</span>
-          <div style="flex: 1; text-align: right; display: flex; align-items: center; justify-content: flex-end; gap: 6px;">
-            <span style="font-size: 16px;">⌛️</span>
+        <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; background-color: var(--input-bg); border-radius: 6px; margin-bottom: 0; height: 42px;">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <span style="font-size: 18px;">🤲</span>
+            <span class="stat-value" onclick="editSpeedStat('agi', this)" style="cursor: pointer; font-size: 14px; font-weight: 700; color: var(--text-main);" id="speed-agi-value">3</span>
+            <span style="font-size: 12px; color: var(--text-secondary);">лвк</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 6px; color: var(--text-secondary);">
+            <span>⌛️</span>
             <span style="color: var(--text-main); font-weight: 600; font-size: 14px;" id="speed-agi-time">0.0</span>
-            <span style="font-size: 11px; color: var(--text-secondary);">мин</span>
+            <span style="font-size: 11px;">мин</span>
           </div>
         </div>
       </div>
@@ -1566,41 +1565,43 @@ display: none !important;
   </div>
 </div>
 
-<!-- СТРАНИЦА ПРОФИЛЯ -->
-<div id="page-profile" class="page">
-<div class="profile-card">
-  <div class="profile-header">
-    <img src="https://via.placeholder.com/50" alt="Avatar" class="avatar" id="user-avatar">
-    <div class="info">
-      <h1 class="player-name" id="user-name">Загрузка...</h1>
-      <div class="class-wrapper">
-        <button class="class-trigger" id="classTrigger" onclick="toggleClassList()">жнец душ</button>
-        <div class="class-list" id="classList"></div>
+<!-- 2. СТРАНИЦА ПРОФИЛЯ (активная по умолчанию) -->
+<div id="page-profile" class="page active">
+  <div class="profile-card">
+    <div class="profile-header">
+      <img src="https://via.placeholder.com/50" alt="Avatar" class="avatar" id="user-avatar">
+      <div class="info">
+        <h1 class="player-name" id="user-name">Загрузка...</h1>
+        <div class="class-wrapper">
+          <button class="class-trigger" id="classTrigger" onclick="toggleClassList()">жнец душ</button>
+          <div class="class-list" id="classList"></div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="stats-grid">
+      <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🕯️</span><div class="stat-value-container"><span class="stat-value" data-key="lvl">1</span><span class="stat-label">ур</span></div></div></div>
+      <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">⚔️</span><div class="stat-value-container"><span class="stat-value" data-key="atk">0</span><span class="stat-label">атк</span></div></div></div>
+      <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🛡️</span><div class="stat-value-container"><span class="stat-value" data-key="armor">0</span><span class="stat-label">брн</span></div></div></div>
+      <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">💪</span><div class="stat-value-container"><span class="stat-value" data-key="str">3</span><span class="stat-label">сил</span></div></div></div>
+      <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">👐</span><div class="stat-value-container"><span class="stat-value" data-key="agi">3</span><span class="stat-label">лвк</span></div></div></div>
+      <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">❤️</span><div class="stat-value-container"><span class="stat-value" data-key="vit">3</span><span class="stat-label">внс</span></div></div></div>
+      <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🍀</span><div class="stat-value-container"><span class="stat-value" data-key="luck">0</span><span class="stat-label">удч</span></div></div></div>
+      <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🎯</span><div class="stat-value-container"><span class="stat-value" data-key="acc">0</span><span class="stat-label">тчн</span></div></div></div>
+      <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🌀</span><div class="stat-value-container"><span class="stat-value" data-key="conc">0</span><span class="stat-label">кц</span></div></div></div>
+      <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">📜</span><div class="stat-value-container"><span class="stat-value" data-key="class_lvl">50</span><span class="stat-label">ур. кл.</span></div></div></div>
+      <div class="stat-cell" onclick="editStatByCell(this, true)"><div class="stat-row"><span class="stat-icon">🔰</span><div class="stat-value-container"><span class="stat-value" data-key="resist">0%</span><span class="stat-label">сопр</span></div></div></div>
+      <div class="stat-cell" onclick="editStatByCell(this, false, true)"><div class="stat-row"><span class="stat-icon" id="karma-icon">😐</span><div class="stat-value-container"><span class="stat-value" data-key="karma">0</span><span class="stat-label">карма</span></div></div></div>
+    </div>
+    
+    <div class="class-result-box">
+      <div class="result-card">
+        <div class="result-description" id="res-class-desc"></div>
       </div>
     </div>
   </div>
   
-  <div class="stats-grid">
-    <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🕯️</span><div class="stat-value-container"><span class="stat-value" data-key="lvl">1</span><span class="stat-label">ур</span></div></div></div>
-    <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">⚔️</span><div class="stat-value-container"><span class="stat-value" data-key="atk">0</span><span class="stat-label">атк</span></div></div></div>
-    <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🛡️</span><div class="stat-value-container"><span class="stat-value" data-key="armor">0</span><span class="stat-label">брн</span></div></div></div>
-    <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">💪</span><div class="stat-value-container"><span class="stat-value" data-key="str">3</span><span class="stat-label">сил</span></div></div></div>
-    <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">👐</span><div class="stat-value-container"><span class="stat-value" data-key="agi">3</span><span class="stat-label">лвк</span></div></div></div>
-    <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">❤️</span><div class="stat-value-container"><span class="stat-value" data-key="vit">3</span><span class="stat-label">внс</span></div></div></div>
-    <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🍀</span><div class="stat-value-container"><span class="stat-value" data-key="luck">0</span><span class="stat-label">удч</span></div></div></div>
-    <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🎯</span><div class="stat-value-container"><span class="stat-value" data-key="acc">0</span><span class="stat-label">тчн</span></div></div></div>
-    <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🌀</span><div class="stat-value-container"><span class="stat-value" data-key="conc">0</span><span class="stat-label">кц</span></div></div></div>
-    <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">📜</span><div class="stat-value-container"><span class="stat-value" data-key="class_lvl">50</span><span class="stat-label">ур. кл.</span></div></div></div>
-    <div class="stat-cell" onclick="editStatByCell(this, true)"><div class="stat-row"><span class="stat-icon">🔰</span><div class="stat-value-container"><span class="stat-value" data-key="resist">0%</span><span class="stat-label">сопр</span></div></div></div>
-    <div class="stat-cell" onclick="editStatByCell(this, false, true)"><div class="stat-row"><span class="stat-icon" id="karma-icon">😐</span><div class="stat-value-container"><span class="stat-value" data-key="karma">0</span><span class="stat-label">карма</span></div></div></div>
-  </div>
-  
-  <div class="class-result-box">
-    <div class="result-card">
-      <div class="result-description" id="res-class-desc"></div>
-    </div>
-  </div>
-  
+  <!-- ИНВЕНТАРЬ -->
   <div class="inventory-section">
     <div class="inventory-header" onclick="toggleInventory()">
       <span class="inventory-title">Инвентарь</span>
@@ -1697,15 +1698,13 @@ display: none !important;
           </div>
         </div>
         
-        <!-- Пустая ячейка -->
         <div class="book-cell empty"></div>
       </div>
     </div>
   </div>
 </div>
-</div>
 
-<!-- СТРАНИЦА АКТИВНЫХ УМЕНИЙ -->
+<!-- 3. СТРАНИЦА АКТИВНЫХ УМЕНИЙ -->
 <div id="page-active" class="page">
 <div class="search-container">
 <div class="search-controls">
@@ -1753,7 +1752,7 @@ display: none !important;
 <div class="no-results" id="activeNoResultsMsg">Активные умения не найдены</div>
 </div>
 
-<!-- СТРАНИЦА ПАССИВНЫХ КНИГ -->
+<!-- 4. СТРАНИЦА ПАССИВНЫХ КНИГ -->
 <div id="page-passive" class="page">
 <div class="search-container">
 <div class="search-controls">
@@ -1819,73 +1818,148 @@ display: none !important;
 <script src="actives.js"></script>
 <script src="books.js"></script>
 <script>
-// Константы для лимитов
-const MAX_STAT_VALUE = 99999; // 5 цифр для статов
-const MAX_BOOK_VALUE = 9999999; // 7 цифр для книг
+// ========== КОНСТАНТЫ ==========
+const MAX_STAT_VALUE = 99999;
+const MAX_BOOK_VALUE = 9999999;
 
-// Запрет контекстного меню (долгий тап)
-document.addEventListener('contextmenu', function(e) {
-    if (e.target.closest('.app-footer a')) {
-        return true;
+// ========== ЗАГРУЗКА ПРОФИЛЯ ИЗ VK STORAGE ==========
+
+async function loadProfileFromVKStorage() {
+    try {
+        // Показываем уведомление о загрузке
+        if (window.vkBridge) {
+            vkBridge.send('VKWebAppTapticImpactOccurred', {'style': 'light'});
+        }
+        
+        // Получаем данные из VK Storage
+        const storageData = await vkBridge.send('VKWebAppStorageGet', {
+            keys: [`rpg_profile_${window.USER_ID}`]
+        });
+        
+        if (storageData.keys && storageData.keys[0] && storageData.keys[0].value) {
+            const profileData = JSON.parse(storageData.keys[0].value);
+            
+            console.log('✅ Профиль загружен из VK Storage:', profileData);
+            
+            // Применяем статы
+            if (profileData.stats) {
+                Object.entries(profileData.stats).forEach(([key, value]) => {
+                    const el = document.querySelector(`.stat-value[data-key="${key}"]`);
+                    if (el) el.textContent = value;
+                });
+            }
+            
+            // Применяем класс
+            if (profileData.class) {
+                localStorage.setItem('rpg_class_final_verified_v8', profileData.class);
+                const classTrigger = document.getElementById('classTrigger');
+                if (classTrigger) classTrigger.textContent = profileData.class;
+            }
+            
+            // Сохраняем в localStorage
+            saveStats();
+            
+            // Обновляем интерфейс
+            updateKarmaIcon();
+            updateClassResult();
+            
+            // Показываем успешное уведомление
+            if (window.vkBridge) {
+                vkBridge.send('VKWebAppTapticNotificationOccurred', {
+                    'type': 'success'
+                });
+            }
+            
+            // Показываем всплывающее сообщение
+            showNotification('✅ Профиль загружен из облака!');
+            
+            return true;
+        } else {
+            console.log('ℹ️ Нет сохраненного профиля в VK Storage');
+            showNotification('ℹ️ Нет сохраненного профиля');
+            return false;
+        }
+    } catch (error) {
+        console.error('❌ Ошибка загрузки из VK Storage:', error);
+        showNotification('❌ Ошибка загрузки профиля');
+        return false;
     }
-    e.preventDefault();
-    return false;
-});
-
-// Запрет выделения (кроме полей ввода)
-document.addEventListener('selectstart', function(e) {
-    if (e.target.closest('input, textarea')) {
-        return true;
-    }
-    e.preventDefault();
-    return false;
-});
-
-// Запрет перетаскивания
-document.addEventListener('dragstart', function(e) {
-    e.preventDefault();
-    return false;
-});
-
-const CLASS_CONFIG = {
-"жнец душ": { type: "warlock", name: "Чернокнижник", desc: "<span class='highlight-class'>Чернокнижник</span>: Доп. снижение концентрации противника на <span class='highlight-val'>{val}%</span>" },
-"повелитель мрака": { type: "warlock", name: "Чернокнижник", desc: "<span class='highlight-class'>Чернокнижник</span>: Доп. снижение концентрации противника на <span class='highlight-val'>{val}%</span>" },
-"отрекшийся": { type: "vampire", name: "Кровопийца", desc: "<span class='highlight-class'>Кровопийца</span>: Восстанавливает здоровье в размере <span class='highlight-val'>{val}%</span> от урона простыми атаками" },
-"прокаженный": { type: "vampire", name: "Кровопийца", desc: "<span class='highlight-class'>Кровопийца</span>: Восстанавливает здоровье в размере <span class='highlight-val'>{val}%</span> от урона простыми атаками" },
-"крестоносец": { type: "paladin", name: "Паладин", desc: "<span class='highlight-class'>Паладин</span>: Шанс <span class='highlight-val'>{val}%</span>, что полученный урон от обычной атаки отразится в противника (не добивает в PvP)" },
-"воплощение света": { type: "paladin", name: "Паладин", desc: "<span class='highlight-class'>Паладин</span>: Шанс <span class='highlight-val'>{val}%</span>, что полученный урон от обычной атаки отразится в противника (не добивает в PvP)" },
-"клинок тьмы": { type: "assassin", name: "Ассасин", desc: "<span class='highlight-class'>Ассасин</span>: Дополнительные <span class='highlight-val'>{val}%</span> шанса уклониться от атаки" },
-"королевский убийца": { type: "assassin", name: "Ассасин", desc: "<span class='highlight-class'>Ассасин</span>: Дополнительные <span class='highlight-val'>{val}%</span> шанса уклониться от атаки" },
-"берсеркер": { type: "executioner", name: "Палач", desc: "<span class='highlight-class'>Палач</span>: Если у врага < {val}% НР — 50% шанс казни без возрождения" },
-"потрошитель": { type: "executioner", name: "Палач", desc: "<span class='highlight-class'>Палач</span>: Если у врага < {val}% НР — 50% шанс казни без возрождения" },
-"апостол": { type: "secret_keeper", name: "Хранитель тайн", desc: "<span class='highlight-class'>Хранитель тайн</span>: Шанс {val}% на повторное срабатывание умения (-30% при доп. действии)" },
-"верховный маг": { type: "secret_keeper", name: "Хранитель тайн", desc: "<span class='highlight-class'>Хранитель тайн</span>: Шанс {val}% на повторное срабатывание умения (-30% при доп. действии)" }
-};
-const DB_KEY = 'rpg_stats_final_verified_v8';
-const DATE_KEY = 'rpg_date_final_verified_v8';
-const CLASS_KEY = 'rpg_class_final_verified_v8';
-const VK_STORAGE_KEY = 'rpg_complete_user_data_v1';
-const triggerBtn = document.getElementById('classTrigger');
-const listDiv = document.getElementById('classList');
-const karmaIconSpan = document.getElementById('karma-icon');
-const INVENTORY_KEY = 'rpg_inventory_v1';
-
-function measureTextWidth(text, font, padding = 0) {
-    const span = document.createElement('span');
-    span.style.font = font;
-    span.style.visibility = 'hidden';
-    span.style.position = 'absolute';
-    span.style.whiteSpace = 'nowrap';
-    span.style.fontSize = '14px';
-    span.style.fontWeight = '700';
-    span.textContent = text || '1';
-    document.body.appendChild(span);
-    const width = span.offsetWidth;
-    document.body.removeChild(span);
-    return width + padding;
 }
 
-// Функция для подгона ширины поля ввода уровня книги Расторопности (лимит 7 чисел)
+// ========== ФУНКЦИЯ ДЛЯ ПОКАЗА УВЕДОМЛЕНИЙ ==========
+
+function showNotification(message, duration = 3000) {
+    // Создаем элемент уведомления
+    const notification = document.createElement('div');
+    notification.textContent = message;
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: var(--card-bg);
+        color: var(--text-main);
+        padding: 12px 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        z-index: 9999;
+        font-size: 14px;
+        font-weight: 600;
+        border-left: 4px solid var(--accent);
+        animation: slideDown 0.3s ease-out;
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Удаляем через указанное время
+    setTimeout(() => {
+        notification.style.opacity = '0';
+        notification.style.transition = 'opacity 0.3s';
+        setTimeout(() => notification.remove(), 300);
+    }, duration);
+}
+
+// ========== КНОПКА ДЛЯ РУЧНОЙ ЗАГРУЗКИ ==========
+
+function addProfileLoadButton() {
+    // Добавляем кнопку после инвентаря
+    const inventorySection = document.querySelector('.inventory-section');
+    if (inventorySection) {
+        const buttonContainer = document.createElement('div');
+        buttonContainer.style.cssText = `
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+        `;
+        
+        const loadButton = document.createElement('button');
+        loadButton.textContent = '📥 Загрузить профиль из облака';
+        loadButton.style.cssText = `
+            flex: 1;
+            padding: 12px;
+            background: var(--accent);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        `;
+        loadButton.onmouseover = () => loadButton.style.opacity = '0.9';
+        loadButton.onmouseout = () => loadButton.style.opacity = '1';
+        loadButton.onclick = loadProfileFromVKStorage;
+        
+        buttonContainer.appendChild(loadButton);
+        
+        // Вставляем после инвентаря
+        inventorySection.parentNode.insertBefore(buttonContainer, inventorySection.nextSibling);
+    }
+}
+
+// ========== ФУНКЦИИ ДЛЯ КАПА СТАТОВ ==========
+
+// Функция для подгона ширины поля ввода уровня книги Расторопности
 function adjustSpeedBookInput(input) {
     if (!input) return;
     
@@ -1898,7 +1972,6 @@ function adjustSpeedBookInput(input) {
         input.value = MAX_BOOK_VALUE.toString();
     }
     
-    // Измеряем ширину текста
     const span = document.createElement('span');
     span.style.font = window.getComputedStyle(input).font;
     span.style.visibility = 'hidden';
@@ -2085,24 +2158,21 @@ function getCurrentStats() {
     };
 }
 
-// Функция расчета времени Расторопности (исправленная логика)
+// Функция расчета времени Расторопности
 function calculateSpeedTime(statValue, bookLevel, hasRing, bookEquipped) {
     if (statValue <= 0) return 0;
     
     let time;
     
     if (bookEquipped) {
-        // Книга надета - используем формулу с книгой
         const statDiv4 = statValue / 4;
         const sqrtVal = Math.sqrt(10 * bookLevel);
         const denominator = (sqrtVal / 50) + 2;
         time = Math.ceil(statDiv4 / denominator);
     } else {
-        // Книга не надета - просто стат / 4 (без знаменателя)
         time = Math.ceil(statValue / 4);
     }
     
-    // Если есть кольцо, уменьшаем на 20%
     if (hasRing) {
         time = time * 0.8;
         return Math.round(time * 10) / 10;
@@ -2120,38 +2190,29 @@ function updateSpeedCalculations() {
     const hasRing = document.getElementById('speedRingCheckbox').checked;
     const bookEquipped = document.getElementById('speedBookEquipped').checked;
     
-    // Подгоняем ширину поля ввода
     adjustSpeedBookInput(bookLevelInput);
     
-    // Берем значения из профиля
     const stats = getCurrentStats();
     
-    // Обновляем отображаемые значения
     document.getElementById('speed-vit-value').textContent = stats.vit;
     document.getElementById('speed-str-value').textContent = stats.str;
     document.getElementById('speed-agi-value').textContent = stats.agi;
     
-    // Рассчитываем и отображаем время
     document.getElementById('speed-vit-time').textContent = calculateSpeedTime(stats.vit, bookLevel, hasRing, bookEquipped).toFixed(1);
     document.getElementById('speed-str-time').textContent = calculateSpeedTime(stats.str, bookLevel, hasRing, bookEquipped).toFixed(1);
     document.getElementById('speed-agi-time').textContent = calculateSpeedTime(stats.agi, bookLevel, hasRing, bookEquipped).toFixed(1);
     
-    // Сохраняем настройки
     saveSpeedSettings(bookLevel, bookEquipped);
 }
 
-// Сохранение настроек Расторопности
 function saveSpeedSettings(level, equipped) {
     const savedLevels = JSON.parse(localStorage.getItem('rpg_books_levels_final_verified_v8') || '{}');
     savedLevels['Расторопность'] = level;
     localStorage.setItem('rpg_books_levels_final_verified_v8', JSON.stringify(savedLevels));
-    
-    // Сохраняем состояние надетой книги
     localStorage.setItem('rpg_speed_book_equipped', equipped ? 'true' : 'false');
     localStorage.setItem('rpg_date_final_verified_v8', Date.now().toString());
 }
 
-// Загрузка настроек Расторопности
 function loadSpeedSettings() {
     const savedLevels = JSON.parse(localStorage.getItem('rpg_books_levels_final_verified_v8') || '{}');
     const bookLevel = savedLevels['Расторопность'] || 0;
@@ -2171,53 +2232,20 @@ function loadSpeedSettings() {
     return { bookLevel, bookEquipped };
 }
 
-// Редактирование значения стата в блоке Расторопности (идентично капу статов)
-window.editSpeedStat = function(statKey, event) {
-    event.stopPropagation();
-    const capStatItem = event.currentTarget;
-    
-    const valueSpan = capStatItem.querySelector('.cap-stat-value');
-    const nameSpan = capStatItem.querySelector('.cap-stat-name');
-    const iconSpan = capStatItem.querySelector('.cap-stat-icon');
-    
-    const currentVal = valueSpan.textContent;
-    const currentName = nameSpan.textContent;
-    
-    const iconWidth = iconSpan.offsetWidth;
-    
-    const container = document.createElement('div');
-    container.style.display = 'flex';
-    container.style.alignItems = 'center';
-    container.style.gap = '4px';
-    container.style.position = 'absolute';
-    container.style.top = '0';
-    container.style.left = (iconWidth + 8) + 'px';
-    container.style.height = '100%';
-    container.style.padding = '8px 12px 8px 8px';
-    container.style.boxSizing = 'border-box';
-    container.style.pointerEvents = 'none';
-    
-    function getTextWidth(text) {
-        const span = document.createElement('span');
-        span.style.font = window.getComputedStyle(input).font;
-        span.style.visibility = 'hidden';
-        span.style.position = 'absolute';
-        span.style.whiteSpace = 'nowrap';
-        span.textContent = text || '1';
-        document.body.appendChild(span);
-        const width = span.offsetWidth;
-        document.body.removeChild(span);
-        return width;
-    }
+// Редактирование значения стата в блоке Расторопности
+window.editSpeedStat = function(statKey, element) {
+    const currentVal = element.textContent;
+    const parentDiv = element.parentElement;
     
     const input = document.createElement('input');
     input.type = 'number';
-    input.value = currentVal;
+    input.value = currentVal === '0' ? '' : currentVal;
     input.className = 'stat-input';
-    input.style.position = 'relative';
-    input.style.width = 'auto';
-    input.style.minWidth = 'auto';
-    input.style.maxWidth = '60px';
+    input.style.position = 'absolute';
+    input.style.top = '0';
+    input.style.left = '0';
+    input.style.width = '100%';
+    input.style.height = '100%';
     input.style.background = 'transparent';
     input.style.border = 'none';
     input.style.color = 'var(--text-main)';
@@ -2226,21 +2254,11 @@ window.editSpeedStat = function(statKey, event) {
     input.style.fontFamily = 'inherit';
     input.style.padding = '0';
     input.style.margin = '0';
-    input.style.borderRadius = '0';
     input.style.outline = 'none';
     input.style.textAlign = 'left';
     input.style.appearance = 'none';
-    input.style.webkitAppearance = 'none';
-    input.style.mozAppearance = 'textfield';
-    input.style.pointerEvents = 'auto';
     input.maxLength = 5;
     input.max = MAX_STAT_VALUE.toString();
-    
-    const nameSpan2 = document.createElement('span');
-    nameSpan2.className = 'cap-stat-name';
-    nameSpan2.style.marginLeft = '0';
-    nameSpan2.style.pointerEvents = 'none';
-    nameSpan2.textContent = currentName;
     
     input.addEventListener('input', function() {
         if (this.value.length > 5) {
@@ -2250,51 +2268,33 @@ window.editSpeedStat = function(statKey, event) {
         if (!isNaN(num) && num > MAX_STAT_VALUE) {
             this.value = MAX_STAT_VALUE.toString();
         }
-        const textWidth = getTextWidth(this.value || '1');
-        this.style.width = textWidth + 'px';
     });
     
-    valueSpan.style.visibility = 'hidden';
-    nameSpan.style.visibility = 'hidden';
-    
-    container.appendChild(input);
-    container.appendChild(nameSpan2);
-    capStatItem.style.position = 'relative';
-    capStatItem.appendChild(container);
-    
-    const initialWidth = getTextWidth(currentVal);
-    input.style.width = initialWidth + 'px';
+    element.style.visibility = 'hidden';
+    parentDiv.appendChild(input);
     input.focus();
     input.select();
     
     const finish = () => {
         let newVal = input.value;
         if (newVal === '') newVal = '3';
-        let finalValue = newVal;
+        
         const num = parseInt(newVal);
         if (!isNaN(num)) {
-            if (num < 3) finalValue = '3';
-            else if (num > MAX_STAT_VALUE) finalValue = MAX_STAT_VALUE.toString();
-            else finalValue = num.toString();
+            if (num < 3) newVal = '3';
+            else if (num > MAX_STAT_VALUE) newVal = MAX_STAT_VALUE.toString();
+            else newVal = num.toString();
         }
         
-        valueSpan.textContent = finalValue;
-        valueSpan.style.visibility = 'visible';
-        nameSpan.style.visibility = 'visible';
-        container.remove();
-        capStatItem.style.position = '';
+        element.textContent = newVal;
+        element.style.visibility = 'visible';
+        input.remove();
         
-        // Обновляем соответствующий стат в профиле
         const profileStat = document.querySelector(`.stat-value[data-key="${statKey}"]`);
-        if (profileStat) {
-            profileStat.textContent = finalValue;
-        }
+        if (profileStat) profileStat.textContent = newVal;
         
-        // Обновляем в капе статов
         const capStat = document.querySelector(`[data-cap-key="${statKey}"]`);
-        if (capStat) {
-            capStat.textContent = finalValue;
-        }
+        if (capStat) capStat.textContent = newVal;
         
         saveStats();
         updateCapCalculations();
@@ -2306,80 +2306,15 @@ window.editSpeedStat = function(statKey, event) {
     input.onkeydown = e => {
         if (e.key === 'Enter') {
             e.preventDefault();
+            e.stopPropagation();
             input.blur();
+            return false;
         }
     };
+    input.onclick = e => e.stopPropagation();
 };
 
-// Функция для синхронизации при изменении уровня на странице пассивных книг
-function syncPassiveToInventory(bookName, level) {
-    const inventoryInput = document.getElementById(`inventory-book-${bookName}`);
-    if (inventoryInput) {
-        inventoryInput.value = level;
-        adjustInventoryInputWidth(inventoryInput);
-    }
-    saveInventory();
-}
-
-// Функция для обновления отображения пассивной книги
-function updatePassiveBookDisplay(bookName, newLevel) {
-    const passiveItems = document.querySelectorAll('#passiveBooksContainer .book-item');
-    for (const item of passiveItems) {
-        if (item.dataset.bookName === bookName.toLowerCase()) {
-            const input = item.querySelector('.book-level-input');
-            if (input) {
-                input.value = newLevel;
-                const font = window.getComputedStyle(input).font;
-                const width = measureTextWidth(input.value || '1', font, 2);
-                input.style.width = (width + 2) + 'px';
-            }
-            
-            if (typeof updatePassiveBookDescription === 'function') {
-                updatePassiveBookDescription(item, bookName, newLevel);
-            }
-            
-            if (typeof updatePassiveBookPrice === 'function') {
-                updatePassiveBookPrice(item, bookName, newLevel);
-            }
-            break;
-        }
-    }
-}
-
-// Обновленная функция syncInventoryBookLevel с лимитом 7 чисел
-window.syncInventoryBookLevel = function(bookName, level) {
-    const savedLevels = JSON.parse(localStorage.getItem('rpg_books_levels_final_verified_v8') || '{}');
-    let newLevel = parseInt(level) || 0;
-    
-    if (newLevel > MAX_BOOK_VALUE) {
-        newLevel = MAX_BOOK_VALUE;
-        const input = document.getElementById(`inventory-book-${bookName}`);
-        if (input) input.value = MAX_BOOK_VALUE;
-    }
-    
-    savedLevels[bookName] = newLevel;
-    localStorage.setItem('rpg_books_levels_final_verified_v8', JSON.stringify(savedLevels));
-    localStorage.setItem('rpg_date_final_verified_v8', Date.now().toString());
-    
-    updatePassiveBookDisplay(bookName, newLevel);
-    saveInventory();
-};
-
-// Переопределяем функцию updatePassiveBookLevel для синхронизации с инвентарем
-const originalUpdatePassiveBookLevel = window.updatePassiveBookLevel;
-window.updatePassiveBookLevel = function(name, value) {
-    let newLevel = parseInt(value) || 0;
-    if (newLevel > MAX_BOOK_VALUE) {
-        newLevel = MAX_BOOK_VALUE;
-    }
-    
-    if (originalUpdatePassiveBookLevel) {
-        originalUpdatePassiveBookLevel(name, newLevel);
-    }
-    
-    syncPassiveToInventory(name, newLevel);
-};
-
+// Функции для редактирования капа статов
 window.editCapLevel = function(wrapper) {
     const valueSpan = wrapper.querySelector('.stat-value');
     const iconSpan = wrapper.querySelector('.stat-icon');
@@ -2430,8 +2365,6 @@ window.editCapLevel = function(wrapper) {
     input.style.margin = '0';
     input.style.textAlign = 'left';
     input.style.appearance = 'none';
-    input.style.webkitAppearance = 'none';
-    input.style.mozAppearance = 'textfield';
     input.style.pointerEvents = 'auto';
     input.maxLength = 5;
     input.max = MAX_STAT_VALUE.toString();
@@ -2484,9 +2417,7 @@ window.editCapLevel = function(wrapper) {
         container.remove();
         
         const profileLvl = document.querySelector('.stat-value[data-key="lvl"]');
-        if (profileLvl) {
-            profileLvl.textContent = finalValue;
-        }
+        if (profileLvl) profileLvl.textContent = finalValue;
         
         saveStats();
         updateCapCalculations();
@@ -2557,8 +2488,6 @@ window.editCapStat = function(item, statKey) {
     input.style.outline = 'none';
     input.style.textAlign = 'left';
     input.style.appearance = 'none';
-    input.style.webkitAppearance = 'none';
-    input.style.mozAppearance = 'textfield';
     input.style.pointerEvents = 'auto';
     input.maxLength = 5;
     input.max = MAX_STAT_VALUE.toString();
@@ -2586,6 +2515,7 @@ window.editCapStat = function(item, statKey) {
     
     container.appendChild(input);
     container.appendChild(nameSpan2);
+    item.style.position = 'relative';
     item.appendChild(container);
     
     const initialWidth = getTextWidth(currentVal);
@@ -2608,11 +2538,10 @@ window.editCapStat = function(item, statKey) {
         valueSpan.style.visibility = 'visible';
         nameSpan.style.visibility = 'visible';
         container.remove();
+        item.style.position = '';
         
         const profileStat = document.querySelector(`.stat-value[data-key="${statKey}"]`);
-        if (profileStat) {
-            profileStat.textContent = finalValue;
-        }
+        if (profileStat) profileStat.textContent = finalValue;
         
         saveStats();
         updateCapCalculations();
@@ -2638,7 +2567,6 @@ function loadCapStatsFromProfile() {
     if (lvlEl) {
         document.querySelector('[data-cap-key="lvl"]').textContent = lvlEl.textContent;
     }
-    
     document.querySelectorAll('[data-cap-key="vit"]').forEach(el => {
         if (vitEl) el.textContent = vitEl.textContent;
     });
@@ -2651,8 +2579,6 @@ function loadCapStatsFromProfile() {
     
     updateCapCalculations();
     updateRedistributeCard();
-    
-    // Загружаем настройки Расторопности и обновляем расчеты
     loadSpeedSettings();
     updateSpeedCalculations();
 }
@@ -2691,27 +2617,76 @@ function updateCapCalculations() {
     
     document.getElementById('cap-vit-left').textContent = vitLeft;
     document.getElementById('cap-vit-rep').textContent = formatNumber(vitRep) + ' 🏹';
-    
     document.getElementById('cap-str-left').textContent = distributed.str;
     document.getElementById('cap-str-rep').textContent = formatNumber(strRep) + ' 🏹';
-    
     document.getElementById('cap-agi-left').textContent = distributed.agi;
     document.getElementById('cap-agi-rep').textContent = formatNumber(agiRep) + ' 🏹';
-    
     document.getElementById('cap-total-rep').textContent = formatNumber(totalRep);
 }
 
-window.toggleInventory = function() {
-    const content = document.getElementById('inventoryContent');
-    const arrow = document.getElementById('inventoryArrow');
-    
-    content.classList.toggle('show');
-    arrow.classList.toggle('open');
-    
-    localStorage.setItem('inventory_open', content.classList.contains('show'));
-};
+// Запрет контекстного меню
+document.addEventListener('contextmenu', function(e) {
+    if (e.target.closest('.app-footer a')) {
+        return true;
+    }
+    e.preventDefault();
+    return false;
+});
 
-// Функция для подгона ширины поля ввода в инвентаре (лимит 7 чисел)
+// Запрет выделения
+document.addEventListener('selectstart', function(e) {
+    if (e.target.closest('input, textarea')) {
+        return true;
+    }
+    e.preventDefault();
+    return false;
+});
+
+// Запрет перетаскивания
+document.addEventListener('dragstart', function(e) {
+    e.preventDefault();
+    return false;
+});
+
+const CLASS_CONFIG = {
+"жнец душ": { type: "warlock", name: "Чернокнижник", desc: "<span class='highlight-class'>Чернокнижник</span>: Доп. снижение концентрации противника на <span class='highlight-val'>{val}%</span>" },
+"повелитель мрака": { type: "warlock", name: "Чернокнижник", desc: "<span class='highlight-class'>Чернокнижник</span>: Доп. снижение концентрации противника на <span class='highlight-val'>{val}%</span>" },
+"отрекшийся": { type: "vampire", name: "Кровопийца", desc: "<span class='highlight-class'>Кровопийца</span>: Восстанавливает здоровье в размере <span class='highlight-val'>{val}%</span> от урона простыми атаками" },
+"прокаженный": { type: "vampire", name: "Кровопийца", desc: "<span class='highlight-class'>Кровопийца</span>: Восстанавливает здоровье в размере <span class='highlight-val'>{val}%</span> от урона простыми атаками" },
+"крестоносец": { type: "paladin", name: "Паладин", desc: "<span class='highlight-class'>Паладин</span>: Шанс <span class='highlight-val'>{val}%</span>, что полученный урон от обычной атаки отразится в противника (не добивает в PvP)" },
+"воплощение света": { type: "paladin", name: "Паладин", desc: "<span class='highlight-class'>Паладин</span>: Шанс <span class='highlight-val'>{val}%</span>, что полученный урон от обычной атаки отразится в противника (не добивает в PvP)" },
+"клинок тьмы": { type: "assassin", name: "Ассасин", desc: "<span class='highlight-class'>Ассасин</span>: Дополнительные <span class='highlight-val'>{val}%</span> шанса уклониться от атаки" },
+"королевский убийца": { type: "assassin", name: "Ассасин", desc: "<span class='highlight-class'>Ассасин</span>: Дополнительные <span class='highlight-val'>{val}%</span> шанса уклониться от атаки" },
+"берсеркер": { type: "executioner", name: "Палач", desc: "<span class='highlight-class'>Палач</span>: Если у врага < {val}% НР — 50% шанс казни без возрождения" },
+"потрошитель": { type: "executioner", name: "Палач", desc: "<span class='highlight-class'>Палач</span>: Если у врага < {val}% НР — 50% шанс казни без возрождения" },
+"апостол": { type: "secret_keeper", name: "Хранитель тайн", desc: "<span class='highlight-class'>Хранитель тайн</span>: Шанс {val}% на повторное срабатывание умения (-30% при доп. действии)" },
+"верховный маг": { type: "secret_keeper", name: "Хранитель тайн", desc: "<span class='highlight-class'>Хранитель тайн</span>: Шанс {val}% на повторное срабатывание умения (-30% при доп. действии)" }
+};
+const DB_KEY = 'rpg_stats_final_verified_v8';
+const DATE_KEY = 'rpg_date_final_verified_v8';
+const CLASS_KEY = 'rpg_class_final_verified_v8';
+const VK_STORAGE_KEY = 'rpg_complete_user_data_v1';
+const triggerBtn = document.getElementById('classTrigger');
+const listDiv = document.getElementById('classList');
+const karmaIconSpan = document.getElementById('karma-icon');
+const INVENTORY_KEY = 'rpg_inventory_v1';
+
+function measureTextWidth(text, font, padding = 0) {
+    const span = document.createElement('span');
+    span.style.font = font;
+    span.style.visibility = 'hidden';
+    span.style.position = 'absolute';
+    span.style.whiteSpace = 'nowrap';
+    span.style.fontSize = '14px';
+    span.style.fontWeight = '700';
+    span.textContent = text || '1';
+    document.body.appendChild(span);
+    const width = span.offsetWidth;
+    document.body.removeChild(span);
+    return width + padding;
+}
+
+// Функция для подгона ширины поля ввода в инвентаре
 function adjustInventoryInputWidth(input) {
     if (input.value.length > 7) {
         input.value = input.value.slice(0, 7);
@@ -2737,10 +2712,30 @@ function adjustInventoryInputWidth(input) {
     const textWidth = span.offsetWidth;
     document.body.removeChild(span);
     
-    const newWidth = Math.min(80, textWidth + 2);
+    const newWidth = Math.min(60, textWidth + 2);
     input.style.width = newWidth + 'px';
 }
 
+// Синхронизация уровня книги с пассивными книгами
+window.syncInventoryBookLevel = function(bookName, level) {
+    const savedLevels = JSON.parse(localStorage.getItem('rpg_books_levels_final_verified_v8') || '{}');
+    let newLevel = parseInt(level) || 0;
+    
+    if (newLevel > MAX_BOOK_VALUE) {
+        newLevel = MAX_BOOK_VALUE;
+        const input = document.getElementById(`inventory-book-${bookName}`);
+        if (input) input.value = MAX_BOOK_VALUE;
+    }
+    
+    savedLevels[bookName] = newLevel;
+    localStorage.setItem('rpg_books_levels_final_verified_v8', JSON.stringify(savedLevels));
+    localStorage.setItem('rpg_date_final_verified_v8', Date.now().toString());
+    
+    updatePassiveBookDisplay(bookName, newLevel);
+    saveInventory();
+};
+
+// Сохранение инвентаря
 function saveInventory() {
     const inventory = { books: {} };
     
@@ -2755,48 +2750,69 @@ function saveInventory() {
     localStorage.setItem(INVENTORY_KEY, JSON.stringify(inventory));
 }
 
+// Загрузка инвентаря
 function loadInventory() {
-    const savedPassiveLevels = JSON.parse(localStorage.getItem('rpg_books_levels_final_verified_v8') || '{}');
+    const savedLevels = JSON.parse(localStorage.getItem('rpg_books_levels_final_verified_v8') || '{}');
     
     document.querySelectorAll('.book-cell').forEach(cell => {
         if (!cell.classList.contains('empty')) {
             const name = cell.dataset.book;
             const input = cell.querySelector('.book-level-input-inventory');
-            if (input && savedPassiveLevels[name] !== undefined) {
-                let level = savedPassiveLevels[name];
+            if (input && savedLevels[name] !== undefined) {
+                let level = savedLevels[name];
                 if (level > MAX_BOOK_VALUE) level = MAX_BOOK_VALUE;
                 input.value = level;
                 adjustInventoryInputWidth(input);
             }
         }
     });
+}
+
+// Функция для открытия/закрытия инвентаря
+window.toggleInventory = function() {
+    const content = document.getElementById('inventoryContent');
+    const arrow = document.getElementById('inventoryArrow');
     
-    const savedInventory = localStorage.getItem(INVENTORY_KEY);
-    if (savedInventory) {
-        try {
-            const inventory = JSON.parse(savedInventory);
-            if (inventory.books) {
-                Object.entries(inventory.books).forEach(([name, data]) => {
-                    let level = data.level;
-                    if (level > MAX_BOOK_VALUE) level = MAX_BOOK_VALUE;
-                    if (level !== savedPassiveLevels[name]) {
-                        savedPassiveLevels[name] = level;
-                    }
-                });
-                localStorage.setItem('rpg_books_levels_final_verified_v8', JSON.stringify(savedPassiveLevels));
+    content.classList.toggle('show');
+    arrow.classList.toggle('open');
+    
+    localStorage.setItem('inventory_open', content.classList.contains('show'));
+};
+
+// Функция для обновления отображения пассивной книги
+function updatePassiveBookDisplay(bookName, newLevel) {
+    const passiveItems = document.querySelectorAll('#passiveBooksContainer .book-item');
+    for (const item of passiveItems) {
+        if (item.dataset.bookName === bookName.toLowerCase()) {
+            const input = item.querySelector('.book-level-input');
+            if (input) {
+                input.value = newLevel;
+                const font = window.getComputedStyle(input).font;
+                const width = measureTextWidth(input.value || '1', font, 2);
+                input.style.width = (width + 2) + 'px';
             }
-        } catch (e) {
-            console.log('Ошибка загрузки инвентаря', e);
+            
+            if (typeof updatePassiveBookDescription === 'function') {
+                updatePassiveBookDescription(item, bookName, newLevel);
+            }
+            
+            if (typeof updatePassiveBookPrice === 'function') {
+                updatePassiveBookPrice(item, bookName, newLevel);
+            }
+            break;
         }
     }
 }
 
-document.addEventListener('change', function(e) {
-    if (e.target.classList.contains('book-level-input-inventory')) {
-        saveInventory();
-    }
-});
+// Заглушки для функций книг
+if (typeof updatePassiveBookDescription !== 'function') {
+    window.updatePassiveBookDescription = function() {};
+}
+if (typeof updatePassiveBookPrice !== 'function') {
+    window.updatePassiveBookPrice = function() {};
+}
 
+// Инициализация состояния инвентаря
 const inventoryOpen = localStorage.getItem('inventory_open') === 'true';
 if (inventoryOpen) {
     setTimeout(() => {
@@ -2805,481 +2821,394 @@ if (inventoryOpen) {
     }, 100);
 }
 
-async function saveAllDataToVK() {
-try {
-const stats = {};
-document.querySelectorAll('.stat-value').forEach(el => {
-stats[el.dataset.key] = el.textContent;
-});
-const classData = localStorage.getItem(CLASS_KEY) || "жнец душ";
-const passiveBooks = JSON.parse(localStorage.getItem('rpg_books_levels_final_verified_v8') || '{}');
-const activeBooks = JSON.parse(localStorage.getItem('rpg_active_books_levels_final_verified_v8') || '{}');
-const inventory = localStorage.getItem(INVENTORY_KEY) || '{}';
-const speedEquipped = localStorage.getItem('rpg_speed_book_equipped') || 'false';
-const userData = {
-stats: stats,
-class: classData,
-books: {
-passive: passiveBooks,
-active: activeBooks
-},
-inventory: JSON.parse(inventory),
-speedEquipped: speedEquipped === 'true',
-lastSave: Date.now(),
-version: '1.2'
-};
-await vkBridge.send('VKWebAppStorageSet', {
-key: VK_STORAGE_KEY,
-value: JSON.stringify(userData)
-});
-console.log('✅ Данные сохранены в облако VK');
-return true;
-} catch (error) {
-console.log('❌ Ошибка сохранения в VK:', error);
-return false;
-}
-}
-
-async function loadAllDataFromVK() {
-try {
-const response = await vkBridge.send('VKWebAppStorageGet', {
-keys: [VK_STORAGE_KEY]
-});
-if (response.keys && response.keys[0] && response.keys[0].value) {
-const userData = JSON.parse(response.keys[0].value);
-if (userData.stats) {
-Object.entries(userData.stats).forEach(([key, value]) => {
-const el = document.querySelector(`.stat-value[data-key="${key}"]`);
-if (el) {
-let val = value;
-if (key !== 'resist' && key !== 'karma') {
-const num = parseInt(val);
-if (!isNaN(num) && num > MAX_STAT_VALUE) {
-val = MAX_STAT_VALUE.toString();
-}
-}
-el.textContent = val;
-}
-});
-}
-if (userData.class) {
-localStorage.setItem(CLASS_KEY, userData.class);
-triggerBtn.textContent = userData.class;
-}
-if (userData.books) {
-if (userData.books.passive) {
-const passive = {};
-Object.entries(userData.books.passive).forEach(([name, level]) => {
-if (level > MAX_BOOK_VALUE) level = MAX_BOOK_VALUE;
-passive[name] = level;
-});
-localStorage.setItem('rpg_books_levels_final_verified_v8', JSON.stringify(passive));
-}
-if (userData.books.active) {
-const active = {};
-Object.entries(userData.books.active).forEach(([name, level]) => {
-if (level > MAX_BOOK_VALUE) level = MAX_BOOK_VALUE;
-active[name] = level;
-});
-localStorage.setItem('rpg_active_books_levels_final_verified_v8', JSON.stringify(active));
-}
-}
-if (userData.inventory) {
-localStorage.setItem(INVENTORY_KEY, JSON.stringify(userData.inventory));
-loadInventory();
-}
-if (userData.speedEquipped !== undefined) {
-localStorage.setItem('rpg_speed_book_equipped', userData.speedEquipped ? 'true' : 'false');
-}
-localStorage.setItem(DATE_KEY, Date.now().toString());
-console.log('✅ Данные загружены из облака VK');
-updateClassResult();
-updateKarmaIcon();
-loadCapStatsFromProfile();
-updateRedistributeCard();
-loadSpeedSettings();
-updateSpeedCalculations();
-return true;
-}
-return false;
-} catch (error) {
-console.log('❌ Ошибка загрузки из VK:', error);
-return false;
-}
-}
-
-window.addEventListener('beforeunload', function() {
-saveAllDataToVK();
-});
-
-document.addEventListener('visibilitychange', function() {
-if (document.visibilityState === 'hidden') {
-saveAllDataToVK();
-}
-});
-
-function getKarmaIcon(value) {
-const num = parseInt(value);
-if (num < 0) return '😈';
-if (num === 0) return '😐';
-return '😇';
-}
-
-function updateKarmaIcon() {
-const karmaVal = document.querySelector('.stat-value[data-key="karma"]');
-if (karmaVal) {
-const val = parseInt(karmaVal.textContent) || 0;
-let displayVal = val;
-if (displayVal < -20) displayVal = -20;
-if (displayVal > 20) displayVal = 20;
-karmaIconSpan.textContent = getKarmaIcon(displayVal);
-if (val !== displayVal) karmaVal.textContent = displayVal;
-}
-}
-
-function calculateRunesResist(runesCount) {
-if (runesCount < 0) runesCount = 0;
-if (runesCount === 0) return 0;
-let resist = 10.0 * Math.pow(runesCount, 0.25);
-return Math.min(100, Math.floor(resist));
+// Функции для классов
+function updateClassResult() {
+    const className = triggerBtn.textContent.trim();
+    const classLvlInput = document.querySelector('.stat-value[data-key="class_lvl"]').textContent;
+    const classLvl = parseInt(classLvlInput) || 1;
+    const config = CLASS_CONFIG[className];
+    if (!config) {
+        document.getElementById('res-class-desc').innerHTML = "Класс не определен";
+        return;
+    }
+    const bonus = calculateClassEffect(config.type, classLvl);
+    document.getElementById('res-class-desc').innerHTML = config.desc.replace('{val}', bonus.toFixed(1));
 }
 
 function calculateClassEffect(type, level) {
-if (level < 1) level = 1;
-let coefficient = 5.0;
-let maxCap = 30.0;
-if (type === 'warlock' || type === 'vampire') {
-coefficient = 10.0;
-maxCap = 50.0;
-}
-let effect = coefficient * Math.sqrt(level / 1000.0) + 10.0;
-effect = Math.floor(effect * 10) / 10;
-return Math.min(maxCap, effect);
-}
-
-function updateClassResult() {
-const className = triggerBtn.textContent.trim();
-const classLvlInput = document.querySelector('.stat-value[data-key="class_lvl"]').textContent;
-const classLvl = parseInt(classLvlInput) || 1;
-const config = CLASS_CONFIG[className];
-if (!config) {
-document.getElementById('res-class-desc').innerHTML = "Класс не определен";
-return;
-}
-const bonus = calculateClassEffect(config.type, classLvl);
-document.getElementById('res-class-desc').innerHTML = config.desc.replace('{val}', bonus.toFixed(1));
+    if (level < 1) level = 1;
+    let coefficient = 5.0;
+    let maxCap = 30.0;
+    if (type === 'warlock' || type === 'vampire') {
+        coefficient = 10.0;
+        maxCap = 50.0;
+    }
+    let effect = coefficient * Math.sqrt(level / 1000.0) + 10.0;
+    effect = Math.floor(effect * 10) / 10;
+    return Math.min(maxCap, effect);
 }
 
 window.toggleClassList = function() {
-const isShown = listDiv.classList.contains('show');
-if (isShown) {
-listDiv.classList.remove('show');
-triggerBtn.classList.remove('open');
-} else {
-listDiv.classList.add('show');
-triggerBtn.classList.add('open');
-}
+    const isShown = listDiv.classList.contains('show');
+    if (isShown) {
+        listDiv.classList.remove('show');
+        triggerBtn.classList.remove('open');
+    } else {
+        listDiv.classList.add('show');
+        triggerBtn.classList.add('open');
+    }
 };
 
 window.selectClass = function(cls) {
-localStorage.setItem(CLASS_KEY, cls);
-localStorage.setItem(DATE_KEY, Date.now().toString());
-triggerBtn.textContent = cls;
-const items = listDiv.querySelectorAll('.class-item');
-items.forEach(item => {
-item.classList.toggle('active', item.textContent === cls);
-});
-listDiv.classList.remove('show');
-triggerBtn.classList.remove('open');
-updateClassResult();
+    localStorage.setItem(CLASS_KEY, cls);
+    localStorage.setItem(DATE_KEY, Date.now().toString());
+    triggerBtn.textContent = cls;
+    const items = listDiv.querySelectorAll('.class-item');
+    items.forEach(item => {
+        item.classList.toggle('active', item.textContent === cls);
+    });
+    listDiv.classList.remove('show');
+    triggerBtn.classList.remove('open');
+    updateClassResult();
 };
 
 document.addEventListener('click', function(e) {
-if (!listDiv.contains(e.target) && e.target !== triggerBtn) {
-listDiv.classList.remove('show');
-triggerBtn.classList.remove('open');
-}
+    if (!listDiv.contains(e.target) && e.target !== triggerBtn) {
+        listDiv.classList.remove('show');
+        triggerBtn.classList.remove('open');
+    }
 });
 
-async function loadVKUserData() {
-try {
-const user = await vkBridge.send('VKWebAppGetUserInfo');
-const avatar = document.getElementById('user-avatar');
-if (user.photo_200) {
-avatar.src = user.photo_200;
-} else if (user.photo_100) {
-avatar.src = user.photo_100;
-} else if (user.photo_50) {
-avatar.src = user.photo_50;
-}
-const nameElement = document.getElementById('user-name');
-nameElement.textContent = `${user.first_name} ${user.last_name}`;
-} catch (error) {
-console.log('Не удалось загрузить данные пользователя VK', error);
-document.getElementById('user-name').textContent = 'Тестовый пользователь';
-}
-}
-
-document.addEventListener('submit', function(event) {
-event.preventDefault();
-event.stopPropagation();
-return false;
-}, true);
-
+// Функции для редактирования статов
 window.editStatByCell = function(cellElement, isResist = false, isKarma = false) {
-const valueContainer = cellElement.querySelector('.stat-value-container');
-const valueSpan = valueContainer.querySelector('.stat-value');
-const labelSpan = valueContainer.querySelector('.stat-label');
-let currentVal = valueSpan.textContent;
-const key = valueSpan.dataset.key;
-let cleanVal = currentVal;
-if (isResist) cleanVal = currentVal.replace('%', '');
-const input = document.createElement('input');
-input.type = 'number';
-input.value = cleanVal === '0' ? '' : cleanVal;
-input.className = 'stat-input';
-input.maxLength = 5;
-input.max = MAX_STAT_VALUE.toString();
-input.addEventListener('input', function() {
-if (this.value.length > 5) {
-this.value = this.value.slice(0, 5);
-}
-let num = parseInt(this.value);
-if (!isNaN(num) && num > MAX_STAT_VALUE) {
-this.value = MAX_STAT_VALUE.toString();
-}
-});
-valueSpan.style.visibility = 'hidden';
-if (labelSpan) labelSpan.style.visibility = 'hidden';
-valueContainer.appendChild(input);
-input.focus();
-input.select();
-const finish = () => {
-let newVal = input.value;
-if (newVal === '') newVal = '0';
-let finalValue = newVal;
-const num = parseFloat(newVal);
-if (!isNaN(num)) {
-if (num > MAX_STAT_VALUE) finalValue = MAX_STAT_VALUE.toString();
-else finalValue = Math.floor(num).toString();
-}
-if (isResist) {
-const runes = parseFloat(newVal);
-const percent = calculateRunesResist(runes);
-finalValue = percent + '%';
-} else if (isKarma) {
-let karmaNum = parseInt(newVal);
-if (karmaNum < -20) karmaNum = -20;
-if (karmaNum > 20) karmaNum = 20;
-finalValue = karmaNum.toString();
-} else {
-if (key === 'class_lvl') {
-if (parseInt(finalValue) < 50) finalValue = '50';
-if (parseInt(finalValue) > MAX_STAT_VALUE) finalValue = MAX_STAT_VALUE.toString();
-}
-else if (key === 'str' || key === 'agi' || key === 'vit') {
-if (parseInt(finalValue) < 3) finalValue = '3';
-if (parseInt(finalValue) > MAX_STAT_VALUE) finalValue = MAX_STAT_VALUE.toString();
-}
-else {
-if (parseInt(finalValue) > MAX_STAT_VALUE) finalValue = MAX_STAT_VALUE.toString();
-}
-}
-valueSpan.textContent = finalValue;
-valueSpan.style.visibility = 'visible';
-if (labelSpan) labelSpan.style.visibility = 'visible';
-input.remove();
-if (isKarma) updateKarmaIcon();
-saveStats();
-updateCapCalculations();
-updateRedistributeCard();
-updateSpeedCalculations();
+    const valueContainer = cellElement.querySelector('.stat-value-container');
+    const valueSpan = valueContainer.querySelector('.stat-value');
+    const labelSpan = valueContainer.querySelector('.stat-label');
+    let currentVal = valueSpan.textContent;
+    const key = valueSpan.dataset.key;
+    let cleanVal = currentVal;
+    if (isResist) cleanVal = currentVal.replace('%', '');
+    
+    const input = document.createElement('input');
+    input.type = 'number';
+    input.value = cleanVal === '0' ? '' : cleanVal;
+    input.className = 'stat-input';
+    input.maxLength = 5;
+    input.max = MAX_STAT_VALUE.toString();
+    
+    input.addEventListener('input', function() {
+        if (this.value.length > 5) {
+            this.value = this.value.slice(0, 5);
+        }
+        let num = parseInt(this.value);
+        if (!isNaN(num) && num > MAX_STAT_VALUE) {
+            this.value = MAX_STAT_VALUE.toString();
+        }
+    });
+    
+    valueSpan.style.visibility = 'hidden';
+    if (labelSpan) labelSpan.style.visibility = 'hidden';
+    valueContainer.appendChild(input);
+    input.focus();
+    input.select();
+    
+    const finish = () => {
+        let newVal = input.value;
+        if (newVal === '') newVal = '0';
+        let finalValue = newVal;
+        const num = parseFloat(newVal);
+        if (!isNaN(num)) {
+            if (num > MAX_STAT_VALUE) finalValue = MAX_STAT_VALUE.toString();
+            else finalValue = Math.floor(num).toString();
+        }
+        
+        if (isResist) {
+            const runes = parseFloat(newVal);
+            const percent = calculateRunesResist(runes);
+            finalValue = percent + '%';
+        } else if (isKarma) {
+            let karmaNum = parseInt(newVal);
+            if (karmaNum < -20) karmaNum = -20;
+            if (karmaNum > 20) karmaNum = 20;
+            finalValue = karmaNum.toString();
+            updateKarmaIcon();
+        } else {
+            if (key === 'class_lvl') {
+                if (parseInt(finalValue) < 50) finalValue = '50';
+            }
+            else if (key === 'str' || key === 'agi' || key === 'vit') {
+                if (parseInt(finalValue) < 3) finalValue = '3';
+            }
+        }
+        
+        valueSpan.textContent = finalValue;
+        valueSpan.style.visibility = 'visible';
+        if (labelSpan) labelSpan.style.visibility = 'visible';
+        input.remove();
+        
+        saveStats();
+        updateCapCalculations();
+        updateRedistributeCard();
+        updateSpeedCalculations();
+    };
+    
+    input.onblur = finish;
+    input.onkeydown = e => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            e.stopPropagation();
+            input.blur();
+            return false;
+        }
+    };
+    input.onclick = e => e.stopPropagation();
 };
-input.onblur = finish;
-input.onkeydown = e => {
-if(e.key === 'Enter') {
-e.preventDefault();
-e.stopPropagation();
-input.blur();
-return false;
+
+function calculateRunesResist(runesCount) {
+    if (runesCount < 0) runesCount = 0;
+    if (runesCount === 0) return 0;
+    let resist = 10.0 * Math.pow(runesCount, 0.25);
+    return Math.min(100, Math.floor(resist));
 }
-};
-input.onclick = e => e.stopPropagation();
-};
+
+function updateKarmaIcon() {
+    const karmaVal = document.querySelector('.stat-value[data-key="karma"]');
+    if (karmaVal) {
+        const val = parseInt(karmaVal.textContent) || 0;
+        let displayVal = val;
+        if (displayVal < -20) displayVal = -20;
+        if (displayVal > 20) displayVal = 20;
+        karmaIconSpan.textContent = getKarmaIcon(displayVal);
+        if (val !== displayVal) karmaVal.textContent = displayVal;
+    }
+}
+
+function getKarmaIcon(value) {
+    const num = parseInt(value);
+    if (num < 0) return '😈';
+    if (num === 0) return '😐';
+    return '😇';
+}
 
 function saveStats() {
-const data = {};
-document.querySelectorAll('.stat-value').forEach(el => {
-let val = el.textContent;
-if (el.dataset.key !== 'resist' && el.dataset.key !== 'karma') {
-const num = parseInt(val);
-if (!isNaN(num) && num > MAX_STAT_VALUE) {
-val = MAX_STAT_VALUE.toString();
-}
-}
-data[el.dataset.key] = val;
-});
-localStorage.setItem(DB_KEY, JSON.stringify(data));
-localStorage.setItem(DATE_KEY, Date.now().toString());
-updateClassResult();
-updateKarmaIcon();
+    const data = {};
+    document.querySelectorAll('.stat-value').forEach(el => {
+        let val = el.textContent;
+        if (el.dataset.key !== 'resist' && el.dataset.key !== 'karma') {
+            const num = parseInt(val);
+            if (!isNaN(num) && num > MAX_STAT_VALUE) {
+                val = MAX_STAT_VALUE.toString();
+            }
+        }
+        data[el.dataset.key] = val;
+    });
+    localStorage.setItem(DB_KEY, JSON.stringify(data));
+    localStorage.setItem(DATE_KEY, Date.now().toString());
+    updateClassResult();
+    updateKarmaIcon();
 }
 
 function loadStats() {
-const raw = localStorage.getItem(DB_KEY);
-if (!raw) return;
-const data = JSON.parse(raw);
-document.querySelectorAll('.stat-value').forEach(el => {
-if (data[el.dataset.key]) {
-let val = data[el.dataset.key];
-if (el.dataset.key !== 'resist' && el.dataset.key !== 'karma') {
-const num = parseInt(val);
-if (!isNaN(num) && num > MAX_STAT_VALUE) {
-val = MAX_STAT_VALUE.toString();
-}
-}
-el.textContent = val;
-}
-});
-updateClassResult();
-updateKarmaIcon();
-}
-
-function checkReset() {
-const last = localStorage.getItem(DATE_KEY);
-if (last && (Date.now() - parseInt(last) > 7 * 24 * 60 * 60 * 1000)) {
-localStorage.setItem(DATE_KEY, Date.now().toString());
-}
+    const raw = localStorage.getItem(DB_KEY);
+    if (!raw) return;
+    const data = JSON.parse(raw);
+    document.querySelectorAll('.stat-value').forEach(el => {
+        if (data[el.dataset.key]) {
+            let val = data[el.dataset.key];
+            if (el.dataset.key !== 'resist' && el.dataset.key !== 'karma') {
+                const num = parseInt(val);
+                if (!isNaN(num) && num > MAX_STAT_VALUE) {
+                    val = MAX_STAT_VALUE.toString();
+                }
+            }
+            el.textContent = val;
+        }
+    });
+    updateClassResult();
+    updateKarmaIcon();
 }
 
 function initClassList() {
-const saved = localStorage.getItem(CLASS_KEY) || "жнец душ";
-triggerBtn.textContent = saved;
-listDiv.innerHTML = '';
-Object.keys(CLASS_CONFIG).forEach(cls => {
-const div = document.createElement('div');
-div.className = 'class-item';
-if (cls === saved) div.classList.add('active');
-div.textContent = cls;
-div.onclick = function(e) {
-e.stopPropagation();
-selectClass(cls);
-};
-listDiv.appendChild(div);
-});
-updateClassResult();
+    const saved = localStorage.getItem(CLASS_KEY) || "жнец душ";
+    triggerBtn.textContent = saved;
+    listDiv.innerHTML = '';
+    Object.keys(CLASS_CONFIG).forEach(cls => {
+        const div = document.createElement('div');
+        div.className = 'class-item';
+        if (cls === saved) div.classList.add('active');
+        div.textContent = cls;
+        div.onclick = function(e) {
+            e.stopPropagation();
+            selectClass(cls);
+        };
+        listDiv.appendChild(div);
+    });
+    updateClassResult();
 }
 
-function initInventorySync() {
-document.querySelectorAll('.book-cell:not(.empty)').forEach(cell => {
-const input = cell.querySelector('.book-level-input-inventory');
-if (input) {
-const originalOnChange = input.onchange;
-input.addEventListener('change', function(e) {
-const bookName = cell.dataset.book;
-let level = parseInt(this.value) || 0;
-if (level > MAX_BOOK_VALUE) {
-level = MAX_BOOK_VALUE;
-this.value = MAX_BOOK_VALUE;
-adjustInventoryInputWidth(this);
-}
-window.syncInventoryBookLevel(bookName, level);
-if (originalOnChange) {
-originalOnChange.call(this, e);
-}
-});
-}
-});
-}
-
-// Обновленная функция applyBulkLevel с лимитом 7 чисел
-window.applyBulkLevel = function(tab) {
-    const input = document.getElementById(`${tab}BulkInput`);
-    const level = parseInt(input.value);
-
-    if (isNaN(level) || level < 0) {
-        alert('Введите уровень (0 или больше)');
-        return;
-    }
-
-    if (level > MAX_BOOK_VALUE) {
-        alert(`Макс. уровень: 9 999 999`);
-        return;
-    }
-
-    if (tab === 'active') {
-        applyBulkLevelToActive(level);
-    } else {
-        applyBulkLevelToPassive(level);
-    }
-
-    closeBulkPanel(tab);
-};
-
+// Функции для переключения страниц
 window.switchPage = function(pageName) {
-if (typeof closeAllBulkPanels === 'function') {
-closeAllBulkPanels();
-}
-document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-document.getElementById(`page-${pageName}`).classList.add('active');
-document.getElementById(`nav-${pageName}`).classList.add('active');
-if (pageName === 'passive') {
-if (typeof renderPassiveBooks === 'function') renderPassiveBooks();
-} else if (pageName === 'active') {
-if (typeof renderActiveBooks === 'function') renderActiveBooks();
-} else if (pageName === 'cap') {
-loadCapStatsFromProfile();
-updateRedistributeCard();
-loadSpeedSettings();
-updateSpeedCalculations();
-}
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById(`page-${pageName}`).classList.add('active');
+    document.getElementById(`nav-${pageName}`).classList.add('active');
+    
+    if (pageName === 'passive') {
+        if (typeof renderPassiveBooks === 'function') renderPassiveBooks();
+    } else if (pageName === 'active') {
+        if (typeof renderActiveBooks === 'function') renderActiveBooks();
+    } else if (pageName === 'cap') {
+        loadCapStatsFromProfile();
+        updateRedistributeCard();
+        loadSpeedSettings();
+        updateSpeedCalculations();
+    }
 };
+
+// Заглушки для функций книг
+if (typeof renderPassiveBooks !== 'function') {
+    window.renderPassiveBooks = function() {
+        document.getElementById('passiveBooksContainer').innerHTML = '<div class="book-item"><div class="book-name">Пассивные книги</div><div class="book-desc">Загрузка...</div></div>';
+    };
+}
+if (typeof renderActiveBooks !== 'function') {
+    window.renderActiveBooks = function() {
+        document.getElementById('activeBooksContainer').innerHTML = '<div class="book-item"><div class="book-name">Активные книги</div><div class="book-desc">Загрузка...</div></div>';
+    };
+}
+if (typeof handleActiveSearch !== 'function') {
+    window.handleActiveSearch = function() {};
+}
+if (typeof clearActiveSearch !== 'function') {
+    window.clearActiveSearch = function() {};
+}
+if (typeof toggleActiveSort !== 'function') {
+    window.toggleActiveSort = function() {};
+}
+if (typeof handlePassiveSearch !== 'function') {
+    window.handlePassiveSearch = function() {};
+}
+if (typeof clearPassiveSearch !== 'function') {
+    window.clearPassiveSearch = function() {};
+}
+if (typeof togglePassiveSort !== 'function') {
+    window.togglePassiveSort = function() {};
+}
+if (typeof toggleBulkPanel !== 'function') {
+    window.toggleBulkPanel = function() {};
+}
+if (typeof closeBulkPanel !== 'function') {
+    window.closeBulkPanel = function() {};
+}
+if (typeof applyBulkLevel !== 'function') {
+    window.applyBulkLevel = function() {};
+}
+
+// ========== ОБНОВЛЕННАЯ ФУНКЦИЯ ЗАПУСКА ==========
 
 window.onload = async () => {
-checkReset();
-loadInventory();
-try {
-await vkBridge.send('VKWebAppInit');
-console.log('VK Bridge инициализирован успешно');
-await loadVKUserData();
-const loaded = await loadAllDataFromVK();
-if (!loaded) {
-loadStats();
-const savedClass = localStorage.getItem(CLASS_KEY);
-if (savedClass) {
-triggerBtn.textContent = savedClass;
-}
-} else {
-saveStats();
-}
-initClassList();
-loadCapStatsFromProfile();
-updateRedistributeCard();
-loadSpeedSettings();
-updateSpeedCalculations();
-initInventorySync();
-} catch (error) {
-console.log('Ошибка инициализации VK Bridge:', error);
-document.getElementById('user-name').textContent = 'Тестовый пользователь';
-loadStats();
-const savedClass = localStorage.getItem(CLASS_KEY);
-if (savedClass) {
-triggerBtn.textContent = savedClass;
-}
-initClassList();
-loadCapStatsFromProfile();
-updateRedistributeCard();
-loadSpeedSettings();
-updateSpeedCalculations();
-initInventorySync();
-}
-
-// Инициализация поля ввода уровня книги Расторопности
-const speedInput = document.getElementById('speedBookLevel');
-if (speedInput) {
-adjustSpeedBookInput(speedInput);
-}
+    try {
+        await vkBridge.send('VKWebAppInit');
+        
+        const user = await vkBridge.send('VKWebAppGetUserInfo');
+        window.USER_ID = user.id;
+        
+        const avatar = document.getElementById('user-avatar');
+        if (user.photo_200) avatar.src = user.photo_200;
+        else if (user.photo_100) avatar.src = user.photo_100;
+        
+        document.getElementById('user-name').textContent = `${user.first_name} ${user.last_name}`;
+        
+        loadInventory();
+        loadStats();
+        initClassList();
+        updateKarmaIcon();
+        
+        await loadProfileFromVKStorage();
+        addProfileLoadButton();
+        
+        const savedClass = localStorage.getItem(CLASS_KEY);
+        if (savedClass) {
+            triggerBtn.textContent = savedClass;
+        }
+        
+        // Инициализация капа статов
+        const speedInput = document.getElementById('speedBookLevel');
+        if (speedInput) {
+            adjustSpeedBookInput(speedInput);
+        }
+        
+        // Добавляем обработчики для капа статов
+        const strAgiSlider = document.getElementById('strAgiSlider');
+        if (strAgiSlider) {
+            strAgiSlider.addEventListener('input', function(e) {
+                updateDistribution(e.target.value);
+            });
+        }
+        
+        // Обработчики для перераспределения
+        ['vit', 'str', 'agi'].forEach(stat => {
+            const removeInput = document.getElementById(`remove-${stat}`);
+            if (removeInput) {
+                removeInput.addEventListener('input', function() {
+                    calculateRedistributePrice(stat);
+                });
+            }
+            const redistributeBtn = document.getElementById(`redistribute-${stat}-btn`);
+            if (redistributeBtn) {
+                redistributeBtn.addEventListener('click', function() {
+                    applyRedistribute(stat);
+                });
+            }
+        });
+        
+        // Обработчики для расторопности
+        ['vit', 'str', 'agi'].forEach(stat => {
+            const speedStat = document.getElementById(`speed-${stat}-value`);
+            if (speedStat) {
+                speedStat.addEventListener('click', function(e) {
+                    editSpeedStat(stat, e.target);
+                });
+            }
+        });
+        
+        const speedBookLevel = document.getElementById('speedBookLevel');
+        if (speedBookLevel) {
+            speedBookLevel.addEventListener('input', function() {
+                adjustSpeedBookInput(this);
+                updateSpeedCalculations();
+            });
+            speedBookLevel.addEventListener('blur', function() {
+                if (this.value === '') this.value = '0';
+                adjustSpeedBookInput(this);
+                updateSpeedCalculations();
+            });
+        }
+        
+        const speedRingCheckbox = document.getElementById('speedRingCheckbox');
+        if (speedRingCheckbox) {
+            speedRingCheckbox.addEventListener('change', updateSpeedCalculations);
+        }
+        
+        const speedBookEquipped = document.getElementById('speedBookEquipped');
+        if (speedBookEquipped) {
+            speedBookEquipped.addEventListener('change', updateSpeedCalculations);
+        }
+        
+    } catch (error) {
+        console.log('Ошибка инициализации VK Bridge:', error);
+        document.getElementById('user-name').textContent = 'Тестовый пользователь';
+        
+        loadInventory();
+        loadStats();
+        initClassList();
+        updateKarmaIcon();
+        
+        const savedClass = localStorage.getItem(CLASS_KEY);
+        if (savedClass) {
+            triggerBtn.textContent = savedClass;
+        }
+    }
 };
 </script>
 </body>
