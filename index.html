@@ -1822,74 +1822,65 @@ display: none !important;
 const MAX_STAT_VALUE = 99999;
 const MAX_BOOK_VALUE = 9999999;
 
-// ========== ЗАГРУЗКА ПРОФИЛЯ ИЗ VK STORAGE ==========
+// ========== ДАННЫЕ GITHUB ==========
+const GITHUB_USERNAME = 'saxa459007-pixel';
+const REPO_NAME = '-';
+const BRANCH = 'main'; // или master, проверьте какая ветка
 
-async function loadProfileFromVKStorage() {
+// ========== ЗАГРУЗКА ПРОФИЛЯ ИЗ GITHUB ==========
+
+async function loadProfileFromGitHub() {
     try {
-        // Показываем уведомление о загрузке
-        if (window.vkBridge) {
-            vkBridge.send('VKWebAppTapticImpactOccurred', {'style': 'light'});
-        }
+        showNotification('⏳ Загружаем профиль...');
         
-        // Проверяем, есть ли USER_ID
         if (!window.USER_ID) {
-            console.log('❌ USER_ID не определен');
             showNotification('❌ Ошибка: пользователь не идентифицирован');
             return false;
         }
         
-        console.log('🔍 Загружаем профиль для USER_ID:', window.USER_ID);
+        // Формируем URL к файлу в GitHub
+        const fileUrl = `https://raw.githubusercontent.com/${GITHUB_USERNAME}/${REPO_NAME}/${BRANCH}/profiles/${window.USER_ID}.json`;
         
-        // Получаем данные из VK Storage
-        const storageData = await vkBridge.send('VKWebAppStorageGet', {
-            keys: [`rpg_profile_${window.USER_ID}`]
-        });
+        console.log('🔍 Загружаем:', fileUrl);
         
-        console.log('📦 Ответ от VK Storage:', storageData);
+        // Загружаем файл
+        const response = await fetch(fileUrl);
         
-        if (storageData.keys && storageData.keys[0] && storageData.keys[0].value) {
-            const profileData = JSON.parse(storageData.keys[0].value);
-            
-            console.log('✅ Профиль загружен из VK Storage:', profileData);
-            
-            // Применяем статы
-            if (profileData.stats) {
-                Object.entries(profileData.stats).forEach(([key, value]) => {
-                    const el = document.querySelector(`.stat-value[data-key="${key}"]`);
-                    if (el) {
-                        console.log(`📊 Устанавливаем ${key} = ${value}`);
-                        el.textContent = value;
-                    }
-                });
+        if (!response.ok) {
+            if (response.status === 404) {
+                showNotification('ℹ️ Профиль не найден');
+            } else {
+                throw new Error(`Ошибка ${response.status}`);
             }
-            
-            // Сохраняем в localStorage
-            saveStats();
-            
-            // Обновляем интерфейс
-            updateKarmaIcon();
-            updateClassResult();
-            
-            // Показываем успешное уведомление
-            if (window.vkBridge) {
-                vkBridge.send('VKWebAppTapticNotificationOccurred', {
-                    'type': 'success'
-                });
-            }
-            
-            // Показываем всплывающее сообщение
-            showNotification('✅ Профиль загружен из облака!');
-            
-            return true;
-        } else {
-            console.log('ℹ️ Нет сохраненного профиля в VK Storage для ключа:', `rpg_profile_${window.USER_ID}`);
-            console.log('📦 Полученные данные:', storageData);
-            showNotification('ℹ️ Нет сохраненного профиля');
             return false;
         }
+        
+        const profileData = await response.json();
+        console.log('✅ Профиль загружен:', profileData);
+        
+        // Применяем статы
+        if (profileData.stats) {
+            Object.entries(profileData.stats).forEach(([key, value]) => {
+                const el = document.querySelector(`.stat-value[data-key="${key}"]`);
+                if (el) {
+                    console.log(`📊 Устанавливаем ${key} = ${value}`);
+                    el.textContent = value;
+                }
+            });
+        }
+        
+        // Сохраняем в localStorage
+        saveStats();
+        
+        // Обновляем интерфейс
+        updateKarmaIcon();
+        updateClassResult();
+        
+        showNotification('✅ Профиль загружен из GitHub!');
+        return true;
+        
     } catch (error) {
-        console.error('❌ Ошибка загрузки из VK Storage:', error);
-        console.error('❌ Детали ошибки:', error.message);
+        console.error('❌ Ошибка загрузки:', error);
         showNotification('❌ Ошибка загрузки профиля');
         return false;
     }
@@ -1942,7 +1933,7 @@ function addProfileLoadButton() {
         `;
         
         const loadButton = document.createElement('button');
-        loadButton.textContent = '📥 Загрузить профиль из облака';
+        loadButton.textContent = '📥 Загрузить профиль из GitHub';
         loadButton.style.cssText = `
             flex: 1;
             padding: 12px;
@@ -1957,7 +1948,7 @@ function addProfileLoadButton() {
         `;
         loadButton.onmouseover = () => loadButton.style.opacity = '0.9';
         loadButton.onmouseout = () => loadButton.style.opacity = '1';
-        loadButton.onclick = loadProfileFromVKStorage;
+        loadButton.onclick = loadProfileFromGitHub;
         
         buttonContainer.appendChild(loadButton);
         
@@ -3134,7 +3125,10 @@ window.onload = async () => {
         initClassList();
         updateKarmaIcon();
         
-        await loadProfileFromVKStorage();
+        // Загружаем профиль из GitHub (если есть)
+        await loadProfileFromGitHub();
+        
+        // Добавляем кнопку загрузки
         addProfileLoadButton();
         
         const savedClass = localStorage.getItem(CLASS_KEY);
@@ -3218,6 +3212,9 @@ window.onload = async () => {
         if (savedClass) {
             triggerBtn.textContent = savedClass;
         }
+        
+        // Добавляем кнопку загрузки даже при ошибке
+        addProfileLoadButton();
     }
 };
 </script>
