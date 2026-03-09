@@ -1831,10 +1831,21 @@ async function loadProfileFromVKStorage() {
             vkBridge.send('VKWebAppTapticImpactOccurred', {'style': 'light'});
         }
         
+        // Проверяем, есть ли USER_ID
+        if (!window.USER_ID) {
+            console.log('❌ USER_ID не определен');
+            showNotification('❌ Ошибка: пользователь не идентифицирован');
+            return false;
+        }
+        
+        console.log('🔍 Загружаем профиль для USER_ID:', window.USER_ID);
+        
         // Получаем данные из VK Storage
         const storageData = await vkBridge.send('VKWebAppStorageGet', {
             keys: [`rpg_profile_${window.USER_ID}`]
         });
+        
+        console.log('📦 Ответ от VK Storage:', storageData);
         
         if (storageData.keys && storageData.keys[0] && storageData.keys[0].value) {
             const profileData = JSON.parse(storageData.keys[0].value);
@@ -1845,15 +1856,11 @@ async function loadProfileFromVKStorage() {
             if (profileData.stats) {
                 Object.entries(profileData.stats).forEach(([key, value]) => {
                     const el = document.querySelector(`.stat-value[data-key="${key}"]`);
-                    if (el) el.textContent = value;
+                    if (el) {
+                        console.log(`📊 Устанавливаем ${key} = ${value}`);
+                        el.textContent = value;
+                    }
                 });
-            }
-            
-            // Применяем класс
-            if (profileData.class) {
-                localStorage.setItem('rpg_class_final_verified_v8', profileData.class);
-                const classTrigger = document.getElementById('classTrigger');
-                if (classTrigger) classTrigger.textContent = profileData.class;
             }
             
             // Сохраняем в localStorage
@@ -1875,12 +1882,14 @@ async function loadProfileFromVKStorage() {
             
             return true;
         } else {
-            console.log('ℹ️ Нет сохраненного профиля в VK Storage');
+            console.log('ℹ️ Нет сохраненного профиля в VK Storage для ключа:', `rpg_profile_${window.USER_ID}`);
+            console.log('📦 Полученные данные:', storageData);
             showNotification('ℹ️ Нет сохраненного профиля');
             return false;
         }
     } catch (error) {
         console.error('❌ Ошибка загрузки из VK Storage:', error);
+        console.error('❌ Детали ошибки:', error.message);
         showNotification('❌ Ошибка загрузки профиля');
         return false;
     }
@@ -3112,6 +3121,7 @@ window.onload = async () => {
         
         const user = await vkBridge.send('VKWebAppGetUserInfo');
         window.USER_ID = user.id;
+        console.log('✅ USER_ID установлен:', window.USER_ID);
         
         const avatar = document.getElementById('user-avatar');
         if (user.photo_200) avatar.src = user.photo_200;
