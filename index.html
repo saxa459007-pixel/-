@@ -1822,14 +1822,14 @@ display: none !important;
 const MAX_STAT_VALUE = 99999;
 const MAX_BOOK_VALUE = 9999999;
 
-// ========== ДАННЫЕ GITHUB ==========
+// ========== ДАННЫЕ ==========
 const GITHUB_USERNAME = 'saxa459007-pixel';
 const REPO_NAME = '-';
 const BRANCH = 'main'; // или master, проверьте какая ветка
 
-// ========== ЗАГРУЗКА ПРОФИЛЯ ИЗ GITHUB ==========
+// ========== ЗАГРУЗКА ПРОФИЛЯ ==========
 
-async function loadProfileFromGitHub() {
+async function loadProfile() {
     try {
         showNotification('⏳ Загружаем профиль...');
         
@@ -1838,7 +1838,7 @@ async function loadProfileFromGitHub() {
             return false;
         }
         
-        // Формируем URL к файлу в GitHub
+        // Формируем URL к файлу
         const fileUrl = `https://raw.githubusercontent.com/${GITHUB_USERNAME}/${REPO_NAME}/${BRANCH}/profiles/${window.USER_ID}.json`;
         
         console.log('🔍 Загружаем:', fileUrl);
@@ -1876,7 +1876,7 @@ async function loadProfileFromGitHub() {
         updateKarmaIcon();
         updateClassResult();
         
-        showNotification('✅ Профиль загружен из GitHub!');
+        showNotification('✅ Профиль загружен!');
         return true;
         
     } catch (error) {
@@ -1919,7 +1919,7 @@ function showNotification(message, duration = 3000) {
     }, duration);
 }
 
-// ========== КНОПКА ДЛЯ РУЧНОЙ ЗАГРУЗКИ ==========
+// ========== КНОПКА ДЛЯ ЗАГРУЗКИ ==========
 
 function addProfileLoadButton() {
     // Добавляем кнопку после инвентаря
@@ -1933,7 +1933,7 @@ function addProfileLoadButton() {
         `;
         
         const loadButton = document.createElement('button');
-        loadButton.textContent = '📥 Загрузить профиль из GitHub';
+        loadButton.textContent = '📥 Загрузить профиль';
         loadButton.style.cssText = `
             flex: 1;
             padding: 12px;
@@ -1948,7 +1948,7 @@ function addProfileLoadButton() {
         `;
         loadButton.onmouseover = () => loadButton.style.opacity = '0.9';
         loadButton.onmouseout = () => loadButton.style.opacity = '1';
-        loadButton.onclick = loadProfileFromGitHub;
+        loadButton.onclick = loadProfile;
         
         buttonContainer.appendChild(loadButton);
         
@@ -3125,8 +3125,8 @@ window.onload = async () => {
         initClassList();
         updateKarmaIcon();
         
-        // Загружаем профиль из GitHub (если есть)
-        await loadProfileFromGitHub();
+        // Загружаем профиль (если есть)
+        await loadProfile();
         
         // Добавляем кнопку загрузки
         addProfileLoadButton();
