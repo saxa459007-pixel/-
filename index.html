@@ -112,7 +112,7 @@ flex: 1;
 .profile-header { padding: 15px; display: flex; align-items: flex-start; border-bottom: 1px solid var(--separator-color); position: relative; z-index: 10; }
 .avatar { width: 50px; height: 50px; border-radius: 50%; margin-right: 12px; object-fit: cover; border: 2px solid var(--separator-color); flex-shrink: 0; background-color: #000; }
 .info { flex: 1; overflow: visible; position: relative; }
-.player-name { font-size: 17px; margin: 0 0 5px 0; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text-main); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.player-name { font-size: 17px; margin: 0 0 5px 0; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text-main); }
 .class-wrapper { position: relative; width: 100%; z-index: 50; }
 .class-trigger { background: none; border: none; color: var(--text-secondary); font-size: 12px; padding: 4px 8px; margin: 0; cursor: pointer; text-transform: lowercase; font-family: inherit; display: inline-flex; align-items: center; gap: 4px; outline: none; text-align: left; border-radius: 4px; transition: background 0.2s; width: auto; }
 .class-trigger:hover { background-color: rgba(255,255,255,0.05); color: var(--text-main); }
@@ -1571,7 +1571,21 @@ display: none !important;
     <div class="profile-header">
       <img src="https://via.placeholder.com/50" alt="Avatar" class="avatar" id="user-avatar">
       <div class="info">
-        <h1 class="player-name" id="user-name">Загрузка...</h1>
+        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 5px;">
+          <h1 class="player-name" id="user-name" style="margin: 0;">Загрузка...</h1>
+          <!-- Кнопка загрузки профиля в виде SVG -->
+          <button id="profile-load-btn" onclick="loadProfile()" style="background: none; border: none; padding: 0; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 4px; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='rgba(255,255,255,0.1)'" onmouseout="this.style.backgroundColor='transparent'">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="fill: var(--text-secondary);">
+              <g>
+                <rect x="4" y="18" width="16" height="2" rx="1" ry="1" fill="currentColor"/>
+                <rect x="3" y="17" width="4" height="2" rx="1" ry="1" transform="rotate(-90 5 18)" fill="currentColor"/>
+                <rect x="17" y="17" width="4" height="2" rx="1" ry="1" transform="rotate(-90 19 18)" fill="currentColor"/>
+                <path d="M12 15a1 1 0 0 1-.58-.18l-4-2.82a1 1 0 0 1-.24-1.39 1 1 0 0 1 1.4-.24L12 12.76l3.4-2.56a1 1 0 0 1 1.2 1.6l-4 3a1 1 0 0 1-.6.2z" fill="currentColor"/>
+                <path d="M12 13a1 1 0 0 1-1-1V4a1 1 0 0 1 2 0v8a1 1 0 0 1-1 1z" fill="currentColor"/>
+              </g>
+            </svg>
+          </button>
+        </div>
         <div class="class-wrapper">
           <button class="class-trigger" id="classTrigger" onclick="toggleClassList()">жнец душ</button>
           <div class="class-list" id="classList"></div>
@@ -1858,23 +1872,35 @@ async function loadProfile() {
         const profileData = await response.json();
         console.log('✅ Профиль загружен:', profileData);
         
-        // Применяем статы
+        // Список статов, которые приходят из бота
+        const statsToUpdate = ['lvl', 'str', 'agi', 'vit', 'luck', 'atk', 'armor', 'karma'];
+        
+        // Применяем только те статы, что есть в профиле
         if (profileData.stats) {
-            Object.entries(profileData.stats).forEach(([key, value]) => {
-                const el = document.querySelector(`.stat-value[data-key="${key}"]`);
-                if (el) {
-                    console.log(`📊 Устанавливаем ${key} = ${value}`);
-                    el.textContent = value;
+            statsToUpdate.forEach(key => {
+                if (profileData.stats[key] !== undefined) {
+                    const el = document.querySelector(`.stat-value[data-key="${key}"]`);
+                    if (el) {
+                        console.log(`📊 Устанавливаем ${key} = ${profileData.stats[key]}`);
+                        el.textContent = profileData.stats[key];
+                    }
                 }
             });
         }
         
+        // Обновляем карму отдельно (иконка)
+        updateKarmaIcon();
+        
         // Сохраняем в localStorage
         saveStats();
         
-        // Обновляем интерфейс
-        updateKarmaIcon();
-        updateClassResult();
+        // Обновляем класс (если он есть в профиле)
+        if (profileData.class) {
+            localStorage.setItem('rpg_class_final_verified_v8', profileData.class);
+            const classTrigger = document.getElementById('classTrigger');
+            if (classTrigger) classTrigger.textContent = profileData.class;
+            updateClassResult();
+        }
         
         showNotification('✅ Профиль загружен!');
         return true;
@@ -1917,44 +1943,6 @@ function showNotification(message, duration = 3000) {
         notification.style.transition = 'opacity 0.3s';
         setTimeout(() => notification.remove(), 300);
     }, duration);
-}
-
-// ========== КНОПКА ДЛЯ ЗАГРУЗКИ ==========
-
-function addProfileLoadButton() {
-    // Добавляем кнопку после инвентаря
-    const inventorySection = document.querySelector('.inventory-section');
-    if (inventorySection) {
-        const buttonContainer = document.createElement('div');
-        buttonContainer.style.cssText = `
-            margin-top: 15px;
-            display: flex;
-            gap: 10px;
-        `;
-        
-        const loadButton = document.createElement('button');
-        loadButton.textContent = '📥 Загрузить профиль';
-        loadButton.style.cssText = `
-            flex: 1;
-            padding: 12px;
-            background: var(--accent);
-            border: none;
-            border-radius: 8px;
-            color: white;
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            transition: opacity 0.2s;
-        `;
-        loadButton.onmouseover = () => loadButton.style.opacity = '0.9';
-        loadButton.onmouseout = () => loadButton.style.opacity = '1';
-        loadButton.onclick = loadProfile;
-        
-        buttonContainer.appendChild(loadButton);
-        
-        // Вставляем после инвентаря
-        inventorySection.parentNode.insertBefore(buttonContainer, inventorySection.nextSibling);
-    }
 }
 
 // ========== ФУНКЦИИ ДЛЯ КАПА СТАТОВ ==========
@@ -3128,9 +3116,6 @@ window.onload = async () => {
         // Загружаем профиль (если есть)
         await loadProfile();
         
-        // Добавляем кнопку загрузки
-        addProfileLoadButton();
-        
         const savedClass = localStorage.getItem(CLASS_KEY);
         if (savedClass) {
             triggerBtn.textContent = savedClass;
@@ -3212,9 +3197,6 @@ window.onload = async () => {
         if (savedClass) {
             triggerBtn.textContent = savedClass;
         }
-        
-        // Добавляем кнопку загрузки даже при ошибке
-        addProfileLoadButton();
     }
 };
 </script>
