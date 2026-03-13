@@ -392,6 +392,10 @@ cursor: pointer;
 position: relative;
 height: 42px;
 box-sizing: border-box;
+margin-bottom: 6px;
+}
+.cap-stat-item:last-child {
+margin-bottom: 0;
 }
 .cap-stat-item:hover {
 background-color: #5a626b;
@@ -429,6 +433,10 @@ box-sizing: border-box;
 display: flex;
 flex-direction: column;
 justify-content: center;
+margin-bottom: 6px;
+}
+.cap-info-block:last-child {
+margin-bottom: 0;
 }
 
 .cap-info-row {
@@ -1511,7 +1519,7 @@ display: none !important;
       </div>
       
       <!-- ❤️ Выносливость - как в капе статов -->
-      <div class="cap-stat-item" onclick="editSpeedStat('vit', event)">
+      <div class="cap-stat-item" onclick="editSpeedStat('vit', event)" style="margin-bottom: 6px;">
         <span class="cap-stat-icon">❤️</span>
         <span class="cap-stat-value" id="speed-vit-value">3</span>
         <span class="cap-stat-name">вын</span>
@@ -1523,7 +1531,7 @@ display: none !important;
       </div>
       
       <!-- 💪 Сила - как в капе статов -->
-      <div class="cap-stat-item" onclick="editSpeedStat('str', event)">
+      <div class="cap-stat-item" onclick="editSpeedStat('str', event)" style="margin-bottom: 6px;">
         <span class="cap-stat-icon">💪</span>
         <span class="cap-stat-value" id="speed-str-value">3</span>
         <span class="cap-stat-name">сил</span>
@@ -1535,7 +1543,7 @@ display: none !important;
       </div>
       
       <!-- 🤲 Ловкость - как в капе статов -->
-      <div class="cap-stat-item" onclick="editSpeedStat('agi', event)">
+      <div class="cap-stat-item" onclick="editSpeedStat('agi', event)" style="margin-bottom: 0;">
         <span class="cap-stat-icon">🤲</span>
         <span class="cap-stat-value" id="speed-agi-value">3</span>
         <span class="cap-stat-name">лвк</span>
@@ -1818,21 +1826,19 @@ display: none !important;
 <script src="books.js"></script>
 <script>
 // ========== КОНСТАНТЫ ==========
-const MAX_STAT_VALUE = 99999; // 5 цифр для статов
-const MAX_BOOK_VALUE = 9999999; // 7 цифр для книг
+const MAX_STAT_VALUE = 99999;
+const MAX_BOOK_VALUE = 9999999;
 
 // ========== ДАННЫЕ ==========
 const GITHUB_USERNAME = 'saxa459007-pixel';
 const REPO_NAME = '-';
-const BRANCH = 'main'; // или master, проверьте какая ветка
+const BRANCH = 'main';
 
 // ========== ФУНКЦИЯ ДЛЯ ПОКАЗА УВЕДОМЛЕНИЙ ==========
 function showNotification(message, duration = 2000) {
-    // Удаляем все существующие уведомления
     const existingNotifications = document.querySelectorAll('.app-notification');
     existingNotifications.forEach(notif => notif.remove());
     
-    // Создаем элемент уведомления
     const notification = document.createElement('div');
     notification.className = 'app-notification';
     notification.textContent = message;
@@ -1860,20 +1866,13 @@ function showNotification(message, duration = 2000) {
         text-overflow: ellipsis;
     `;
     
-    // Добавляем стиль анимации (если ещё не добавлен)
     if (!document.getElementById('notification-style')) {
         const style = document.createElement('style');
         style.id = 'notification-style';
         style.textContent = `
             @keyframes notificationSlide {
-                0% { 
-                    opacity: 0; 
-                    transform: translate(-50%, -20px);
-                }
-                100% { 
-                    opacity: 1; 
-                    transform: translate(-50%, 0);
-                }
+                0% { opacity: 0; transform: translate(-50%, -20px); }
+                100% { opacity: 1; transform: translate(-50%, 0); }
             }
         `;
         document.head.appendChild(style);
@@ -1881,7 +1880,6 @@ function showNotification(message, duration = 2000) {
     
     document.body.appendChild(notification);
     
-    // Удаляем через указанное время
     setTimeout(() => {
         if (notification && notification.parentNode) {
             notification.style.animation = 'none';
@@ -2266,6 +2264,7 @@ function updateSpeedCalculations() {
     document.getElementById('speed-agi-time').textContent = calculateSpeedTime(stats.agi, bookLevel, hasRing, bookEquipped).toFixed(1);
     
     saveSpeedSettings(bookLevel, bookEquipped);
+    saveAllDataToVK(); // Сохраняем в VK Cloud
 }
 
 function saveSpeedSettings(level, equipped) {
@@ -2437,6 +2436,7 @@ function syncPassiveToInventory(bookName, level) {
         adjustInventoryInputWidth(inventoryInput);
     }
     saveInventory();
+    saveAllDataToVK(); // Сохраняем в VK Cloud
 }
 
 // Функция для обновления отображения пассивной книги
@@ -2481,6 +2481,7 @@ window.syncInventoryBookLevel = function(bookName, level) {
     
     updatePassiveBookDisplay(bookName, newLevel);
     saveInventory();
+    saveAllDataToVK(); // Сохраняем в VK Cloud
 };
 
 // Переопределяем функцию updatePassiveBookLevel для синхронизации с инвентарем
@@ -2608,6 +2609,7 @@ window.editCapLevel = function(wrapper) {
         updateCapCalculations();
         updateRedistributeCard();
         updateSpeedCalculations();
+        saveAllDataToVK();
     };
     
     input.onblur = finish;
@@ -2732,6 +2734,7 @@ window.editCapStat = function(item, statKey) {
         updateCapCalculations();
         updateRedistributeCard();
         updateSpeedCalculations();
+        saveAllDataToVK();
     };
     
     input.onblur = finish;
@@ -2902,6 +2905,7 @@ function loadInventory() {
 document.addEventListener('change', function(e) {
     if (e.target.classList.contains('book-level-input-inventory')) {
         saveInventory();
+        saveAllDataToVK();
     }
 });
 
@@ -3100,6 +3104,7 @@ item.classList.toggle('active', item.textContent === cls);
 listDiv.classList.remove('show');
 triggerBtn.classList.remove('open');
 updateClassResult();
+saveAllDataToVK();
 };
 
 document.addEventListener('click', function(e) {
@@ -3204,6 +3209,7 @@ saveStats();
 updateCapCalculations();
 updateRedistributeCard();
 updateSpeedCalculations();
+saveAllDataToVK();
 };
 input.onblur = finish;
 input.onkeydown = e => {
@@ -3373,7 +3379,8 @@ window.applyBulkLevel = function(tab) {
     } else {
         applyBulkLevelToPassive(level);
     }
-
+    
+    saveAllDataToVK();
     closeBulkPanel(tab);
 };
 
