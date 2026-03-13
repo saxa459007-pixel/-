@@ -2258,33 +2258,74 @@ function loadSpeedSettings() {
     return { bookLevel, bookEquipped };
 }
 
-// Редактирование значения стата в блоке Расторопности
+// ИСПРАВЛЕННАЯ ФУНКЦИЯ: Редактирование значения стата в блоке Расторопности
 window.editSpeedStat = function(statKey, element) {
     const currentVal = element.textContent;
-    const parentDiv = element.parentElement;
+    const parentDiv = element.parentElement; // Контейнер с иконкой, значением и названием
+    const statRow = parentDiv.parentElement; // Родительский div с display: flex
+    
+    // Функция для измерения ширины текста
+    function getTextWidth(text) {
+        const span = document.createElement('span');
+        span.style.font = window.getComputedStyle(element).font;
+        span.style.visibility = 'hidden';
+        span.style.position = 'absolute';
+        span.style.whiteSpace = 'nowrap';
+        span.textContent = text || '1';
+        document.body.appendChild(span);
+        const width = span.offsetWidth;
+        document.body.removeChild(span);
+        return width;
+    }
+    
+    // Создаем контейнер для инпута
+    const container = document.createElement('div');
+    container.style.position = 'absolute';
+    container.style.top = '0';
+    container.style.left = '0';
+    container.style.width = '100%';
+    container.style.height = '100%';
+    container.style.display = 'flex';
+    container.style.alignItems = 'center';
+    container.style.padding = '0 12px';
+    container.style.boxSizing = 'border-box';
+    container.style.backgroundColor = 'var(--input-bg)';
+    container.style.borderRadius = '6px';
+    container.style.zIndex = '100';
     
     const input = document.createElement('input');
     input.type = 'number';
     input.value = currentVal === '0' ? '' : currentVal;
-    input.className = 'stat-input';
-    input.style.position = 'absolute';
-    input.style.top = '0';
-    input.style.left = '0';
-    input.style.width = '100%';
-    input.style.height = '100%';
+    input.style.width = 'auto';
+    input.style.minWidth = '40px';
+    input.style.maxWidth = '80px';
     input.style.background = 'transparent';
     input.style.border = 'none';
     input.style.color = 'var(--text-main)';
     input.style.fontSize = '14px';
     input.style.fontWeight = '700';
     input.style.fontFamily = 'inherit';
-    input.style.padding = '0';
+    input.style.padding = '4px 0';
     input.style.margin = '0';
     input.style.outline = 'none';
     input.style.textAlign = 'left';
     input.style.appearance = 'none';
+    input.style.MozAppearance = 'textfield';
     input.maxLength = 5;
     input.max = MAX_STAT_VALUE.toString();
+    
+    // Добавляем иконку стата
+    const iconSpan = document.createElement('span');
+    iconSpan.textContent = statKey === 'vit' ? '❤️' : (statKey === 'str' ? '💪' : '🤲');
+    iconSpan.style.marginRight = '8px';
+    iconSpan.style.fontSize = '18px';
+    
+    // Добавляем название стата
+    const nameSpan = document.createElement('span');
+    nameSpan.textContent = statKey === 'vit' ? 'вын' : (statKey === 'str' ? 'сил' : 'лвк');
+    nameSpan.style.color = 'var(--text-secondary)';
+    nameSpan.style.fontSize = '12px';
+    nameSpan.style.marginLeft = '4px';
     
     input.addEventListener('input', function() {
         if (this.value.length > 5) {
@@ -2294,10 +2335,28 @@ window.editSpeedStat = function(statKey, element) {
         if (!isNaN(num) && num > MAX_STAT_VALUE) {
             this.value = MAX_STAT_VALUE.toString();
         }
+        
+        // Подгоняем ширину под содержимое
+        const textWidth = getTextWidth(this.value || '1');
+        this.style.width = Math.min(80, textWidth + 10) + 'px';
     });
     
+    // Скрываем оригинальный элемент
     element.style.visibility = 'hidden';
-    parentDiv.appendChild(input);
+    
+    // Собираем всё в контейнер
+    container.appendChild(iconSpan);
+    container.appendChild(input);
+    container.appendChild(nameSpan);
+    
+    // Добавляем контейнер в родительский элемент
+    statRow.style.position = 'relative';
+    statRow.appendChild(container);
+    
+    // Устанавливаем начальную ширину
+    const initialWidth = getTextWidth(currentVal || '1');
+    input.style.width = Math.min(80, initialWidth + 10) + 'px';
+    
     input.focus();
     input.select();
     
@@ -2314,7 +2373,8 @@ window.editSpeedStat = function(statKey, element) {
         
         element.textContent = newVal;
         element.style.visibility = 'visible';
-        input.remove();
+        container.remove();
+        statRow.style.position = '';
         
         const profileStat = document.querySelector(`.stat-value[data-key="${statKey}"]`);
         if (profileStat) profileStat.textContent = newVal;
