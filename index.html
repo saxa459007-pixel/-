@@ -1839,15 +1839,13 @@ const MAX_BOOK_VALUE = 9999999;
 // ========== ДАННЫЕ ==========
 const GITHUB_USERNAME = 'saxa459007-pixel';
 const REPO_NAME = '-';
-const BRANCH = 'main'; // или master, проверьте какая ветка
+const BRANCH = 'main';
 
 // ========== ФУНКЦИЯ ДЛЯ ПОКАЗА УВЕДОМЛЕНИЙ ==========
 function showNotification(message, duration = 2000) {
-    // Удаляем все существующие уведомления
     const existingNotifications = document.querySelectorAll('.app-notification');
     existingNotifications.forEach(notif => notif.remove());
     
-    // Создаем элемент уведомления
     const notification = document.createElement('div');
     notification.className = 'app-notification';
     notification.textContent = message;
@@ -1875,20 +1873,13 @@ function showNotification(message, duration = 2000) {
         text-overflow: ellipsis;
     `;
     
-    // Добавляем стиль анимации (если ещё не добавлен)
     if (!document.getElementById('notification-style')) {
         const style = document.createElement('style');
         style.id = 'notification-style';
         style.textContent = `
             @keyframes notificationSlide {
-                0% { 
-                    opacity: 0; 
-                    transform: translate(-50%, -20px);
-                }
-                100% { 
-                    opacity: 1; 
-                    transform: translate(-50%, 0);
-                }
+                0% { opacity: 0; transform: translate(-50%, -20px); }
+                100% { opacity: 1; transform: translate(-50%, 0); }
             }
         `;
         document.head.appendChild(style);
@@ -1896,7 +1887,6 @@ function showNotification(message, duration = 2000) {
     
     document.body.appendChild(notification);
     
-    // Удаляем через указанное время
     setTimeout(() => {
         if (notification && notification.parentNode) {
             notification.style.animation = 'none';
@@ -1923,12 +1913,10 @@ async function loadProfile() {
             return false;
         }
         
-        // Формируем URL к файлу
         const fileUrl = `https://raw.githubusercontent.com/${GITHUB_USERNAME}/${REPO_NAME}/${BRANCH}/profiles/${window.USER_ID}.json`;
         
         console.log('🔍 Загружаем:', fileUrl);
         
-        // Загружаем файл
         const response = await fetch(fileUrl);
         
         if (!response.ok) {
@@ -1943,10 +1931,8 @@ async function loadProfile() {
         const profileData = await response.json();
         console.log('✅ Профиль загружен:', profileData);
         
-        // Список статов, которые приходят из бота
         const statsToUpdate = ['lvl', 'str', 'agi', 'vit', 'luck', 'atk', 'armor', 'karma'];
         
-        // Применяем только те статы, что есть в профиле
         if (profileData.stats) {
             statsToUpdate.forEach(key => {
                 if (profileData.stats[key] !== undefined) {
@@ -1959,13 +1945,9 @@ async function loadProfile() {
             });
         }
         
-        // Обновляем карму отдельно (иконка)
         updateKarmaIcon();
-        
-        // Сохраняем в localStorage
         saveStats();
         
-        // Обновляем класс (если он есть в профиле)
         if (profileData.class) {
             localStorage.setItem('rpg_class_final_verified_v8', profileData.class);
             const classTrigger = document.getElementById('classTrigger');
@@ -1985,7 +1967,6 @@ async function loadProfile() {
 
 // ========== ФУНКЦИИ ДЛЯ КАПА СТАТОВ ==========
 
-// Функция для подгона ширины поля ввода уровня книги Расторопности
 function adjustSpeedBookInput(input) {
     if (!input) return;
     
@@ -2064,7 +2045,6 @@ function getDistributedStats(totalLeft) {
     return { str: strLeft, agi: agiLeft };
 }
 
-// Функция расчета стоимости перераспределения
 function calculateRedistributePrice(statKey) {
     const statValue = parseInt(document.querySelector(`[data-cap-key="${statKey}"]`).textContent);
     const inputElement = document.getElementById(`remove-${statKey}`);
@@ -2095,7 +2075,6 @@ function calculateRedistributePrice(statKey) {
         btnElement.disabled = false;
     }
     
-    // Прогрессивная стоимость
     let totalPrice = 0;
     let currentVal = statValue;
     for (let i = 0; i < removeValue; i++) {
@@ -2119,7 +2098,6 @@ function updateTotalPrice() {
     document.getElementById('redistribute-total').textContent = total + '🌕';
 }
 
-// Функция применения перераспределения
 window.applyRedistribute = function(statKey) {
     const statElement = document.querySelector(`[data-cap-key="${statKey}"]`);
     const currentValue = parseInt(statElement.textContent);
@@ -2175,7 +2153,6 @@ function updateRedistributeCard() {
     calculateRedistributePrice('agi');
 }
 
-// Функция получения текущих значений статов из профиля
 function getCurrentStats() {
     return {
         vit: parseInt(document.querySelector('.stat-value[data-key="vit"]').textContent) || 3,
@@ -2184,7 +2161,6 @@ function getCurrentStats() {
     };
 }
 
-// Функция расчета времени Расторопности
 function calculateSpeedTime(statValue, bookLevel, hasRing, bookEquipped) {
     if (statValue <= 0) return 0;
     
@@ -2207,7 +2183,6 @@ function calculateSpeedTime(statValue, bookLevel, hasRing, bookEquipped) {
     return time;
 }
 
-// Обновление всех расчетов Расторопности
 function updateSpeedCalculations() {
     const bookLevelInput = document.getElementById('speedBookLevel');
     if (!bookLevelInput) return;
@@ -2258,11 +2233,20 @@ function loadSpeedSettings() {
     return { bookLevel, bookEquipped };
 }
 
-// ИСПРАВЛЕННАЯ ФУНКЦИЯ: Редактирование значения стата в блоке Расторопности
+// ========== ИСПРАВЛЕННАЯ ФУНКЦИЯ ДЛЯ РЕДАКТИРОВАНИЯ СТАТА В РАСТОРОПНОСТИ ==========
+// Теперь работает точно так же, как в капе статов
 window.editSpeedStat = function(statKey, element) {
     const currentVal = element.textContent;
     const parentDiv = element.parentElement; // Контейнер с иконкой, значением и названием
-    const statRow = parentDiv.parentElement; // Родительский div с display: flex
+    
+    // Получаем иконку и название из текущей строки
+    const iconElement = parentDiv.querySelector('span:first-child');
+    const nameElement = parentDiv.querySelector('span:last-child');
+    
+    if (!iconElement || !nameElement) return;
+    
+    const iconText = iconElement.textContent;
+    const nameText = nameElement.textContent;
     
     // Функция для измерения ширины текста
     function getTextWidth(text) {
@@ -2278,24 +2262,26 @@ window.editSpeedStat = function(statKey, element) {
         return width;
     }
     
-    // Создаем контейнер для инпута
+    // Создаем контейнер для инпута (как в капе статов)
     const container = document.createElement('div');
+    container.style.display = 'flex';
+    container.style.alignItems = 'center';
+    container.style.gap = '4px';
     container.style.position = 'absolute';
     container.style.top = '0';
     container.style.left = '0';
     container.style.width = '100%';
     container.style.height = '100%';
-    container.style.display = 'flex';
-    container.style.alignItems = 'center';
     container.style.padding = '0 12px';
     container.style.boxSizing = 'border-box';
-    container.style.backgroundColor = 'var(--input-bg)';
-    container.style.borderRadius = '6px';
+    container.style.pointerEvents = 'none';
+    container.style.backgroundColor = 'transparent';
     container.style.zIndex = '100';
     
     const input = document.createElement('input');
     input.type = 'number';
     input.value = currentVal === '0' ? '' : currentVal;
+    input.style.position = 'relative';
     input.style.width = 'auto';
     input.style.minWidth = '40px';
     input.style.maxWidth = '80px';
@@ -2305,27 +2291,31 @@ window.editSpeedStat = function(statKey, element) {
     input.style.fontSize = '14px';
     input.style.fontWeight = '700';
     input.style.fontFamily = 'inherit';
-    input.style.padding = '4px 0';
+    input.style.padding = '0';
     input.style.margin = '0';
+    input.style.borderRadius = '0';
     input.style.outline = 'none';
     input.style.textAlign = 'left';
     input.style.appearance = 'none';
     input.style.MozAppearance = 'textfield';
+    input.style.pointerEvents = 'auto';
     input.maxLength = 5;
     input.max = MAX_STAT_VALUE.toString();
     
     // Добавляем иконку стата
     const iconSpan = document.createElement('span');
-    iconSpan.textContent = statKey === 'vit' ? '❤️' : (statKey === 'str' ? '💪' : '🤲');
-    iconSpan.style.marginRight = '8px';
+    iconSpan.textContent = iconText;
+    iconSpan.style.marginRight = '4px';
     iconSpan.style.fontSize = '18px';
+    iconSpan.style.pointerEvents = 'none';
     
     // Добавляем название стата
     const nameSpan = document.createElement('span');
-    nameSpan.textContent = statKey === 'vit' ? 'вын' : (statKey === 'str' ? 'сил' : 'лвк');
+    nameSpan.textContent = nameText;
     nameSpan.style.color = 'var(--text-secondary)';
     nameSpan.style.fontSize = '12px';
-    nameSpan.style.marginLeft = '4px';
+    nameSpan.style.marginLeft = '2px';
+    nameSpan.style.pointerEvents = 'none';
     
     input.addEventListener('input', function() {
         if (this.value.length > 5) {
@@ -2341,8 +2331,10 @@ window.editSpeedStat = function(statKey, element) {
         this.style.width = Math.min(80, textWidth + 10) + 'px';
     });
     
-    // Скрываем оригинальный элемент
+    // Скрываем оригинальный элемент и его соседей
     element.style.visibility = 'hidden';
+    iconElement.style.visibility = 'hidden';
+    nameElement.style.visibility = 'hidden';
     
     // Собираем всё в контейнер
     container.appendChild(iconSpan);
@@ -2350,8 +2342,8 @@ window.editSpeedStat = function(statKey, element) {
     container.appendChild(nameSpan);
     
     // Добавляем контейнер в родительский элемент
-    statRow.style.position = 'relative';
-    statRow.appendChild(container);
+    parentDiv.style.position = 'relative';
+    parentDiv.appendChild(container);
     
     // Устанавливаем начальную ширину
     const initialWidth = getTextWidth(currentVal || '1');
@@ -2373,8 +2365,10 @@ window.editSpeedStat = function(statKey, element) {
         
         element.textContent = newVal;
         element.style.visibility = 'visible';
+        iconElement.style.visibility = 'visible';
+        nameElement.style.visibility = 'visible';
         container.remove();
-        statRow.style.position = '';
+        parentDiv.style.position = '';
         
         const profileStat = document.querySelector(`.stat-value[data-key="${statKey}"]`);
         if (profileStat) profileStat.textContent = newVal;
@@ -2400,7 +2394,7 @@ window.editSpeedStat = function(statKey, element) {
     input.onclick = e => e.stopPropagation();
 };
 
-// Функции для редактирования капа статов
+// Остальные функции (editCapLevel, editCapStat, editStatByCell и т.д.) остаются без изменений
 window.editCapLevel = function(wrapper) {
     const valueSpan = wrapper.querySelector('.stat-value');
     const iconSpan = wrapper.querySelector('.stat-icon');
@@ -2772,7 +2766,6 @@ function measureTextWidth(text, font, padding = 0) {
     return width + padding;
 }
 
-// Функция для подгона ширины поля ввода в инвентаре
 function adjustInventoryInputWidth(input) {
     if (input.value.length > 7) {
         input.value = input.value.slice(0, 7);
@@ -2802,7 +2795,6 @@ function adjustInventoryInputWidth(input) {
     input.style.width = newWidth + 'px';
 }
 
-// Синхронизация уровня книги с пассивными книгами
 window.syncInventoryBookLevel = function(bookName, level) {
     const savedLevels = JSON.parse(localStorage.getItem('rpg_books_levels_final_verified_v8') || '{}');
     let newLevel = parseInt(level) || 0;
@@ -2821,7 +2813,6 @@ window.syncInventoryBookLevel = function(bookName, level) {
     saveInventory();
 };
 
-// Сохранение инвентаря
 function saveInventory() {
     const inventory = { books: {} };
     
@@ -2836,7 +2827,6 @@ function saveInventory() {
     localStorage.setItem(INVENTORY_KEY, JSON.stringify(inventory));
 }
 
-// Загрузка инвентаря
 function loadInventory() {
     const savedLevels = JSON.parse(localStorage.getItem('rpg_books_levels_final_verified_v8') || '{}');
     
@@ -2854,7 +2844,6 @@ function loadInventory() {
     });
 }
 
-// Функция для открытия/закрытия инвентаря
 window.toggleInventory = function() {
     const content = document.getElementById('inventoryContent');
     const arrow = document.getElementById('inventoryArrow');
@@ -2865,7 +2854,6 @@ window.toggleInventory = function() {
     localStorage.setItem('inventory_open', content.classList.contains('show'));
 };
 
-// Функция для обновления отображения пассивной книги
 function updatePassiveBookDisplay(bookName, newLevel) {
     const passiveItems = document.querySelectorAll('#passiveBooksContainer .book-item');
     for (const item of passiveItems) {
@@ -2890,7 +2878,6 @@ function updatePassiveBookDisplay(bookName, newLevel) {
     }
 }
 
-// Заглушки для функций книг
 if (typeof updatePassiveBookDescription !== 'function') {
     window.updatePassiveBookDescription = function() {};
 }
@@ -2898,7 +2885,6 @@ if (typeof updatePassiveBookPrice !== 'function') {
     window.updatePassiveBookPrice = function() {};
 }
 
-// Инициализация состояния инвентаря
 const inventoryOpen = localStorage.getItem('inventory_open') === 'true';
 if (inventoryOpen) {
     setTimeout(() => {
@@ -2907,7 +2893,6 @@ if (inventoryOpen) {
     }, 100);
 }
 
-// Функции для классов
 function updateClassResult() {
     const className = triggerBtn.textContent.trim();
     const classLvlInput = document.querySelector('.stat-value[data-key="class_lvl"]').textContent;
@@ -2965,7 +2950,6 @@ document.addEventListener('click', function(e) {
     }
 });
 
-// Функции для редактирования статов
 window.editStatByCell = function(cellElement, isResist = false, isKarma = false) {
     const valueContainer = cellElement.querySelector('.stat-value-container');
     const valueSpan = valueContainer.querySelector('.stat-value');
@@ -3132,7 +3116,6 @@ function initClassList() {
     updateClassResult();
 }
 
-// Функции для переключения страниц
 window.switchPage = function(pageName) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -3151,7 +3134,6 @@ window.switchPage = function(pageName) {
     }
 };
 
-// Заглушки для функций книг
 if (typeof renderPassiveBooks !== 'function') {
     window.renderPassiveBooks = function() {
         document.getElementById('passiveBooksContainer').innerHTML = '<div class="book-item"><div class="book-name">Пассивные книги</div><div class="book-desc">Загрузка...</div></div>';
@@ -3190,8 +3172,6 @@ if (typeof applyBulkLevel !== 'function') {
     window.applyBulkLevel = function() {};
 }
 
-// ========== ОБНОВЛЕННАЯ ФУНКЦИЯ ЗАПУСКА ==========
-
 window.onload = async () => {
     try {
         await vkBridge.send('VKWebAppInit');
@@ -3211,7 +3191,6 @@ window.onload = async () => {
         initClassList();
         updateKarmaIcon();
         
-        // Загружаем профиль (если есть)
         await loadProfile();
         
         const savedClass = localStorage.getItem(CLASS_KEY);
@@ -3219,13 +3198,11 @@ window.onload = async () => {
             triggerBtn.textContent = savedClass;
         }
         
-        // Инициализация капа статов
         const speedInput = document.getElementById('speedBookLevel');
         if (speedInput) {
             adjustSpeedBookInput(speedInput);
         }
         
-        // Добавляем обработчики для капа статов
         const strAgiSlider = document.getElementById('strAgiSlider');
         if (strAgiSlider) {
             strAgiSlider.addEventListener('input', function(e) {
@@ -3233,7 +3210,6 @@ window.onload = async () => {
             });
         }
         
-        // Обработчики для перераспределения
         ['vit', 'str', 'agi'].forEach(stat => {
             const removeInput = document.getElementById(`remove-${stat}`);
             if (removeInput) {
@@ -3249,7 +3225,6 @@ window.onload = async () => {
             }
         });
         
-        // Обработчики для расторопности
         ['vit', 'str', 'agi'].forEach(stat => {
             const speedStat = document.getElementById(`speed-${stat}-value`);
             if (speedStat) {
