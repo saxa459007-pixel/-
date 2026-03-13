@@ -1817,9 +1817,14 @@ display: none !important;
 <script src="actives.js"></script>
 <script src="books.js"></script>
 <script>
-// Константы для лимитов
+// ========== КОНСТАНТЫ ==========
 const MAX_STAT_VALUE = 99999; // 5 цифр для статов
 const MAX_BOOK_VALUE = 9999999; // 7 цифр для книг
+
+// ========== ДАННЫЕ ==========
+const GITHUB_USERNAME = 'saxa459007-pixel';
+const REPO_NAME = '-';
+const BRANCH = 'main'; // или master, проверьте какая ветка
 
 // ========== ФУНКЦИЯ ДЛЯ ПОКАЗА УВЕДОМЛЕНИЙ ==========
 function showNotification(message, duration = 2000) {
@@ -1955,7 +1960,7 @@ async function loadProfile() {
     }
 }
 
-// Запрет контекстного меню (долгий тап)
+// Запрет контекстного меню
 document.addEventListener('contextmenu', function(e) {
     if (e.target.closest('.app-footer a')) {
         return true;
@@ -1964,7 +1969,7 @@ document.addEventListener('contextmenu', function(e) {
     return false;
 });
 
-// Запрет выделения (кроме полей ввода)
+// Запрет выделения
 document.addEventListener('selectstart', function(e) {
     if (e.target.closest('input, textarea')) {
         return true;
@@ -2001,9 +2006,6 @@ const triggerBtn = document.getElementById('classTrigger');
 const listDiv = document.getElementById('classList');
 const karmaIconSpan = document.getElementById('karma-icon');
 const INVENTORY_KEY = 'rpg_inventory_v1';
-const GITHUB_USERNAME = 'saxa459007-pixel';
-const REPO_NAME = '-';
-const BRANCH = 'main';
 
 function measureTextWidth(text, font, padding = 0) {
     const span = document.createElement('span');
@@ -2020,7 +2022,7 @@ function measureTextWidth(text, font, padding = 0) {
     return width + padding;
 }
 
-// Функция для подгона ширины поля ввода уровня книги Расторопности (лимит 7 чисел)
+// Функция для подгона ширины поля ввода уровня книги Расторопности
 function adjustSpeedBookInput(input) {
     if (!input) return;
     
@@ -2033,7 +2035,6 @@ function adjustSpeedBookInput(input) {
         input.value = MAX_BOOK_VALUE.toString();
     }
     
-    // Измеряем ширину текста
     const span = document.createElement('span');
     span.style.font = window.getComputedStyle(input).font;
     span.style.visibility = 'hidden';
@@ -2220,24 +2221,21 @@ function getCurrentStats() {
     };
 }
 
-// Функция расчета времени Расторопности (исправленная логика)
+// Функция расчета времени Расторопности
 function calculateSpeedTime(statValue, bookLevel, hasRing, bookEquipped) {
     if (statValue <= 0) return 0;
     
     let time;
     
     if (bookEquipped) {
-        // Книга надета - используем формулу с книгой
         const statDiv4 = statValue / 4;
         const sqrtVal = Math.sqrt(10 * bookLevel);
         const denominator = (sqrtVal / 50) + 2;
         time = Math.ceil(statDiv4 / denominator);
     } else {
-        // Книга не надета - просто стат / 4 (без знаменателя)
         time = Math.ceil(statValue / 4);
     }
     
-    // Если есть кольцо, уменьшаем на 20%
     if (hasRing) {
         time = time * 0.8;
         return Math.round(time * 10) / 10;
@@ -2255,38 +2253,29 @@ function updateSpeedCalculations() {
     const hasRing = document.getElementById('speedRingCheckbox').checked;
     const bookEquipped = document.getElementById('speedBookEquipped').checked;
     
-    // Подгоняем ширину поля ввода
     adjustSpeedBookInput(bookLevelInput);
     
-    // Берем значения из профиля
     const stats = getCurrentStats();
     
-    // Обновляем отображаемые значения
     document.getElementById('speed-vit-value').textContent = stats.vit;
     document.getElementById('speed-str-value').textContent = stats.str;
     document.getElementById('speed-agi-value').textContent = stats.agi;
     
-    // Рассчитываем и отображаем время
     document.getElementById('speed-vit-time').textContent = calculateSpeedTime(stats.vit, bookLevel, hasRing, bookEquipped).toFixed(1);
     document.getElementById('speed-str-time').textContent = calculateSpeedTime(stats.str, bookLevel, hasRing, bookEquipped).toFixed(1);
     document.getElementById('speed-agi-time').textContent = calculateSpeedTime(stats.agi, bookLevel, hasRing, bookEquipped).toFixed(1);
     
-    // Сохраняем настройки
     saveSpeedSettings(bookLevel, bookEquipped);
 }
 
-// Сохранение настроек Расторопности
 function saveSpeedSettings(level, equipped) {
     const savedLevels = JSON.parse(localStorage.getItem('rpg_books_levels_final_verified_v8') || '{}');
     savedLevels['Расторопность'] = level;
     localStorage.setItem('rpg_books_levels_final_verified_v8', JSON.stringify(savedLevels));
-    
-    // Сохраняем состояние надетой книги
     localStorage.setItem('rpg_speed_book_equipped', equipped ? 'true' : 'false');
     localStorage.setItem('rpg_date_final_verified_v8', Date.now().toString());
 }
 
-// Загрузка настроек Расторопности
 function loadSpeedSettings() {
     const savedLevels = JSON.parse(localStorage.getItem('rpg_books_levels_final_verified_v8') || '{}');
     const bookLevel = savedLevels['Расторопность'] || 0;
@@ -2306,7 +2295,7 @@ function loadSpeedSettings() {
     return { bookLevel, bookEquipped };
 }
 
-// Редактирование значения стата в блоке Расторопности (идентично капу статов)
+// Редактирование значения стата в блоке Расторопности (как в капе статов)
 window.editSpeedStat = function(statKey, event) {
     event.stopPropagation();
     const capStatItem = event.currentTarget;
@@ -2419,17 +2408,11 @@ window.editSpeedStat = function(statKey, event) {
         container.remove();
         capStatItem.style.position = '';
         
-        // Обновляем соответствующий стат в профиле
         const profileStat = document.querySelector(`.stat-value[data-key="${statKey}"]`);
-        if (profileStat) {
-            profileStat.textContent = finalValue;
-        }
+        if (profileStat) profileStat.textContent = finalValue;
         
-        // Обновляем в капе статов
         const capStat = document.querySelector(`[data-cap-key="${statKey}"]`);
-        if (capStat) {
-            capStat.textContent = finalValue;
-        }
+        if (capStat) capStat.textContent = finalValue;
         
         saveStats();
         updateCapCalculations();
@@ -2619,9 +2602,7 @@ window.editCapLevel = function(wrapper) {
         container.remove();
         
         const profileLvl = document.querySelector('.stat-value[data-key="lvl"]');
-        if (profileLvl) {
-            profileLvl.textContent = finalValue;
-        }
+        if (profileLvl) profileLvl.textContent = finalValue;
         
         saveStats();
         updateCapCalculations();
@@ -2745,9 +2726,7 @@ window.editCapStat = function(item, statKey) {
         container.remove();
         
         const profileStat = document.querySelector(`.stat-value[data-key="${statKey}"]`);
-        if (profileStat) {
-            profileStat.textContent = finalValue;
-        }
+        if (profileStat) profileStat.textContent = finalValue;
         
         saveStats();
         updateCapCalculations();
@@ -2773,7 +2752,6 @@ function loadCapStatsFromProfile() {
     if (lvlEl) {
         document.querySelector('[data-cap-key="lvl"]').textContent = lvlEl.textContent;
     }
-    
     document.querySelectorAll('[data-cap-key="vit"]').forEach(el => {
         if (vitEl) el.textContent = vitEl.textContent;
     });
@@ -2786,8 +2764,6 @@ function loadCapStatsFromProfile() {
     
     updateCapCalculations();
     updateRedistributeCard();
-    
-    // Загружаем настройки Расторопности и обновляем расчеты
     loadSpeedSettings();
     updateSpeedCalculations();
 }
@@ -2826,13 +2802,10 @@ function updateCapCalculations() {
     
     document.getElementById('cap-vit-left').textContent = vitLeft;
     document.getElementById('cap-vit-rep').textContent = formatNumber(vitRep) + ' 🏹';
-    
     document.getElementById('cap-str-left').textContent = distributed.str;
     document.getElementById('cap-str-rep').textContent = formatNumber(strRep) + ' 🏹';
-    
     document.getElementById('cap-agi-left').textContent = distributed.agi;
     document.getElementById('cap-agi-rep').textContent = formatNumber(agiRep) + ' 🏹';
-    
     document.getElementById('cap-total-rep').textContent = formatNumber(totalRep);
 }
 
@@ -2846,7 +2819,7 @@ window.toggleInventory = function() {
     localStorage.setItem('inventory_open', content.classList.contains('show'));
 };
 
-// Функция для подгона ширины поля ввода в инвентаре (лимит 7 чисел)
+// Функция для подгона ширины поля ввода в инвентаре
 function adjustInventoryInputWidth(input) {
     if (input.value.length > 7) {
         input.value = input.value.slice(0, 7);
@@ -2891,14 +2864,14 @@ function saveInventory() {
 }
 
 function loadInventory() {
-    const savedPassiveLevels = JSON.parse(localStorage.getItem('rpg_books_levels_final_verified_v8') || '{}');
+    const savedLevels = JSON.parse(localStorage.getItem('rpg_books_levels_final_verified_v8') || '{}');
     
     document.querySelectorAll('.book-cell').forEach(cell => {
         if (!cell.classList.contains('empty')) {
             const name = cell.dataset.book;
             const input = cell.querySelector('.book-level-input-inventory');
-            if (input && savedPassiveLevels[name] !== undefined) {
-                let level = savedPassiveLevels[name];
+            if (input && savedLevels[name] !== undefined) {
+                let level = savedLevels[name];
                 if (level > MAX_BOOK_VALUE) level = MAX_BOOK_VALUE;
                 input.value = level;
                 adjustInventoryInputWidth(input);
@@ -2914,11 +2887,11 @@ function loadInventory() {
                 Object.entries(inventory.books).forEach(([name, data]) => {
                     let level = data.level;
                     if (level > MAX_BOOK_VALUE) level = MAX_BOOK_VALUE;
-                    if (level !== savedPassiveLevels[name]) {
-                        savedPassiveLevels[name] = level;
+                    if (level !== savedLevels[name]) {
+                        savedLevels[name] = level;
                     }
                 });
-                localStorage.setItem('rpg_books_levels_final_verified_v8', JSON.stringify(savedPassiveLevels));
+                localStorage.setItem('rpg_books_levels_final_verified_v8', JSON.stringify(savedLevels));
             }
         } catch (e) {
             console.log('Ошибка загрузки инвентаря', e);
@@ -3149,6 +3122,8 @@ avatar.src = user.photo_50;
 }
 const nameElement = document.getElementById('user-name');
 nameElement.textContent = `${user.first_name} ${user.last_name}`;
+window.USER_ID = user.id;
+console.log('✅ USER_ID установлен:', window.USER_ID);
 } catch (error) {
 console.log('Не удалось загрузить данные пользователя VK', error);
 document.getElementById('user-name').textContent = 'Тестовый пользователь';
@@ -3325,6 +3300,57 @@ originalOnChange.call(this, e);
 });
 }
 });
+}
+
+// Заглушки для функций книг
+if (typeof updatePassiveBookDescription !== 'function') {
+    window.updatePassiveBookDescription = function() {};
+}
+if (typeof updatePassiveBookPrice !== 'function') {
+    window.updatePassiveBookPrice = function() {};
+}
+if (typeof renderPassiveBooks !== 'function') {
+    window.renderPassiveBooks = function() {
+        document.getElementById('passiveBooksContainer').innerHTML = '<div class="book-item"><div class="book-name">Пассивные книги</div><div class="book-desc">Загрузка...</div></div>';
+    };
+}
+if (typeof renderActiveBooks !== 'function') {
+    window.renderActiveBooks = function() {
+        document.getElementById('activeBooksContainer').innerHTML = '<div class="book-item"><div class="book-name">Активные книги</div><div class="book-desc">Загрузка...</div></div>';
+    };
+}
+if (typeof handleActiveSearch !== 'function') {
+    window.handleActiveSearch = function() {};
+}
+if (typeof clearActiveSearch !== 'function') {
+    window.clearActiveSearch = function() {};
+}
+if (typeof toggleActiveSort !== 'function') {
+    window.toggleActiveSort = function() {};
+}
+if (typeof handlePassiveSearch !== 'function') {
+    window.handlePassiveSearch = function() {};
+}
+if (typeof clearPassiveSearch !== 'function') {
+    window.clearPassiveSearch = function() {};
+}
+if (typeof togglePassiveSort !== 'function') {
+    window.togglePassiveSort = function() {};
+}
+if (typeof toggleBulkPanel !== 'function') {
+    window.toggleBulkPanel = function() {};
+}
+if (typeof closeBulkPanel !== 'function') {
+    window.closeBulkPanel = function() {};
+}
+if (typeof applyBulkLevelToActive !== 'function') {
+    window.applyBulkLevelToActive = function() {};
+}
+if (typeof applyBulkLevelToPassive !== 'function') {
+    window.applyBulkLevelToPassive = function() {};
+}
+if (typeof closeAllBulkPanels !== 'function') {
+    window.closeAllBulkPanels = function() {};
 }
 
 // Обновленная функция applyBulkLevel с лимитом 7 чисел
