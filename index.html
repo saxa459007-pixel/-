@@ -1503,7 +1503,7 @@ display: none !important;
             <span style="color: var(--text-secondary); font-size: 13px;">Расторопность</span>
           </div>
           <div class="book-level-wrapper" style="display: flex; align-items: center; width: auto;">
-            <input type="number" class="book-level-input-inventory" id="speedBookLevel" value="0" min="0" max="9999999" 
+            <input type="number" class="book-level-input-inventory" id="speedBookLevel" value="0" min="0" max="9999999" maxlength="7"
                    style="font-size: 14px; font-weight: 600;"
                    oninput="adjustSpeedBookInput(this)"
                    onkeydown="if(event.key==='Enter') this.blur()"
@@ -1633,7 +1633,7 @@ display: none !important;
             </svg>
           </div>
           <div class="book-level-wrapper">
-            <input type="number" class="book-level-input-inventory" id="inventory-book-Мародер" value="1" min="0" max="9999999" oninput="adjustInventoryInputWidth(this)" onkeydown="if(event.key==='Enter') this.blur()" onchange="syncInventoryBookLevel('Мародер', this.value)">
+            <input type="number" class="book-level-input-inventory" id="inventory-book-Мародер" value="1" min="0" max="9999999" maxlength="7" oninput="adjustInventoryInputWidth(this)" onkeydown="if(event.key==='Enter') this.blur()" onchange="syncInventoryBookLevel('Мародер', this.value)">
             <span class="book-level-unit">ур.</span>
           </div>
         </div>
@@ -1655,7 +1655,7 @@ display: none !important;
             </svg>
           </div>
           <div class="book-level-wrapper">
-            <input type="number" class="book-level-input-inventory" id="inventory-book-Гладиатор" value="1" min="0" max="9999999" oninput="adjustInventoryInputWidth(this)" onkeydown="if(event.key==='Enter') this.blur()" onchange="syncInventoryBookLevel('Гладиатор', this.value)">
+            <input type="number" class="book-level-input-inventory" id="inventory-book-Гладиатор" value="1" min="0" max="9999999" maxlength="7" oninput="adjustInventoryInputWidth(this)" onkeydown="if(event.key==='Enter') this.blur()" onchange="syncInventoryBookLevel('Гладиатор', this.value)">
             <span class="book-level-unit">ур.</span>
           </div>
         </div>
@@ -1677,7 +1677,7 @@ display: none !important;
             </svg>
           </div>
           <div class="book-level-wrapper">
-            <input type="number" class="book-level-input-inventory" id="inventory-book-Воздаяние" value="1" min="0" max="9999999" oninput="adjustInventoryInputWidth(this)" onkeydown="if(event.key==='Enter') this.blur()" onchange="syncInventoryBookLevel('Воздаяние', this.value)">
+            <input type="number" class="book-level-input-inventory" id="inventory-book-Воздаяние" value="1" min="0" max="9999999" maxlength="7" oninput="adjustInventoryInputWidth(this)" onkeydown="if(event.key==='Enter') this.blur()" onchange="syncInventoryBookLevel('Воздаяние', this.value)">
             <span class="book-level-unit">ур.</span>
           </div>
         </div>
@@ -1699,7 +1699,7 @@ display: none !important;
             </svg>
           </div>
           <div class="book-level-wrapper">
-            <input type="number" class="book-level-input-inventory" id="inventory-book-Атлетика" value="1" min="0" max="9999999" oninput="adjustInventoryInputWidth(this)" onkeydown="if(event.key==='Enter') this.blur()" onchange="syncInventoryBookLevel('Атлетика', this.value)">
+            <input type="number" class="book-level-input-inventory" id="inventory-book-Атлетика" value="1" min="0" max="9999999" maxlength="7" oninput="adjustInventoryInputWidth(this)" onkeydown="if(event.key==='Enter') this.blur()" onchange="syncInventoryBookLevel('Атлетика', this.value)">
             <span class="book-level-unit">ур.</span>
           </div>
         </div>
@@ -1749,7 +1749,7 @@ display: none !important;
 <div class="bulk-panel" id="activeBulkPanel">
 <div class="bulk-panel-title">Установить уровень для всех активных умений</div>
 <div class="bulk-panel-content">
-<input type="number" class="bulk-panel-input" id="activeBulkInput" placeholder="0" min="0" max="9999999">
+<input type="number" class="bulk-panel-input" id="activeBulkInput" placeholder="0" min="0" max="9999999" maxlength="7">
 <button class="bulk-panel-btn bulk-panel-btn-cancel" onclick="closeBulkPanel('active')">Отмена</button>
 <button class="bulk-panel-btn bulk-panel-btn-apply" onclick="applyBulkLevel('active')">OK</button>
 </div>
@@ -1797,7 +1797,7 @@ display: none !important;
 <div class="bulk-panel" id="passiveBulkPanel">
 <div class="bulk-panel-title">Установить уровень для всех пассивных книг</div>
 <div class="bulk-panel-content">
-<input type="number" class="bulk-panel-input" id="passiveBulkInput" placeholder="0" min="0" max="9999999">
+<input type="number" class="bulk-panel-input" id="passiveBulkInput" placeholder="0" min="0" max="9999999" maxlength="7">
 <button class="bulk-panel-btn bulk-panel-btn-cancel" onclick="closeBulkPanel('passive')">Отмена</button>
 <button class="bulk-panel-btn bulk-panel-btn-apply" onclick="applyBulkLevel('passive')">OK</button>
 </div>
