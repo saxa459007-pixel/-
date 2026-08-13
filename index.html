@@ -1897,12 +1897,12 @@ function showNotification(message, duration = 2000) {
 }
 
 // ========== ЗАГРУЗКА ПРОФИЛЯ ==========
-async function loadProfile() {
+async function loadProfile(silent = false) {
     try {
-        showNotification('⏳ Загружаем профиль...');
-        
+        if (!silent) showNotification('⏳ Загружаем профиль...');
+
         if (!window.USER_ID) {
-            showNotification('❌ Ошибка: пользователь не идентифицирован');
+            if (!silent) showNotification('❌ Ошибка: пользователь не идентифицирован');
             return false;
         }
         
@@ -1914,7 +1914,7 @@ async function loadProfile() {
         
         if (!response.ok) {
             if (response.status === 404) {
-                showNotification('ℹ️ Профиль не найден');
+                if (!silent) showNotification('ℹ️ Профиль не найден');
             } else {
                 throw new Error(`Ошибка ${response.status}`);
             }
@@ -1948,12 +1948,12 @@ async function loadProfile() {
             updateClassResult();
         }
         
-        showNotification('✅ Профиль загружен!');
+        if (!silent) showNotification('✅ Профиль загружен!');
         return true;
-        
+
     } catch (error) {
         console.error('❌ Ошибка загрузки:', error);
-        showNotification('❌ Ошибка загрузки профиля');
+        if (!silent) showNotification('❌ Ошибка загрузки профиля');
         return false;
     }
 }
@@ -3421,6 +3421,8 @@ triggerBtn.textContent = savedClass;
 } else {
 saveStats();
 }
+// Автозагрузка профиля из бота (тихо, без всплывашек). Кнопка 📥 остаётся для ручного обновления.
+await loadProfile(true);
 initClassList();
 loadCapStatsFromProfile();
 updateRedistributeCard();
