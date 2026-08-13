@@ -14,7 +14,7 @@ const ACTIVE_SKILLS = {
             return floor((Math.sqrt(lvl*10)/100*1 + 1) * 100);
         },
         "calc_damage": function(lvl, dex, str) {
-            return floor((0.667*dex + 0.333*str) * ((Math.sqrt(lvl*10)/100*1 + 1)));
+            return floor((str + dex*2) / 300 * (10*Math.sqrt(lvl/10) + 100));
         },
         "desc": "Вы наносите внезапный удар кулаком. Урон (~{damage}✦) зависит значительно от ловкости и менее значительно от силы персонажа. Игнорирует броню.",
         "params": ["agi", "str"]
