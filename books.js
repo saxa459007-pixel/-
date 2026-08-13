@@ -221,12 +221,12 @@ window.editActiveStat = function(event, element, statKey) {
     input.type = 'number';
     input.value = currentVal === '0' ? '' : currentVal;
     input.className = 'stat-input-small';
-    input.maxLength = 7;
-    input.max = '9999999';
-    
+    input.maxLength = 5;
+    input.max = '99999';
+
     input.addEventListener('input', function() {
-        if (this.value.length > 7) {
-            this.value = this.value.slice(0, 7);
+        if (this.value.length > 5) {
+            this.value = this.value.slice(0, 5);
         }
     });
     
@@ -243,10 +243,10 @@ window.editActiveStat = function(event, element, statKey) {
         let finalValue = newVal;
         const num = parseFloat(newVal);
         if (!isNaN(num)) {
-            if (num > 9999999) finalValue = '9999999';
+            if (num > 99999) finalValue = '99999';
             else finalValue = Math.floor(num).toString();
         }
-        
+
         if (statKey === 'str' || statKey === 'agi' || statKey === 'vit') {
             if (parseInt(finalValue) < 3) finalValue = '3';
         }
