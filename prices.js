@@ -117,21 +117,21 @@ async function getBookPrice(bookName) {
     }
 }
 
-// Расчет стоимости прокачки (1 книга = 5 уровней)
+// Расчет стоимости прокачки (1 уровень = цена книги / 5)
 function calculateUpgradeCost(targetLevel, bookPrice) {
     if (targetLevel <= 0 || bookPrice <= 0) return null;
-    
+
     // Стоимость одного уровня = цена книги / 5
     const costPerLevel = bookPrice / 5;
-    
+
     // Стоимость уровней
     const levelCost = Math.ceil(targetLevel * costPerLevel);
-    
+
     // Плата за каждый уровень (103 золота)
     const upgradeFee = targetLevel * 103;
-    
+
     // ИТОГО
     const totalCost = levelCost + upgradeFee;
-    
+
     return totalCost;
 }
