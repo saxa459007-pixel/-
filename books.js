@@ -500,6 +500,10 @@ window.renderActiveBooks = async function() {
         levelInput.setAttribute('spellcheck', 'false');
         
         const updateInputWidth = function() {
+            // Живое ограничение уровня книги: максимум 7 знаков (при вводе, а не только после)
+            if (this.value.length > 7) {
+                this.value = this.value.slice(0, 7);
+            }
             const font = window.getComputedStyle(this).font;
             const width = measureTextWidth(this.value || '1', font, 2);
             this.style.width = (width + 2) + 'px';
@@ -667,6 +671,10 @@ window.renderPassiveBooks = async function() {
         levelInput.setAttribute('spellcheck', 'false');
         
         const updateInputWidth = function() {
+            // Живое ограничение уровня книги: максимум 7 знаков (при вводе, а не только после)
+            if (this.value.length > 7) {
+                this.value = this.value.slice(0, 7);
+            }
             const font = window.getComputedStyle(this).font;
             const width = measureTextWidth(this.value || '1', font, 2);
             this.style.width = (width + 2) + 'px';
