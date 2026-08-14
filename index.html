@@ -394,13 +394,14 @@ position: relative;
 height: 42px;
 box-sizing: border-box;
 margin-bottom: 0;
+-webkit-tap-highlight-color: transparent;
 }
 .cap-stat-item:last-child {
 margin-bottom: 0;
 border-bottom: none;
 }
 .cap-stat-item:hover {
-background-color: rgba(255, 255, 255, 0.05);
+background-color: transparent;
 }
 .cap-stat-icon {
 font-size: 16px;
@@ -2322,7 +2323,7 @@ window.editSpeedStat = function(statKey, event) {
     container.style.top = '0';
     container.style.left = (iconWidth + 8) + 'px';
     container.style.height = '100%';
-    container.style.padding = '8px 12px 8px 8px';
+    container.style.padding = '8px 12px 8px 0';
     container.style.boxSizing = 'border-box';
     container.style.pointerEvents = 'none';
     
@@ -2644,7 +2645,7 @@ window.editCapStat = function(item, statKey) {
     container.style.top = '0';
     container.style.left = (iconWidth + 8) + 'px';
     container.style.height = '100%';
-    container.style.padding = '8px 12px 8px 8px';
+    container.style.padding = '8px 12px 8px 0';
     container.style.boxSizing = 'border-box';
     container.style.pointerEvents = 'none';
     
