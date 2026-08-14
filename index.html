@@ -2241,10 +2241,11 @@ function calculateSpeedTime(statValue, bookLevel, hasRing, bookEquipped) {
     
     if (hasRing) {
         time = time * 0.8;
-        return Math.round(time * 10) / 10;
+        time = Math.round(time * 10) / 10;
     }
-    
-    return time;
+
+    // Минимум 5 минут на стат
+    return Math.max(5, time);
 }
 
 // Обновление всех расчетов Расторопности
