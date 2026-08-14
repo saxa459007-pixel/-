@@ -615,7 +615,7 @@ outline: none;
 }
 
 .redistribute-input:focus {
-border-color: var(--accent);
+border-color: transparent;
 }
 
 .redistribute-input[type=number] {
@@ -3146,6 +3146,14 @@ event.preventDefault();
 event.stopPropagation();
 return false;
 }, true);
+
+// Полное выделение числа при фокусе на любом числовом поле (как в редакторе статов профиля)
+document.addEventListener('focusin', function(event) {
+const t = event.target;
+if (t && t.matches && t.matches('input[type="number"]')) {
+setTimeout(function() { try { t.select(); } catch (e) {} }, 0);
+}
+});
 
 window.editStatByCell = function(cellElement, isResist = false, isKarma = false) {
 const valueContainer = cellElement.querySelector('.stat-value-container');
