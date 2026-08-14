@@ -231,7 +231,7 @@ window.editActiveStat = function(event, element, statKey) {
     });
     
     valueSpan.style.visibility = 'hidden';
-    if (labelSpan) labelSpan.style.visibility = 'hidden';
+    // название стата (labelSpan) не прячем — остаётся видимым при вводе
     valueContainer.appendChild(input);
     input.focus();
     input.select();
@@ -349,11 +349,9 @@ async function updateActiveBookPrice(bookElement, bookName, level) {
         const bookPrice = await getBookPrice(bookName);
         if (bookPrice && bookPrice > 0) {
             const totalCost = calculateUpgradeCost(level, bookPrice);
-            if (totalCost) {
-                const priceDiv = bookElement.querySelector('.book-price');
-                if (priceDiv) {
-                    priceDiv.innerHTML = `🌕 ${formatGold(totalCost)}`;
-                }
+            const priceDiv = bookElement.querySelector('.book-price');
+            if (priceDiv) {
+                priceDiv.innerHTML = `🌕 ${totalCost ? formatGold(totalCost) : '0'}`;
             }
         }
     } catch (e) {
@@ -800,11 +798,9 @@ async function updatePassiveBookPrice(bookElement, bookName, level) {
         const bookPrice = await getBookPrice(bookName);
         if (bookPrice && bookPrice > 0) {
             const totalCost = calculateUpgradeCost(level, bookPrice);
-            if (totalCost) {
-                const priceDiv = bookElement.querySelector('.book-price');
-                if (priceDiv) {
-                    priceDiv.innerHTML = `🌕 ${formatGold(totalCost)}`;
-                }
+            const priceDiv = bookElement.querySelector('.book-price');
+            if (priceDiv) {
+                priceDiv.innerHTML = `🌕 ${totalCost ? formatGold(totalCost) : '0'}`;
             }
         }
     } catch (e) {

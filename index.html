@@ -1158,9 +1158,10 @@ border-radius: 4px;
 transition: background 0.2s;
 position: relative;
 direction: ltr;
+-webkit-tap-highlight-color: transparent;
 }
 .stat-item:hover {
-background-color: rgba(255, 255, 255, 0.05);
+background-color: transparent;
 }
 .stat-icon-small {
 font-size: 18px;
@@ -3180,7 +3181,7 @@ this.value = MAX_STAT_VALUE.toString();
 }
 });
 valueSpan.style.visibility = 'hidden';
-if (labelSpan) labelSpan.style.visibility = 'hidden';
+// название стата (labelSpan) не прячем — остаётся видимым при вводе
 valueContainer.appendChild(input);
 input.focus();
 input.select();
