@@ -229,7 +229,8 @@ window.editActiveStat = function(event, element, statKey) {
     input.style.flexShrink = '0';
     const fitWidth = function() {
         const w = measureTextWidth(input.value || '1', window.getComputedStyle(input).font);
-        input.style.width = w + 'px';
+        input.style.width = (w + 2) + 'px';
+        input.style.marginRight = '-2px';
     };
     input.addEventListener('input', function() {
         if (this.value.length > 5) {
