@@ -224,15 +224,27 @@ window.editActiveStat = function(event, element, statKey) {
     input.maxLength = 5;
     input.max = '99999';
 
+    // input встраиваем в ряд (авто-ширина) — название сдвигается вместе с числом, без перекрытия
+    input.style.position = 'static';
+    input.style.width = 'auto';
+    input.style.height = 'auto';
+    input.style.flexShrink = '0';
+    const fitWidth = function() {
+        const w = measureTextWidth(input.value || '1', window.getComputedStyle(input).font);
+        input.style.width = (w + 2) + 'px';
+    };
     input.addEventListener('input', function() {
         if (this.value.length > 5) {
             this.value = this.value.slice(0, 5);
         }
+        fitWidth();
     });
-    
-    valueSpan.style.visibility = 'hidden';
-    // название стата (labelSpan) не прячем — остаётся видимым при вводе
-    valueContainer.appendChild(input);
+
+    valueSpan.style.display = 'none';
+    // название стата остаётся видимым и сдвигается вместе с числом
+    if (labelSpan) valueContainer.insertBefore(input, labelSpan);
+    else valueContainer.appendChild(input);
+    fitWidth();
     input.focus();
     input.select();
     
@@ -252,7 +264,7 @@ window.editActiveStat = function(event, element, statKey) {
         }
         
         valueSpan.textContent = finalValue;
-        valueSpan.style.visibility = 'visible';
+        valueSpan.style.display = '';
         if (labelSpan) labelSpan.style.visibility = 'visible';
         input.remove();
         
