@@ -3216,7 +3216,7 @@ if (karmaNum > 20) karmaNum = 20;
 finalValue = karmaNum.toString();
 } else {
 if (key === 'class_lvl') {
-if (parseInt(finalValue) < 50) finalValue = '50';
+if (parseInt(finalValue) < 0) finalValue = '0';
 if (parseInt(finalValue) > MAX_STAT_VALUE) finalValue = MAX_STAT_VALUE.toString();
 }
 else if (key === 'str' || key === 'agi' || key === 'vit') {
