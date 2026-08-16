@@ -159,7 +159,7 @@ function getSkillDescription(skillName, level, stats) {
             const max_damage = stats.lvl * 50;
             desc = desc.replace('{x_percent}', `<span class="book-val">${x_percent}</span>`)
                       .replace('{max_damage}', `<span class="book-val">${max_damage}</span>`)
-                      .replace('{damage}', `<span class="book-val">${damage}</span>`);
+                      .replace('{damage}', `<span class="book-val editable-val" data-key="damage" onclick="editActiveTarget(this)">${damage}</span>`);
             break;
         case "Слабое исцеление":
             const heal_percent = Math.floor(mult / 4);
@@ -170,7 +170,7 @@ function getSkillDescription(skillName, level, stats) {
         case "Удар вампира":
             const regen = Math.ceil(damage / 15);
             desc = desc.replace('{regen}', `<span class="book-val">${regen}</span>`)
-                      .replace('{damage}', `<span class="book-val">${damage}</span>`);
+                      .replace('{damage}', `<span class="book-val editable-val" data-key="damage" onclick="editActiveTarget(this)">${damage}</span>`);
             break;
         case "Берсеркер":
             const berserk_percent = Math.floor((Math.sqrt(level*10)/100*1 + 1) * 50);
@@ -196,13 +196,70 @@ function getSkillDescription(skillName, level, stats) {
         case "Раскол":
             const armor_reduce = Math.floor((Math.sqrt(level*10)/100*0.5 + 1) * 30);
             desc = desc.replace('{armor_reduce}', `<span class="book-val">${armor_reduce}</span>`)
-                      .replace('{damage}', `<span class="book-val">${damage}</span>`);
+                      .replace('{damage}', `<span class="book-val editable-val" data-key="damage" onclick="editActiveTarget(this)">${damage}</span>`);
             break;
         default:
-            desc = desc.replace('{damage}', `<span class="book-val">${damage}</span>`);
+            desc = desc.replace('{damage}', `<span class="book-val editable-val" data-key="damage" onclick="editActiveTarget(this)">${damage}</span>`);
     }
     return desc;
 }
+
+// === ЦЕЛЬ для активок: клик по урону → подбор уровня книги (статы из профиля не трогаем) ===
+function findLevelForActiveTarget(skillName, targetDamage, stats) {
+    const getDmg = (lvl) => calculateActiveDamage(skillName, lvl, stats);
+    const MAX = 10000000;
+    if (getDmg(MAX) < targetDamage) return null; // недостижимо (в т.ч. если статы 0)
+    let lo = 1, hi = MAX, res = null;
+    for (let i = 0; i < 64 && lo <= hi; i++) {
+        const mid = Math.floor((lo + hi) / 2);
+        if (getDmg(mid) >= targetDamage) { res = mid; hi = mid - 1; } else { lo = mid + 1; }
+    }
+    return res;
+}
+
+window.editActiveTarget = function(spanEl) {
+    const item = spanEl.closest('.book-item');
+    const bookName = item ? item.dataset.bookExact : null;
+    if (!bookName || !ACTIVE_SKILLS[bookName]) return;
+    if (spanEl.querySelector('input')) return;
+
+    const current = spanEl.textContent;
+    const input = document.createElement('input');
+    input.type = 'number';
+    input.value = current;
+    input.className = 'book-val-input';
+    const fit = () => { input.style.width = (measureTextWidth(input.value || '1', window.getComputedStyle(input).font) + 2) + 'px'; };
+    input.addEventListener('input', fit);
+    spanEl.textContent = '';
+    spanEl.appendChild(input);
+    fit(); input.focus(); input.select();
+
+    let done = false;
+    const KEY = 'rpg_active_books_levels_final_verified_v8';
+    const savedLvl = () => { const sl = JSON.parse(localStorage.getItem(KEY) || '{}'); return sl[bookName] || 0; };
+    const restore = () => { if (item) updateActiveBookDescription(item, bookName, savedLvl()); };
+    const applyLevel = (level) => {
+        const sl = JSON.parse(localStorage.getItem(KEY) || '{}');
+        sl[bookName] = level;
+        localStorage.setItem(KEY, JSON.stringify(sl));
+        if (item) {
+            const inp = item.querySelector('.book-level-input');
+            if (inp) { inp.value = level; const f = window.getComputedStyle(inp).font; inp.style.width = (measureTextWidth(inp.value || '1', f, 2) + 2) + 'px'; }
+            updateActiveBookDescription(item, bookName, level);
+            updateActiveBookPrice(item, bookName, level);
+        }
+    };
+    const finish = () => {
+        if (done) return; done = true;
+        const target = parseFloat(input.value.replace(',', '.'));
+        if (isNaN(target)) { restore(); return; }
+        const level = findLevelForActiveTarget(bookName, target, getStatsFromProfile());
+        if (level == null) { showNotification('❌ Недостижимо (проверьте статы)'); restore(); return; }
+        applyLevel(level);
+    };
+    input.onblur = finish;
+    input.onkeydown = (e) => { if (e.key === 'Enter') { e.preventDefault(); input.blur(); } };
+};
 
 window.editActiveStat = function(event, element, statKey) {
     event.preventDefault();
