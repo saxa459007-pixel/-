@@ -164,7 +164,7 @@ function getSkillDescription(skillName, level, stats) {
         case "Слабое исцеление":
             const heal_percent = Math.floor(mult / 4);
             const accuracy_reduce = Math.floor(heal_percent / 5);
-            desc = desc.replace('{heal_percent}', `<span class="book-val">${heal_percent}</span>`)
+            desc = desc.replace('{heal_percent}', `<span class="book-val editable-val" data-key="heal_percent" onclick="editActiveTarget(this)">${heal_percent}</span>`)
                       .replace('{accuracy_reduce}', `<span class="book-val">${accuracy_reduce}</span>`);
             break;
         case "Удар вампира":
@@ -174,24 +174,24 @@ function getSkillDescription(skillName, level, stats) {
             break;
         case "Берсеркер":
             const berserk_percent = Math.floor((Math.sqrt(level*10)/100*1 + 1) * 50);
-            desc = desc.replace('{berserk_percent}', `<span class="book-val">${berserk_percent}</span>`);
+            desc = desc.replace('{berserk_percent}', `<span class="book-val editable-val" data-key="berserk_percent" onclick="editActiveTarget(this)">${berserk_percent}</span>`);
             break;
         case "Проклятие тьмы":
             const min_reduce = Math.floor(mult / 20);
             const max_reduce = Math.floor(mult * 3 / 20);
             const max_units = stats.lvl * 10;
             desc = desc.replace('{min_reduce}', `<span class="book-val">${min_reduce}</span>`)
-                      .replace('{max_reduce}', `<span class="book-val">${max_reduce}</span>`)
+                      .replace('{max_reduce}', `<span class="book-val editable-val" data-key="max_reduce" onclick="editActiveTarget(this)">${max_reduce}</span>`)
                       .replace('{max_units}', `<span class="book-val">${max_units}</span>`);
             break;
         case "Целебный огонь":
             const heal_percent_fire = Math.floor((Math.sqrt(level*10)/100*0.5 + 1) * 20);
             const max_heal = stats.lvl * 50;
-            desc = desc.replace(/{heal_percent}/g, `<span class="book-val">${heal_percent_fire}</span>`)
+            desc = desc.replace(/{heal_percent}/g, `<span class="book-val editable-val" data-key="heal_percent" onclick="editActiveTarget(this)">${heal_percent_fire}</span>`)
                       .replace('{max_heal}', `<span class="book-val">${max_heal}</span>`);
             break;
         case "Слепота":
-            desc = desc.replace('{damage}', `<span class="book-val">${mult}</span>`);
+            desc = desc.replace('{damage}', `<span class="book-val editable-val" data-key="mult" onclick="editActiveTarget(this)">${mult}</span>`);
             break;
         case "Раскол":
             const armor_reduce = Math.floor((Math.sqrt(level*10)/100*0.5 + 1) * 30);
@@ -217,9 +217,38 @@ function findLevelForActiveTarget(skillName, targetDamage, stats) {
     return res;
 }
 
+// Значение %-эффекта активки на уровне (для активок без урона)
+function activePercentValue(skillName, key, level) {
+    const skill = ACTIVE_SKILLS[skillName];
+    const mult = (skill && skill.calc) ? skill.calc(level) : 0;
+    switch (skillName + '|' + key) {
+        case 'Слепота|mult': return mult;
+        case 'Берсеркер|berserk_percent': return Math.floor((Math.sqrt(level*10)/100*1 + 1) * 50);
+        case 'Целебный огонь|heal_percent': return Math.floor((Math.sqrt(level*10)/100*0.5 + 1) * 20);
+        case 'Слабое исцеление|heal_percent': return Math.floor(mult / 4);
+        case 'Проклятие тьмы|max_reduce': return Math.floor(mult * 3 / 20);
+        case 'Проклятие тьмы|min_reduce': return Math.floor(mult / 20);
+        default: return null;
+    }
+}
+
+function findLevelForActivePercent(skillName, key, target) {
+    const getV = (lvl) => activePercentValue(skillName, key, lvl);
+    const MAX = 10000000;
+    const top = getV(MAX);
+    if (top == null || top < target) return null;
+    let lo = 1, hi = MAX, res = null;
+    for (let i = 0; i < 64 && lo <= hi; i++) {
+        const mid = Math.floor((lo + hi) / 2);
+        if (getV(mid) >= target) { res = mid; hi = mid - 1; } else { lo = mid + 1; }
+    }
+    return res;
+}
+
 window.editActiveTarget = function(spanEl) {
     const item = spanEl.closest('.book-item');
     const bookName = item ? item.dataset.bookExact : null;
+    const key = spanEl.dataset.key;
     if (!bookName || !ACTIVE_SKILLS[bookName]) return;
     if (spanEl.querySelector('input')) return;
 
@@ -253,8 +282,10 @@ window.editActiveTarget = function(spanEl) {
         if (done) return; done = true;
         const target = parseFloat(input.value.replace(',', '.'));
         if (isNaN(target)) { restore(); return; }
-        const level = findLevelForActiveTarget(bookName, target, getStatsFromProfile());
-        if (level == null) { showNotification('❌ Недостижимо (проверьте статы)'); restore(); return; }
+        const level = (key === 'damage')
+            ? findLevelForActiveTarget(bookName, target, getStatsFromProfile())
+            : findLevelForActivePercent(bookName, key, target);
+        if (level == null) { showNotification('❌ Недостижимо'); restore(); return; }
         applyLevel(level);
     };
     input.onblur = finish;
