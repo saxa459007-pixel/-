@@ -459,6 +459,7 @@ window.renderActiveBooks = async function() {
         const item = document.createElement('div');
         item.className = 'book-item';
         item.dataset.bookName = name.toLowerCase();
+        item.dataset.bookExact = name;
         
         let priceText = '0';
         try {
@@ -628,12 +629,13 @@ window.renderPassiveBooks = async function() {
         let desc = data.desc;
         for (const [key, val] of Object.entries(formatData)) {
             const regex = new RegExp(`\\{${key}(?::\\.2f)?\\}`, 'g');
-            desc = desc.replace(regex, `<span class="book-val">${val}</span>`);
+            desc = desc.replace(regex, `<span class="book-val editable-val" data-key="${key}" onclick="editPassiveTarget(this)">${val}</span>`);
         }
         
         const item = document.createElement('div');
         item.className = 'book-item';
         item.dataset.bookName = name.toLowerCase();
+        item.dataset.bookExact = name;
         
         let priceText = '0';
         try {
@@ -775,6 +777,82 @@ window.updatePassiveBookLevel = function(name, value) {
     }
 };
 
+// === ЦЕЛЬ: клик по значению эффекта пассивки → подбор уровня под это значение ===
+function _savedPassiveLevel(name) {
+    const sl = JSON.parse(localStorage.getItem('rpg_books_levels_final_verified_v8') || '{}');
+    return sl[name] || 0;
+}
+
+function findLevelByTargetPassive(bookName, key, target) {
+    const skill = PASSIVE_SKILLS[bookName];
+    if (!skill) return null;
+    const getVal = (lvl) => {
+        const r = skill.calc(lvl);
+        return (r && typeof r === 'object') ? r[key] : r;
+    };
+    const MAX = 10000000;
+    const increasing = getVal(MAX) >= getVal(1);
+    let lo = 1, hi = MAX, res = null;
+    for (let i = 0; i < 64 && lo <= hi; i++) {
+        const mid = Math.floor((lo + hi) / 2);
+        const eff = getVal(mid);
+        const reached = increasing ? (eff >= target) : (eff <= target);
+        if (reached) { res = mid; hi = mid - 1; } else { lo = mid + 1; }
+    }
+    return res;
+}
+
+window.editPassiveTarget = function(spanEl) {
+    const item = spanEl.closest('.book-item');
+    const bookName = item ? item.dataset.bookExact : null;
+    const key = spanEl.dataset.key;
+    if (!bookName || !PASSIVE_SKILLS[bookName]) return;
+    if (spanEl.querySelector('input')) return;
+    const current = spanEl.textContent;
+    const input = document.createElement('input');
+    input.type = 'number';
+    input.value = current;
+    input.className = 'book-val-input';
+    const fit = () => {
+        const w = measureTextWidth(input.value || '1', window.getComputedStyle(input).font);
+        input.style.width = (w + 2) + 'px';
+    };
+    input.addEventListener('input', fit);
+    spanEl.textContent = '';
+    spanEl.appendChild(input);
+    fit();
+    input.focus();
+    input.select();
+
+    let done = false;
+    const applyLevel = (level) => {
+        const sl = JSON.parse(localStorage.getItem('rpg_books_levels_final_verified_v8') || '{}');
+        sl[bookName] = level;
+        localStorage.setItem('rpg_books_levels_final_verified_v8', JSON.stringify(sl));
+        if (item) {
+            const inp = item.querySelector('.book-level-input');
+            if (inp) {
+                inp.value = level;
+                const f = window.getComputedStyle(inp).font;
+                inp.style.width = (measureTextWidth(inp.value || '1', f, 2) + 2) + 'px';
+            }
+            updatePassiveBookDescription(item, bookName, level);
+            updatePassiveBookPrice(item, bookName, level);
+        }
+    };
+    const restore = () => { if (item) updatePassiveBookDescription(item, bookName, _savedPassiveLevel(bookName)); };
+    const finish = () => {
+        if (done) return; done = true;
+        const target = parseFloat(input.value.replace(',', '.'));
+        if (isNaN(target)) { restore(); return; }
+        const level = findLevelByTargetPassive(bookName, key, target);
+        if (level == null) { showNotification('❌ Значение недостижимо'); restore(); return; }
+        applyLevel(level);
+    };
+    input.onblur = finish;
+    input.onkeydown = (e) => { if (e.key === 'Enter') { e.preventDefault(); input.blur(); } };
+};
+
 function updatePassiveBookDescription(bookElement, bookName, level) {
     const data = PASSIVE_SKILLS[bookName];
     if (!data) return;
@@ -795,7 +873,7 @@ function updatePassiveBookDescription(bookElement, bookName, level) {
     let desc = data.desc;
     for (const [key, val] of Object.entries(formatData)) {
         const regex = new RegExp(`\\{${key}(?::\\.2f)?\\}`, 'g');
-        desc = desc.replace(regex, `<span class="book-val">${val}</span>`);
+        desc = desc.replace(regex, `<span class="book-val editable-val" data-key="${key}" onclick="editPassiveTarget(this)">${val}</span>`);
     }
     
     const descDiv = bookElement.querySelector('.book-desc');

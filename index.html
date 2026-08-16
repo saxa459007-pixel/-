@@ -1241,6 +1241,27 @@ padding-right: 10px;
 color: var(--text-main);
 font-weight: 600;
 }
+.editable-val {
+cursor: pointer;
+border-bottom: 1px dotted var(--text-secondary);
+}
+.book-val-input {
+background: transparent;
+border: none;
+outline: none;
+color: var(--text-main);
+font: inherit;
+font-weight: 600;
+padding: 0;
+margin: 0;
+text-align: center;
+-moz-appearance: textfield;
+}
+.book-val-input::-webkit-outer-spin-button,
+.book-val-input::-webkit-inner-spin-button {
+-webkit-appearance: none;
+margin: 0;
+}
 .book-footer {
 display: flex;
 justify-content: space-between;
