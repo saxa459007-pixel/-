@@ -157,7 +157,7 @@ function getSkillDescription(skillName, level, stats) {
             const rounded = Math.floor(inner * 100) / 100;
             const x_percent = Math.floor(rounded * 50);
             const max_damage = stats.lvl * 50;
-            desc = desc.replace('{x_percent}', `<span class="book-val">${x_percent}</span>`)
+            desc = desc.replace('{x_percent}', `<span class="book-val editable-val" data-key="x_percent" onclick="editActiveTarget(this)">${x_percent}</span>`)
                       .replace('{max_damage}', `<span class="book-val">${max_damage}</span>`)
                       .replace('{damage}', `<span class="book-val editable-val" data-key="damage" onclick="editActiveTarget(this)">${damage}</span>`);
             break;
@@ -207,8 +207,9 @@ function getSkillDescription(skillName, level, stats) {
 // === ЦЕЛЬ для активок: клик по урону → подбор уровня книги (статы из профиля не трогаем) ===
 function findLevelForActiveTarget(skillName, targetDamage, stats) {
     const getDmg = (lvl) => calculateActiveDamage(skillName, lvl, stats);
-    const MAX = 10000000;
-    if (getDmg(MAX) < targetDamage) return null; // недостижимо (в т.ч. если статы 0)
+    const MAX = 9999999;
+    // Цель выше достижимого — ставим максимум, доступный в приложении
+    if (getDmg(MAX) < targetDamage) return MAX;
     let lo = 1, hi = MAX, res = null;
     for (let i = 0; i < 64 && lo <= hi; i++) {
         const mid = Math.floor((lo + hi) / 2);
@@ -228,15 +229,21 @@ function activePercentValue(skillName, key, level) {
         case 'Слабое исцеление|heal_percent': return Math.floor(mult / 4);
         case 'Проклятие тьмы|max_reduce': return Math.floor(mult * 3 / 20);
         case 'Проклятие тьмы|min_reduce': return Math.floor(mult / 20);
+        case 'Расправа|x_percent': {
+            const rounded = Math.floor((Math.sqrt(level*10)/100 + 1) * 100) / 100;
+            return Math.floor(rounded * 50);
+        }
         default: return null;
     }
 }
 
 function findLevelForActivePercent(skillName, key, target) {
     const getV = (lvl) => activePercentValue(skillName, key, lvl);
-    const MAX = 10000000;
+    const MAX = 9999999;
     const top = getV(MAX);
-    if (top == null || top < target) return null;
+    if (top == null) return null;
+    // Цель выше достижимого — ставим максимум, доступный в приложении
+    if (top < target) return MAX;
     let lo = 1, hi = MAX, res = null;
     for (let i = 0; i < 64 && lo <= hi; i++) {
         const mid = Math.floor((lo + hi) / 2);
@@ -285,7 +292,7 @@ window.editActiveTarget = function(spanEl) {
         const level = (key === 'damage')
             ? findLevelForActiveTarget(bookName, target, getStatsFromProfile())
             : findLevelForActivePercent(bookName, key, target);
-        if (level == null) { showNotification('❌ Недостижимо'); restore(); return; }
+        if (level == null) { restore(); return; }
         applyLevel(level);
     };
     input.onblur = finish;
@@ -878,8 +885,11 @@ function findLevelByTargetPassive(bookName, key, target) {
         const r = skill.calc(lvl);
         return (r && typeof r === 'object') ? r[key] : r;
     };
-    const MAX = 10000000;
+    const MAX = 9999999;
     const increasing = getVal(MAX) >= getVal(1);
+    // Цель за пределом возможного — ставим максимум (значение упрётся в кап книги)
+    const limit = getVal(MAX);
+    if (increasing ? (target > limit) : (target < limit)) return MAX;
     let lo = 1, hi = MAX, res = null;
     for (let i = 0; i < 64 && lo <= hi; i++) {
         const mid = Math.floor((lo + hi) / 2);
@@ -934,7 +944,7 @@ window.editPassiveTarget = function(spanEl) {
         const target = parseFloat(input.value.replace(',', '.'));
         if (isNaN(target)) { restore(); return; }
         const level = findLevelByTargetPassive(bookName, key, target);
-        if (level == null) { showNotification('❌ Значение недостижимо'); restore(); return; }
+        if (level == null) { restore(); return; }
         applyLevel(level);
     };
     input.onblur = finish;
