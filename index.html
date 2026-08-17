@@ -202,6 +202,35 @@ text-transform: lowercase;
 white-space: nowrap;
 margin: 0;
 }
+.speed-toggle {
+display: inline-flex;
+align-items: center;
+justify-content: center;
+width: 36px;
+height: 36px;
+border-radius: 8px;
+border: 1px solid transparent;
+cursor: pointer;
+flex-shrink: 0;
+transition: background-color 0.15s, border-color 0.15s;
+-webkit-tap-highlight-color: transparent;
+}
+.speed-toggle input { display: none; }
+.speed-toggle img {
+width: 26px;
+height: 26px;
+object-fit: contain;
+display: block;
+opacity: 0.35;
+filter: grayscale(1);
+transition: opacity 0.15s, filter 0.15s;
+}
+.speed-toggle.on {
+background-color: rgba(255,255,255,0.14);
+border-color: rgba(255,255,255,0.35);
+}
+.speed-toggle.on img { opacity: 1; filter: none; }
+.speed-toggle-name { color: var(--text-secondary); font-size: 13px; }
 .stat-lines {
 margin: 4px 0 0;
 border-top: 1px solid var(--separator-color);
@@ -1678,10 +1707,11 @@ display: none !important;
       <div style="display: flex; align-items: center; justify-content: space-between; background-color: var(--input-bg); border-radius: 8px; padding: 10px 12px; margin-bottom: 12px;">
         <div style="display: flex; align-items: center; gap: 12px;">
           <div style="display: flex; align-items: center; gap: 6px;">
-            <label style="display: flex; align-items: center; gap: 4px; cursor: pointer;">
-              <input type="checkbox" id="speedBookEquipped" style="width: 18px; height: 18px; accent-color: var(--accent);" onchange="updateSpeedCalculations()">
-              <img src="icons/passives/speed.webp" alt="Расторопность" title="Расторопность" style="width: 26px; height: 26px; object-fit: contain; display: block;">
+            <label class="speed-toggle" id="speedBookToggle" title="Расторопность">
+              <input type="checkbox" id="speedBookEquipped" onchange="updateSpeedCalculations()">
+              <img src="icons/passives/speed.webp" alt="Расторопность">
             </label>
+            <span class="speed-toggle-name">Расторопность</span>
           </div>
           <div class="book-level-wrapper" style="display: flex; align-items: center; width: auto;">
             <input type="number" class="book-level-input-inventory" id="speedBookLevel" value="0" min="0" max="9999999" maxlength="7"
@@ -1693,9 +1723,9 @@ display: none !important;
             <span class="book-level-unit" style="font-size: 11px; color: var(--text-secondary); margin-left: 2px;">ур.</span>
           </div>
         </div>
-        <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
-          <input type="checkbox" id="speedRingCheckbox" style="width: 18px; height: 18px; accent-color: var(--accent);" onchange="updateSpeedCalculations()">
-          <img src="icons/items/ring-eternity.png" alt="Сплетение вечности" title="Сплетение вечности" style="width: 26px; height: 26px; object-fit: contain; display: block;">
+        <label class="speed-toggle" id="speedRingToggle" title="Сплетение вечности">
+          <input type="checkbox" id="speedRingCheckbox" onchange="updateSpeedCalculations()">
+          <img src="icons/items/ring-eternity.png" alt="Сплетение вечности">
         </label>
       </div>
       
@@ -2372,6 +2402,10 @@ function updateSpeedCalculations() {
     const bookLevel = parseInt(bookLevelInput.value) || 0;
     const hasRing = document.getElementById('speedRingCheckbox').checked;
     const bookEquipped = document.getElementById('speedBookEquipped').checked;
+    const bookToggle = document.getElementById('speedBookToggle');
+    const ringToggle = document.getElementById('speedRingToggle');
+    if (bookToggle) bookToggle.classList.toggle('on', bookEquipped);
+    if (ringToggle) ringToggle.classList.toggle('on', hasRing);
     
     adjustSpeedBookInput(bookLevelInput);
     
