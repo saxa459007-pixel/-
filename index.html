@@ -210,14 +210,19 @@ line-height: 13px;
 font-size: 10px;
 white-space: nowrap;
 overflow: hidden;
+width: 100%;
 max-width: 100%;
+text-align: center;
+box-sizing: border-box;
 color: var(--text-secondary);
 opacity: 0.55;
 transition: opacity 0.15s;
 -webkit-tap-highlight-color: transparent;
 }
 .equip-level-input {
-width: 44px;
+width: 100%;
+max-width: 100%;
+box-sizing: border-box;
 height: 13px;
 line-height: 13px;
 background: transparent;
@@ -3817,6 +3822,10 @@ function updateEquipLevels(){
     const box = slot.querySelector('.equip-level');
     if (!box || box.querySelector('input')) return;
     box.innerHTML = '<b>' + (levels[slot.dataset.item] || 0) + '</b> ур.';
+    // уменьшаем шрифт, если длинное число не влезает в слот
+    box.style.fontSize = '';
+    let fs = 10;
+    while (box.scrollWidth > box.clientWidth && fs > 7) { fs--; box.style.fontSize = fs + 'px'; }
   });
 }
 
