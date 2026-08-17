@@ -1906,6 +1906,11 @@ display: none !important;
     <div class="inventory-content" id="inventoryContent">
       <div class="equip-grid">
           <div class="equip-slot equip-toggle" data-slot="premium-0" data-kind="premium" data-item="Премиум-аккаунт" onclick="toggleEquipItem(this)" title="Премиум-аккаунт"><img src="icons/premium.png" alt="Премиум-аккаунт"><span class="equip-info" onclick="event.stopPropagation(); showItemInfo('Премиум-аккаунт')">i</span><span class="equip-level"></span></div>
+          <div class="equip-slot class-slot" data-class-rank="gold" title="Класс — золото"><img src="" alt="Класс — золото"><span class="equip-level"></span></div>
+          <div class="equip-slot class-slot" data-class-rank="silver" title="Класс — серебро"><img src="" alt="Класс — серебро"><span class="equip-level"></span></div>
+          <div class="equip-slot class-slot" data-class-rank="bronze" title="Класс — бронза"><img src="" alt="Класс — бронза"><span class="equip-level"></span></div>
+          <div class="equip-slot equip-toggle race-slot" data-slot="race-0" data-kind="race" data-item="Орк" onclick="toggleRace(this)" title="Орк"><img src="icons/races/orc.webp" alt="Орк"><span class="equip-level"></span></div>
+          <div class="equip-slot equip-toggle race-slot" data-slot="race-0" data-kind="race" data-item="Эльф" onclick="toggleRace(this)" title="Эльф"><img src="icons/races/elf.webp" alt="Эльф"><span class="equip-level"></span></div>
           <div class="equip-slot" data-slot="active-0" data-kind="active" onclick="openSlotPicker(this)"><img src="icons/slot-active.png" alt="Слот активного умения" title="Слот активного умения"><span class="equip-level"></span></div>
           <div class="equip-slot" data-slot="active-1" data-kind="active" onclick="openSlotPicker(this)"><img src="icons/slot-active.png" alt="Слот активного умения" title="Слот активного умения"><span class="equip-level"></span></div>
           <div class="equip-slot" data-slot="active-2" data-kind="active" onclick="openSlotPicker(this)"><img src="icons/slot-active.png" alt="Слот активного умения" title="Слот активного умения"><span class="equip-level"></span></div>
@@ -3382,6 +3387,7 @@ return;
 }
 const bonus = calculateClassEffect(config.type, classLvl);
 document.getElementById('res-class-desc').innerHTML = config.desc.replace('{val}', bonus.toFixed(1));
+if (typeof updateClassIcons === 'function') updateClassIcons();
 }
 
 window.toggleClassList = function() {
@@ -3732,6 +3738,7 @@ updateSpeedCalculations();
 // === ЭКИПИРОВКА: выбор книги в слот ===
 const EQUIP_KEY = 'rpg_equip_v1';
 const ACTIVE_ICONS = {"Берсеркер":"berserk","Грязный удар":"dirty-strike","Заражение":"infection","Кровотечение":"bleeding","Мощный удар":"power-strike","Огонек надежды":"hope-fire","Проклятие тьмы":"dark-curse","Раскол":"split","Расправа":"execution","Рассечение":"cleave","Сила теней":"shadow-power","Слабое исцеление":"weak-heal","Слепота":"blind","Таран":"ram","Удар вампира":"vampire-strike","Целебный огонь":"healing-fire"};
+const CLASS_SLUG = {"жнец душ":"reaper","повелитель мрака":"dark-lord","отрекшийся":"forsaken","прокаженный":"leper","крестоносец":"crusader","воплощение света":"light","клинок тьмы":"dark-blade","королевский убийца":"kings-killer","берсеркер":"berserker","потрошитель":"ripper","апостол":"apostle","верховный маг":"archmage"};
 const ARMOR_ITEMS = {"Бессмертная доблесть":"armor-valor"};
 // Описания предметов для окна информации (ⓘ в списке выбора)
 const ITEM_INFO = {
@@ -3765,6 +3772,7 @@ function renderEquipSlots(){
   document.querySelectorAll('.equip-slot[data-slot]').forEach(slot => {
     const kind = slot.dataset.kind;
     const name = eq[slot.dataset.slot];
+    if (slot.dataset.kind === 'race') { slot.classList.toggle('on', eq['race-0'] === slot.dataset.item); return; }
     if (slot.dataset.item) { slot.classList.toggle('on', !!name); return; }
     const img = slot.querySelector('img');
     const lbl = slot.querySelector('.equip-name');
@@ -3781,6 +3789,7 @@ function renderEquipSlots(){
   });
   if (typeof updateResistDisplay === 'function') updateResistDisplay();
   if (typeof updateEquipLevels === 'function') updateEquipLevels();
+  if (typeof updateClassIcons === 'function') updateClassIcons();
 }
 // первичная отрисовка экипировки (не зависит от window.onload)
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', renderEquipSlots);
@@ -3830,6 +3839,33 @@ function equipSlotBook(slot){
   if (slot.dataset.item) return slot.dataset.item;
   try { return (JSON.parse(localStorage.getItem(EQUIP_KEY) || '{}'))[slot.dataset.slot] || null; } catch (e) { return null; }
 }
+// Иконки класса (золото/серебро/бронза) меняются по выбранному классу в профиле
+function updateClassIcons(){
+  const cls = ((typeof triggerBtn !== 'undefined' && triggerBtn && triggerBtn.textContent) || '').trim().toLowerCase();
+  const slug = CLASS_SLUG[cls];
+  document.querySelectorAll('.class-slot').forEach(slot => {
+    const img = slot.querySelector('img');
+    if (!img) return;
+    if (slug) {
+      img.src = 'icons/classes/' + slug + '/' + slot.dataset.classRank + '.webp';
+      img.alt = cls; slot.title = cls;
+      slot.style.visibility = '';
+    } else {
+      img.removeAttribute('src');
+      slot.style.visibility = 'hidden';
+    }
+  });
+}
+
+// Раса: активной может быть только одна
+window.toggleRace = function(el){
+  const eq = getEquip();
+  const was = eq['race-0'];
+  if (was === el.dataset.item) delete eq['race-0']; else eq['race-0'] = el.dataset.item;
+  setEquip(eq);
+  renderEquipSlots();
+};
+
 function updateEquipLevels(){
   const cache = {};
   const read = (kind) => {
