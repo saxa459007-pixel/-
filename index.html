@@ -860,6 +860,66 @@ border-bottom: 1px solid var(--separator-color);
 .slot-picker-item:active { background-color: rgba(255,255,255,0.1); }
 .slot-picker-item img { width: 28px; height: 28px; object-fit: contain; flex-shrink: 0; }
 .slot-picker-clear { color: var(--text-secondary); justify-content: center; }
+/* Иконка "i" в строке выбора */
+.slot-picker-info {
+margin-left: auto;
+flex-shrink: 0;
+width: 20px;
+height: 20px;
+border: 1px solid var(--text-secondary);
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 12px;
+font-weight: 700;
+font-style: italic;
+font-family: Georgia, serif;
+color: var(--text-secondary);
+-webkit-tap-highlight-color: transparent;
+}
+.slot-picker-info:active { background-color: rgba(255,255,255,0.15); }
+
+/* Окно описания предмета — в стиле игровой подсказки */
+.item-info-overlay {
+position: fixed;
+inset: 0;
+background: rgba(0,0,0,0.65);
+display: none;
+align-items: center;
+justify-content: center;
+z-index: 10001;
+padding: 24px;
+}
+.item-info-overlay.show { display: flex; }
+.item-info-box {
+position: relative;
+background: #303030;
+border: 1px solid #4a4a4a;
+border-radius: 22px;
+padding: 26px 24px;
+width: 100%;
+max-width: 340px;
+box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+}
+.item-info-box::before,
+.item-info-box::after {
+content: '';
+position: absolute;
+left: 50%;
+transform: translateX(-50%);
+width: 74px;
+height: 11px;
+background: #7d7d7d;
+}
+.item-info-box::before { top: -1px; border-radius: 0 0 12px 12px; }
+.item-info-box::after { bottom: -1px; border-radius: 12px 12px 0 0; }
+.item-info-text {
+color: #e6e6e6;
+font-size: 16px;
+line-height: 1.45;
+text-align: left;
+}
 .book-cell {
 background-color: transparent;
 border: none;
@@ -3478,6 +3538,10 @@ updateSpeedCalculations();
 const EQUIP_KEY = 'rpg_equip_v1';
 const ACTIVE_ICONS = {"Берсеркер":"berserk","Грязный удар":"dirty-strike","Заражение":"infection","Кровотечение":"bleeding","Мощный удар":"power-strike","Огонек надежды":"hope-fire","Проклятие тьмы":"dark-curse","Раскол":"split","Расправа":"execution","Рассечение":"cleave","Сила теней":"shadow-power","Слабое исцеление":"weak-heal","Слепота":"blind","Таран":"ram","Удар вампира":"vampire-strike","Целебный огонь":"healing-fire"};
 const ARMOR_ITEMS = {"Бессмертная доблесть":"armor-valor"};
+// Описания предметов для окна информации (ⓘ в списке выбора)
+const ITEM_INFO = {
+  "Бессмертная доблесть": "Снижает получаемый урон и другие эффекты противника в PvP на 20% за счет увеличения сопротивления от недостающего."
+};
 const RING_ITEMS = {"Кровавая клятва":"ring-blood-oath","Змеиная хватка":"ring-serpent","Сплетение вечности":"ring-eternity","Шепот забвения":"ring-oblivion","Кольцо Ордена":"ring-order"};
 const PASSIVE_ICONS = {"Атлетика":"athletics","Ведьмак":"witcher","Воздаяние":"vengeance","Гладиатор":"gladiator","Мародер":"marauder","Презрение к боли":"pain-contempt","Расторопность":"speed"};
 function getEquip(){ try { return JSON.parse(localStorage.getItem(EQUIP_KEY) || '{}'); } catch(e){ return {}; } }
@@ -3554,11 +3618,29 @@ window.openSlotPicker = function(slotEl){
     const sp = document.createElement('span');
     sp.textContent = n;
     row.appendChild(im); row.appendChild(sp);
+    if (ITEM_INFO[n]) {
+      const info = document.createElement('span');
+      info.className = 'slot-picker-info';
+      info.textContent = 'i';
+      info.title = 'Описание';
+      info.onclick = (e) => { e.stopPropagation(); showItemInfo(n); };
+      row.appendChild(info);
+    }
     row.onclick = () => selectBookForSlot(n);
     list.appendChild(row);
   });
   document.getElementById('slotPickerOverlay').classList.add('show');
 };
+window.showItemInfo = function(name){
+  const text = ITEM_INFO[name];
+  if (!text) return;
+  document.getElementById('itemInfoText').textContent = text;
+  document.getElementById('itemInfoOverlay').classList.add('show');
+};
+window.closeItemInfo = function(){
+  document.getElementById('itemInfoOverlay').classList.remove('show');
+};
+
 window.selectBookForSlot = function(name){
   if (_pickerSlot) {
     const eq = getEquip();
@@ -3623,6 +3705,11 @@ adjustSpeedBookInput(speedInput);
 }
 };
 </script>
+<div class="item-info-overlay" id="itemInfoOverlay" onclick="closeItemInfo()">
+  <div class="item-info-box" onclick="event.stopPropagation()">
+    <div class="item-info-text" id="itemInfoText"></div>
+  </div>
+</div>
 <div class="slot-picker-overlay" id="slotPickerOverlay" onclick="if(event.target===this) closeSlotPicker()">
   <div class="slot-picker">
     <div class="slot-picker-title" id="slotPickerTitle">Выбор</div>
