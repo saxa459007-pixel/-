@@ -1909,11 +1909,12 @@ display: none !important;
           <div class="equip-slot class-slot" data-class-rank="gold" title="Класс — золото"><img src="" alt="Класс — золото"><span class="equip-level"></span></div>
           <div class="equip-slot class-slot" data-class-rank="silver" title="Класс — серебро"><img src="" alt="Класс — серебро"><span class="equip-level"></span></div>
           <div class="equip-slot class-slot" data-class-rank="bronze" title="Класс — бронза"><img src="" alt="Класс — бронза"><span class="equip-level"></span></div>
-          <div class="equip-slot equip-toggle race-slot" data-slot="race-0" data-kind="race" data-item="Орк" onclick="toggleRace(this)" title="Орк"><img src="icons/races/orc.webp" alt="Орк"><span class="equip-level"></span></div>
-          <div class="equip-slot equip-toggle race-slot" data-slot="race-0" data-kind="race" data-item="Эльф" onclick="toggleRace(this)" title="Эльф"><img src="icons/races/elf.webp" alt="Эльф"><span class="equip-level"></span></div>
+          <div class="equip-slot equip-toggle race-slot" data-slot="race-orc" data-kind="race" data-item="Орк" onclick="toggleEquipItem(this)" title="Орк"><img src="icons/races/orc.webp" alt="Орк"><span class="equip-level"></span></div>
+          <div class="equip-slot equip-toggle race-slot" data-slot="race-elf" data-kind="race" data-item="Эльф" onclick="toggleEquipItem(this)" title="Эльф"><img src="icons/races/elf.webp" alt="Эльф"><span class="equip-level"></span></div>
           <div class="equip-slot" data-slot="active-0" data-kind="active" onclick="openSlotPicker(this)"><img src="icons/slot-active.png" alt="Слот активного умения" title="Слот активного умения"><span class="equip-level"></span></div>
           <div class="equip-slot" data-slot="active-1" data-kind="active" onclick="openSlotPicker(this)"><img src="icons/slot-active.png" alt="Слот активного умения" title="Слот активного умения"><span class="equip-level"></span></div>
           <div class="equip-slot" data-slot="active-2" data-kind="active" onclick="openSlotPicker(this)"><img src="icons/slot-active.png" alt="Слот активного умения" title="Слот активного умения"><span class="equip-level"></span></div>
+          <div class="equip-slot" id="activeSlot4" data-slot="active-3" data-kind="active" onclick="openSlotPicker(this)" style="display:none"><img src="icons/slot-active.png" alt="Слот активного умения" title="Слот активного умения"><span class="equip-level"></span></div>
           <div class="equip-slot equip-toggle" data-slot="passive-0" data-kind="passive" data-item="Атлетика" onclick="toggleEquipItem(this)" title="Атлетика"><img src="icons/passives/athletics.webp" alt="Атлетика"><span class="equip-level" onclick="editEquipLevel(event, this)"><b>0</b> ур.</span></div>
           <div class="equip-slot equip-toggle" data-slot="passive-1" data-kind="passive" data-item="Ведьмак" onclick="toggleEquipItem(this)" title="Ведьмак"><img src="icons/passives/witcher.webp" alt="Ведьмак"><span class="equip-level" onclick="editEquipLevel(event, this)"><b>0</b> ур.</span></div>
           <div class="equip-slot equip-toggle" data-slot="passive-2" data-kind="passive" data-item="Воздаяние" onclick="toggleEquipItem(this)" title="Воздаяние"><img src="icons/passives/vengeance.webp" alt="Воздаяние"><span class="equip-level" onclick="editEquipLevel(event, this)"><b>0</b> ур.</span></div>
@@ -3772,7 +3773,6 @@ function renderEquipSlots(){
   document.querySelectorAll('.equip-slot[data-slot]').forEach(slot => {
     const kind = slot.dataset.kind;
     const name = eq[slot.dataset.slot];
-    if (slot.dataset.kind === 'race') { slot.classList.toggle('on', eq['race-0'] === slot.dataset.item); return; }
     if (slot.dataset.item) { slot.classList.toggle('on', !!name); return; }
     const img = slot.querySelector('img');
     const lbl = slot.querySelector('.equip-name');
@@ -3840,8 +3840,15 @@ function equipSlotBook(slot){
   try { return (JSON.parse(localStorage.getItem(EQUIP_KEY) || '{}'))[slot.dataset.slot] || null; } catch (e) { return null; }
 }
 // Иконки класса (золото/серебро/бронза) меняются по выбранному классу в профиле
+// У «верховного мага» четвёртый слот активного умения
+const CLASSES_WITH_4TH_ACTIVE = ['верховный маг'];
+function updateActiveSlotsCount(cls){
+  const slot4 = document.getElementById('activeSlot4');
+  if (slot4) slot4.style.display = CLASSES_WITH_4TH_ACTIVE.includes(cls) ? '' : 'none';
+}
 function updateClassIcons(){
   const cls = ((typeof triggerBtn !== 'undefined' && triggerBtn && triggerBtn.textContent) || '').trim().toLowerCase();
+  updateActiveSlotsCount(cls);
   const slug = CLASS_SLUG[cls];
   document.querySelectorAll('.class-slot').forEach(slot => {
     const img = slot.querySelector('img');
@@ -3856,15 +3863,6 @@ function updateClassIcons(){
     }
   });
 }
-
-// Раса: активной может быть только одна
-window.toggleRace = function(el){
-  const eq = getEquip();
-  const was = eq['race-0'];
-  if (was === el.dataset.item) delete eq['race-0']; else eq['race-0'] = el.dataset.item;
-  setEquip(eq);
-  renderEquipSlots();
-};
 
 function updateEquipLevels(){
   const cache = {};
