@@ -202,6 +202,32 @@ text-transform: lowercase;
 white-space: nowrap;
 margin: 0;
 }
+.stat-lines {
+margin-top: 12px;
+padding-top: 10px;
+border-top: 1px solid var(--separator-color);
+}
+.stat-line {
+display: flex;
+align-items: center;
+gap: 6px;
+flex-wrap: wrap;
+padding: 8px 2px;
+border-bottom: 1px solid var(--separator-color);
+cursor: pointer;
+font-size: 13px;
+-webkit-tap-highlight-color: transparent;
+}
+.stat-line:last-child { border-bottom: none; }
+.stat-line-key { color: var(--text-secondary); }
+.stat-line-val {
+color: var(--text-main);
+font-weight: 700;
+display: inline-flex;
+align-items: center;
+}
+.stat-line .stat-value-container { width: auto; position: relative; display: inline-flex; }
+.stat-line .stat-value { font-size: 13px; font-weight: 700; }
 .stat-input {
 position: absolute;
 top: 0;
@@ -1751,9 +1777,21 @@ display: none !important;
       <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🍀</span><div class="stat-value-container"><span class="stat-value" data-key="luck">0</span><span class="stat-label">удч</span></div></div></div>
       <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🎯</span><div class="stat-value-container"><span class="stat-value" data-key="acc">0</span><span class="stat-label">тчн</span></div></div></div>
       <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">🌀</span><div class="stat-value-container"><span class="stat-value" data-key="conc">0</span><span class="stat-label">кц</span></div></div></div>
-      <div class="stat-cell" onclick="editStatByCell(this)"><div class="stat-row"><span class="stat-icon">📜</span><div class="stat-value-container"><span class="stat-value" data-key="class_lvl">50</span><span class="stat-label">ур. кл.</span></div></div></div>
-      <div class="stat-cell" onclick="editStatByCell(this, true)"><div class="stat-row"><span class="stat-icon">🔰</span><div class="stat-value-container"><span class="stat-value" data-key="resist">0%</span><span class="stat-label">сопр</span></div></div></div>
-      <div class="stat-cell" onclick="editStatByCell(this, false, true)"><div class="stat-row"><span class="stat-icon" id="karma-icon">😐</span><div class="stat-value-container"><span class="stat-value" data-key="karma">0</span><span class="stat-label">карма</span></div></div></div>
+    </div>
+
+    <div class="stat-lines">
+      <div class="stat-line" onclick="editStatByCell(this, false, true)">
+        <span class="stat-line-key">👤Карма:</span>
+        <span class="stat-line-val"><span id="karma-icon">😐</span><span id="karma-name">Нейтральная</span>&nbsp;(<span class="stat-value-container"><span class="stat-value" data-key="karma">0</span></span>)</span>
+      </div>
+      <div class="stat-line" onclick="editStatByCell(this, true)">
+        <span class="stat-line-key">🔰Сопротивление:</span>
+        <span class="stat-line-val"><span id="resist-runes">0</span>&nbsp;(<span class="stat-value-container"><span class="stat-value" data-key="resist">0%</span></span>)</span>
+      </div>
+      <div class="stat-line" onclick="editStatByCell(this)">
+        <span class="stat-line-key">📜Уровень класса:</span>
+        <span class="stat-line-val"><span class="stat-value-container"><span class="stat-value" data-key="class_lvl">50</span></span></span>
+      </div>
     </div>
     
     <div class="class-result-box">
@@ -3131,6 +3169,15 @@ if (displayVal < -20) displayVal = -20;
 if (displayVal > 20) displayVal = 20;
 karmaIconSpan.textContent = getKarmaIcon(displayVal);
 if (val !== displayVal) karmaVal.textContent = displayVal;
+const nameEl = document.getElementById('karma-name');
+if (nameEl) {
+let name = 'Нейтральная';
+if (displayVal >= 20) name = 'Очень положительная';
+else if (displayVal > 0) name = 'Положительная';
+else if (displayVal <= -20) name = 'Очень отрицательная';
+else if (displayVal < 0) name = 'Отрицательная';
+nameEl.textContent = name;
+}
 }
 }
 
@@ -3166,8 +3213,9 @@ return isArmorEquipped() ? resistWithArmor(base) : base;
 }
 function updateResistDisplay() {
 const el = document.querySelector('.stat-value[data-key="resist"]');
-if (!el) return;
-el.textContent = currentResistPercent() + '%';
+if (el) el.textContent = currentResistPercent() + '%';
+const runesEl = document.getElementById('resist-runes');
+if (runesEl) runesEl.textContent = getResistRunes();
 }
 
 function calculateClassEffect(type, level) {
@@ -3316,6 +3364,8 @@ else finalValue = Math.floor(num).toString();
 if (isResist) {
 const runes = Math.max(0, Math.floor(parseFloat(newVal) || 0));
 setResistRunes(runes);
+const runesEl = document.getElementById('resist-runes');
+if (runesEl) runesEl.textContent = runes;
 finalValue = currentResistPercent() + '%';
 } else if (isKarma) {
 let karmaNum = parseInt(newVal);
@@ -3664,7 +3714,11 @@ window.onload = async () => {
 checkReset();
 loadInventory();
 try {
-await vkBridge.send('VKWebAppInit');
+// страховка: если VK не отвечает (открыто вне VK) — не залипаем, идём по локальным данным
+await Promise.race([
+vkBridge.send('VKWebAppInit'),
+new Promise((_, rej) => setTimeout(() => rej(new Error('VK Bridge не ответил')), 3000))
+]);
 console.log('VK Bridge инициализирован успешно');
 await loadVKUserData();
 const loaded = await loadAllDataFromVK();
