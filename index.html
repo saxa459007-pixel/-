@@ -3081,6 +3081,30 @@ let resist = 10.0 * Math.pow(runesCount, 0.25);
 return Math.min(100, Math.floor(resist));
 }
 
+// === СОПРОТИВЛЕНИЕ: руны + бонус доспеха R (как в боте) ===
+const RESIST_RUNES_KEY = 'rpg_resist_runes';
+function getResistRunes() {
+const raw = localStorage.getItem(RESIST_RUNES_KEY);
+if (raw !== null && raw !== '') return parseInt(raw) || 0;
+// первый запуск: восстанавливаем руны из уже сохранённого %
+const el = document.querySelector('.stat-value[data-key="resist"]');
+const p = parseInt(String((el && el.textContent) || '0').replace('%','')) || 0;
+return p > 0 ? Math.ceil(Math.pow(p / 10, 4)) : 0;
+}
+function setResistRunes(n) { localStorage.setItem(RESIST_RUNES_KEY, String(Math.max(0, Math.floor(n) || 0))); }
+function isArmorEquipped() { try { return !!(getEquip()['armor-0']); } catch (e) { return false; } }
+// % = 10 * руны^0.25 ; с доспехом R: % + (100 - %) * 0.2
+function resistWithArmor(base) { return Math.min(100, Math.floor(base + (100 - base) * 0.2)); }
+function currentResistPercent() {
+const base = calculateRunesResist(getResistRunes());
+return isArmorEquipped() ? resistWithArmor(base) : base;
+}
+function updateResistDisplay() {
+const el = document.querySelector('.stat-value[data-key="resist"]');
+if (!el) return;
+el.textContent = currentResistPercent() + '%';
+}
+
 function calculateClassEffect(type, level) {
 if (level < 0) level = 0;
 let coefficient = 5.0;
@@ -3181,7 +3205,7 @@ const labelSpan = valueContainer.querySelector('.stat-label');
 let currentVal = valueSpan.textContent;
 const key = valueSpan.dataset.key;
 let cleanVal = currentVal;
-if (isResist) cleanVal = currentVal.replace('%', '');
+if (isResist) cleanVal = String(getResistRunes());
 const input = document.createElement('input');
 input.type = 'number';
 input.value = cleanVal === '0' ? '' : cleanVal;
@@ -3225,9 +3249,9 @@ if (num > MAX_STAT_VALUE) finalValue = MAX_STAT_VALUE.toString();
 else finalValue = Math.floor(num).toString();
 }
 if (isResist) {
-const runes = parseFloat(newVal);
-const percent = calculateRunesResist(runes);
-finalValue = percent + '%';
+const runes = Math.max(0, Math.floor(parseFloat(newVal) || 0));
+setResistRunes(runes);
+finalValue = currentResistPercent() + '%';
 } else if (isKarma) {
 let karmaNum = parseInt(newVal);
 if (karmaNum < -20) karmaNum = -20;
@@ -3489,6 +3513,7 @@ function renderEquipSlots(){
       if (lbl) lbl.textContent = '';
     }
   });
+  if (typeof updateResistDisplay === 'function') updateResistDisplay();
 }
 // первичная отрисовка экипировки (не зависит от window.onload)
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', renderEquipSlots);
