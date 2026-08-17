@@ -1902,7 +1902,7 @@ display: none !important;
 
     <div class="inventory-content" id="inventoryContent">
       <div class="equip-grid">
-          <div class="equip-slot"><img src="icons/premium.png" alt="Премиум-аккаунт" title="Премиум-аккаунт"><span class="equip-level"></span></div>
+          <div class="equip-slot equip-toggle" data-slot="premium-0" data-kind="premium" data-item="Премиум-аккаунт" onclick="toggleEquipItem(this)" title="Премиум-аккаунт"><img src="icons/premium.png" alt="Премиум-аккаунт"><span class="equip-info" onclick="event.stopPropagation(); showItemInfo('Премиум-аккаунт')">i</span><span class="equip-level"></span></div>
           <div class="equip-slot" data-slot="active-0" data-kind="active" onclick="openSlotPicker(this)"><img src="icons/slot-active.png" alt="Слот активного умения" title="Слот активного умения"><span class="equip-level"></span></div>
           <div class="equip-slot" data-slot="active-1" data-kind="active" onclick="openSlotPicker(this)"><img src="icons/slot-active.png" alt="Слот активного умения" title="Слот активного умения"><span class="equip-level"></span></div>
           <div class="equip-slot" data-slot="active-2" data-kind="active" onclick="openSlotPicker(this)"><img src="icons/slot-active.png" alt="Слот активного умения" title="Слот активного умения"><span class="equip-level"></span></div>
@@ -3732,6 +3732,7 @@ const ACTIVE_ICONS = {"Берсеркер":"berserk","Грязный удар":"
 const ARMOR_ITEMS = {"Бессмертная доблесть":"armor-valor"};
 // Описания предметов для окна информации (ⓘ в списке выбора)
 const ITEM_INFO = {
+  "Премиум-аккаунт": "+50% получаемой репутации Ордена\n+50% к получаемым обычным трофеям.",
   "Бессмертная доблесть": "Снижает получаемый урон и другие эффекты противника в PvP на 20% за счет увеличения сопротивления от недостающего.",
   "Змеиная хватка": "Улучшает физические способности персонажа, увеличивая эффект от ловкости персонажа на 20%.",
   "Сплетение вечности": "Сокращает время путешествия за городом на 20%\nСнижает необходимое время на добычу руды, разбор завалов, ныряние за осколками и работы в таверне на 20%.",
