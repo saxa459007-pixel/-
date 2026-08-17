@@ -203,10 +203,11 @@ white-space: nowrap;
 margin: 0;
 }
 .stat-lines {
-margin-top: 12px;
+margin: 4px 15px 10px;
 padding-top: 10px;
 border-top: 1px solid var(--separator-color);
 }
+.stat-line-num { font-weight: 700; color: var(--text-main); }
 .stat-line {
 display: flex;
 align-items: center;
@@ -1784,9 +1785,9 @@ display: none !important;
         <span class="stat-line-key">👤Карма:</span>
         <span class="stat-line-val"><span id="karma-icon">😐</span><span id="karma-name">Нейтральная</span>&nbsp;(<span class="stat-value-container"><span class="stat-value" data-key="karma">0</span></span>)</span>
       </div>
-      <div class="stat-line" onclick="editStatByCell(this, true)">
+      <div class="stat-line" onclick="editResistRunes(this)">
         <span class="stat-line-key">🔰Сопротивление:</span>
-        <span class="stat-line-val"><span id="resist-runes">0</span>&nbsp;(<span class="stat-value-container"><span class="stat-value" data-key="resist">0%</span></span>)</span>
+        <span class="stat-line-val"><span class="stat-value-container"><span class="stat-line-num" id="resist-runes">0</span></span>&nbsp;(<span id="resist-pct">0%</span>)<span class="stat-value" data-key="resist" style="display:none">0%</span></span>
       </div>
       <div class="stat-line" onclick="editStatByCell(this)">
         <span class="stat-line-key">📜Уровень класса:</span>
@@ -3212,11 +3213,53 @@ const base = calculateRunesResist(getResistRunes());
 return isArmorEquipped() ? resistWithArmor(base) : base;
 }
 function updateResistDisplay() {
+const pct = currentResistPercent();
 const el = document.querySelector('.stat-value[data-key="resist"]');
-if (el) el.textContent = currentResistPercent() + '%';
+if (el) el.textContent = pct + '%';
+const pctEl = document.getElementById('resist-pct');
+if (pctEl) pctEl.textContent = pct + '%';
 const runesEl = document.getElementById('resist-runes');
-if (runesEl) runesEl.textContent = getResistRunes();
+if (runesEl && !runesEl.querySelector('input')) runesEl.textContent = getResistRunes();
 }
+
+// Редактирование рун прямо в строке сопротивления
+window.editResistRunes = function(lineEl) {
+const span = lineEl.querySelector('#resist-runes');
+if (!span || span.querySelector('input')) return;
+const input = document.createElement('input');
+input.type = 'number';
+input.className = 'stat-input';
+input.value = getResistRunes();
+input.style.position = 'static';
+input.style.width = 'auto';
+input.style.height = 'auto';
+input.style.fontSize = '13px';
+input.style.fontWeight = '700';
+const fit = () => {
+const w = measureTextWidth(input.value || '0', window.getComputedStyle(input).font);
+input.style.width = (w + 2) + 'px';
+input.style.marginRight = '-2px';
+};
+input.addEventListener('input', function() {
+if (this.value.length > 7) this.value = this.value.slice(0, 7);
+fit();
+});
+span.textContent = '';
+span.appendChild(input);
+fit();
+input.focus();
+input.select();
+const finish = () => {
+const runes = Math.max(0, Math.floor(parseFloat(input.value) || 0));
+setResistRunes(runes);
+input.remove();
+updateResistDisplay();
+saveStats();
+if (typeof saveAllDataToVK === 'function') saveAllDataToVK();
+};
+input.onblur = finish;
+input.onkeydown = (e) => { if (e.key === 'Enter') { e.preventDefault(); input.blur(); } };
+};
 
 function calculateClassEffect(type, level) {
 if (level < 0) level = 0;
