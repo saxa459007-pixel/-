@@ -203,7 +203,7 @@ white-space: nowrap;
 margin: 0;
 }
 .equip-slot { flex-direction: column; gap: 1px; }
-.equip-slot img { flex: 1; min-height: 0; width: 100%; }
+.equip-grid .equip-slot img { width: 100%; height: auto; aspect-ratio: 1 / 1; flex: none; }
 .equip-level {
 height: 13px;
 line-height: 13px;
@@ -908,10 +908,9 @@ gap: 8px;
 .equip-grid {
 display: grid;
 grid-template-columns: repeat(5, 1fr);
-gap: 8px;
+gap: 6px;
 }
 .equip-slot {
-aspect-ratio: 1 / 1;
 display: flex;
 align-items: center;
 justify-content: center;
