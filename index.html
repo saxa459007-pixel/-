@@ -202,16 +202,36 @@ text-transform: lowercase;
 white-space: nowrap;
 margin: 0;
 }
-.equip-slot.has-level { flex-direction: column; gap: 1px; }
-.equip-slot.has-level img { flex: 1; min-height: 0; width: 100%; }
+.equip-slot { flex-direction: column; gap: 1px; }
+.equip-slot img { flex: 1; min-height: 0; width: 100%; }
 .equip-level {
-font-size: 11px;
-line-height: 1;
+height: 13px;
+line-height: 13px;
+font-size: 10px;
 white-space: nowrap;
+overflow: hidden;
+max-width: 100%;
 color: var(--text-secondary);
 opacity: 0.55;
 transition: opacity 0.15s;
+-webkit-tap-highlight-color: transparent;
 }
+.equip-level-input {
+width: 44px;
+height: 13px;
+line-height: 13px;
+background: transparent;
+border: none;
+outline: none;
+color: var(--text-main);
+font: inherit;
+font-weight: 700;
+text-align: center;
+padding: 0;
+-moz-appearance: textfield;
+}
+.equip-level-input::-webkit-outer-spin-button,
+.equip-level-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 .equip-level b { font-weight: 700; }
 .equip-toggle.on .equip-level { opacity: 1; }
 .equip-toggle.on .equip-level b { color: var(--text-main); }
@@ -1878,25 +1898,25 @@ display: none !important;
 
     <div class="inventory-content" id="inventoryContent">
       <div class="equip-grid">
-          <div class="equip-slot"><img src="icons/premium.png" alt="Премиум-аккаунт" title="Премиум-аккаунт"></div>
-          <div class="equip-slot" data-slot="active-0" data-kind="active" onclick="openSlotPicker(this)"><img src="icons/slot-active.png" alt="Слот активного умения" title="Слот активного умения"></div>
-          <div class="equip-slot" data-slot="active-1" data-kind="active" onclick="openSlotPicker(this)"><img src="icons/slot-active.png" alt="Слот активного умения" title="Слот активного умения"></div>
-          <div class="equip-slot" data-slot="active-2" data-kind="active" onclick="openSlotPicker(this)"><img src="icons/slot-active.png" alt="Слот активного умения" title="Слот активного умения"></div>
-          <div class="equip-slot equip-toggle" data-slot="passive-0" data-kind="passive" data-item="Атлетика" onclick="toggleEquipItem(this)" title="Атлетика"><img src="icons/passives/athletics.webp" alt="Атлетика"><span class="equip-level"><b>0</b> ур.</span></div>
-          <div class="equip-slot equip-toggle" data-slot="passive-1" data-kind="passive" data-item="Ведьмак" onclick="toggleEquipItem(this)" title="Ведьмак"><img src="icons/passives/witcher.webp" alt="Ведьмак"><span class="equip-level"><b>0</b> ур.</span></div>
-          <div class="equip-slot equip-toggle" data-slot="passive-2" data-kind="passive" data-item="Воздаяние" onclick="toggleEquipItem(this)" title="Воздаяние"><img src="icons/passives/vengeance.webp" alt="Воздаяние"><span class="equip-level"><b>0</b> ур.</span></div>
-          <div class="equip-slot equip-toggle" data-slot="passive-3" data-kind="passive" data-item="Гладиатор" onclick="toggleEquipItem(this)" title="Гладиатор"><img src="icons/passives/gladiator.webp" alt="Гладиатор"><span class="equip-level"><b>0</b> ур.</span></div>
-          <div class="equip-slot equip-toggle" data-slot="passive-4" data-kind="passive" data-item="Мародер" onclick="toggleEquipItem(this)" title="Мародер"><img src="icons/passives/marauder.webp" alt="Мародер"><span class="equip-level"><b>0</b> ур.</span></div>
-          <div class="equip-slot equip-toggle" data-slot="passive-5" data-kind="passive" data-item="Презрение к боли" onclick="toggleEquipItem(this)" title="Презрение к боли"><img src="icons/passives/pain-contempt.webp" alt="Презрение к боли"><span class="equip-level"><b>0</b> ур.</span></div>
-          <div class="equip-slot equip-toggle" data-slot="passive-6" data-kind="passive" data-item="Расторопность" onclick="toggleEquipItem(this)" title="Расторопность"><img src="icons/passives/speed.webp" alt="Расторопность"><span class="equip-level"><b>0</b> ур.</span></div>
-          <div class="equip-slot"><img src="icons/book-adm.webp" alt="Книга Адмов" title="Книга Адмов"></div>
-          <div class="equip-slot equip-toggle" data-slot="armor-0" data-kind="armor" data-item="Бессмертная доблесть" onclick="toggleEquipItem(this)" title="Бессмертная доблесть"><img src="icons/items/armor-valor.png" alt="Бессмертная доблесть"><span class="equip-info" onclick="event.stopPropagation(); showItemInfo('Бессмертная доблесть')">i</span></div>
-          <div class="equip-slot"><img src="icons/cloak-heavy.png" alt="Плащ" title="Плащ"></div>
-          <div class="equip-slot equip-toggle" data-slot="ring-0" data-kind="ring" data-item="Кровавая клятва" onclick="toggleEquipItem(this)" title="Кровавая клятва"><img src="icons/items/ring-blood-oath.png" alt="Кровавая клятва"><span class="equip-info" onclick="event.stopPropagation(); showItemInfo('Кровавая клятва')">i</span></div>
-          <div class="equip-slot equip-toggle" data-slot="ring-1" data-kind="ring" data-item="Змеиная хватка" onclick="toggleEquipItem(this)" title="Змеиная хватка"><img src="icons/items/ring-serpent.png" alt="Змеиная хватка"><span class="equip-info" onclick="event.stopPropagation(); showItemInfo('Змеиная хватка')">i</span></div>
-          <div class="equip-slot equip-toggle" data-slot="ring-2" data-kind="ring" data-item="Сплетение вечности" onclick="toggleEquipItem(this)" title="Сплетение вечности"><img src="icons/items/ring-eternity.png" alt="Сплетение вечности"><span class="equip-info" onclick="event.stopPropagation(); showItemInfo('Сплетение вечности')">i</span></div>
-          <div class="equip-slot equip-toggle" data-slot="ring-3" data-kind="ring" data-item="Шепот забвения" onclick="toggleEquipItem(this)" title="Шепот забвения"><img src="icons/items/ring-oblivion.png" alt="Шепот забвения"><span class="equip-info" onclick="event.stopPropagation(); showItemInfo('Шепот забвения')">i</span></div>
-          <div class="equip-slot equip-toggle" data-slot="ring-4" data-kind="ring" data-item="Кольцо Ордена" onclick="toggleEquipItem(this)" title="Кольцо Ордена"><img src="icons/items/ring-order.png" alt="Кольцо Ордена"><span class="equip-info" onclick="event.stopPropagation(); showItemInfo('Кольцо Ордена')">i</span></div>
+          <div class="equip-slot"><img src="icons/premium.png" alt="Премиум-аккаунт" title="Премиум-аккаунт"><span class="equip-level"></span></div>
+          <div class="equip-slot" data-slot="active-0" data-kind="active" onclick="openSlotPicker(this)"><img src="icons/slot-active.png" alt="Слот активного умения" title="Слот активного умения"><span class="equip-level"></span></div>
+          <div class="equip-slot" data-slot="active-1" data-kind="active" onclick="openSlotPicker(this)"><img src="icons/slot-active.png" alt="Слот активного умения" title="Слот активного умения"><span class="equip-level"></span></div>
+          <div class="equip-slot" data-slot="active-2" data-kind="active" onclick="openSlotPicker(this)"><img src="icons/slot-active.png" alt="Слот активного умения" title="Слот активного умения"><span class="equip-level"></span></div>
+          <div class="equip-slot equip-toggle" data-slot="passive-0" data-kind="passive" data-item="Атлетика" onclick="toggleEquipItem(this)" title="Атлетика"><img src="icons/passives/athletics.webp" alt="Атлетика"><span class="equip-level" onclick="editEquipLevel(event, this)"><b>0</b> ур.</span></div>
+          <div class="equip-slot equip-toggle" data-slot="passive-1" data-kind="passive" data-item="Ведьмак" onclick="toggleEquipItem(this)" title="Ведьмак"><img src="icons/passives/witcher.webp" alt="Ведьмак"><span class="equip-level" onclick="editEquipLevel(event, this)"><b>0</b> ур.</span></div>
+          <div class="equip-slot equip-toggle" data-slot="passive-2" data-kind="passive" data-item="Воздаяние" onclick="toggleEquipItem(this)" title="Воздаяние"><img src="icons/passives/vengeance.webp" alt="Воздаяние"><span class="equip-level" onclick="editEquipLevel(event, this)"><b>0</b> ур.</span></div>
+          <div class="equip-slot equip-toggle" data-slot="passive-3" data-kind="passive" data-item="Гладиатор" onclick="toggleEquipItem(this)" title="Гладиатор"><img src="icons/passives/gladiator.webp" alt="Гладиатор"><span class="equip-level" onclick="editEquipLevel(event, this)"><b>0</b> ур.</span></div>
+          <div class="equip-slot equip-toggle" data-slot="passive-4" data-kind="passive" data-item="Мародер" onclick="toggleEquipItem(this)" title="Мародер"><img src="icons/passives/marauder.webp" alt="Мародер"><span class="equip-level" onclick="editEquipLevel(event, this)"><b>0</b> ур.</span></div>
+          <div class="equip-slot equip-toggle" data-slot="passive-5" data-kind="passive" data-item="Презрение к боли" onclick="toggleEquipItem(this)" title="Презрение к боли"><img src="icons/passives/pain-contempt.webp" alt="Презрение к боли"><span class="equip-level" onclick="editEquipLevel(event, this)"><b>0</b> ур.</span></div>
+          <div class="equip-slot equip-toggle" data-slot="passive-6" data-kind="passive" data-item="Расторопность" onclick="toggleEquipItem(this)" title="Расторопность"><img src="icons/passives/speed.webp" alt="Расторопность"><span class="equip-level" onclick="editEquipLevel(event, this)"><b>0</b> ур.</span></div>
+          <div class="equip-slot"><img src="icons/book-adm.webp" alt="Книга Адмов" title="Книга Адмов"><span class="equip-level"></span></div>
+          <div class="equip-slot equip-toggle" data-slot="armor-0" data-kind="armor" data-item="Бессмертная доблесть" onclick="toggleEquipItem(this)" title="Бессмертная доблесть"><img src="icons/items/armor-valor.png" alt="Бессмертная доблесть"><span class="equip-info" onclick="event.stopPropagation(); showItemInfo('Бессмертная доблесть')">i</span><span class="equip-level"></span></div>
+          <div class="equip-slot"><img src="icons/cloak-heavy.png" alt="Плащ" title="Плащ"><span class="equip-level"></span></div>
+          <div class="equip-slot equip-toggle" data-slot="ring-0" data-kind="ring" data-item="Кровавая клятва" onclick="toggleEquipItem(this)" title="Кровавая клятва"><img src="icons/items/ring-blood-oath.png" alt="Кровавая клятва"><span class="equip-info" onclick="event.stopPropagation(); showItemInfo('Кровавая клятва')">i</span><span class="equip-level"></span></div>
+          <div class="equip-slot equip-toggle" data-slot="ring-1" data-kind="ring" data-item="Змеиная хватка" onclick="toggleEquipItem(this)" title="Змеиная хватка"><img src="icons/items/ring-serpent.png" alt="Змеиная хватка"><span class="equip-info" onclick="event.stopPropagation(); showItemInfo('Змеиная хватка')">i</span><span class="equip-level"></span></div>
+          <div class="equip-slot equip-toggle" data-slot="ring-2" data-kind="ring" data-item="Сплетение вечности" onclick="toggleEquipItem(this)" title="Сплетение вечности"><img src="icons/items/ring-eternity.png" alt="Сплетение вечности"><span class="equip-info" onclick="event.stopPropagation(); showItemInfo('Сплетение вечности')">i</span><span class="equip-level"></span></div>
+          <div class="equip-slot equip-toggle" data-slot="ring-3" data-kind="ring" data-item="Шепот забвения" onclick="toggleEquipItem(this)" title="Шепот забвения"><img src="icons/items/ring-oblivion.png" alt="Шепот забвения"><span class="equip-info" onclick="event.stopPropagation(); showItemInfo('Шепот забвения')">i</span><span class="equip-level"></span></div>
+          <div class="equip-slot equip-toggle" data-slot="ring-4" data-kind="ring" data-item="Кольцо Ордена" onclick="toggleEquipItem(this)" title="Кольцо Ордена"><img src="icons/items/ring-order.png" alt="Кольцо Ордена"><span class="equip-info" onclick="event.stopPropagation(); showItemInfo('Кольцо Ордена')">i</span><span class="equip-level"></span></div>
       </div>
     </div>
   </div>
@@ -3760,15 +3780,44 @@ else renderEquipSlots();
 
 let _pickerSlot = null;
 // Уровни пассивок на иконках экипировки — из того же хранилища, что и вкладка «Пассивки»
+window.editEquipLevel = function(e, span){
+  e.stopPropagation();
+  if (span.querySelector('input')) return;
+  const slot = span.closest('.equip-slot');
+  const name = slot && slot.dataset.item;
+  if (!name) return;
+  let levels = {};
+  try { levels = JSON.parse(localStorage.getItem('rpg_books_levels_final_verified_v8') || '{}'); } catch (err) {}
+  const input = document.createElement('input');
+  input.type = 'number';
+  input.className = 'equip-level-input';
+  input.value = levels[name] || 0;
+  input.addEventListener('input', function(){ if (this.value.length > 7) this.value = this.value.slice(0, 7); });
+  span.innerHTML = '';
+  span.appendChild(input);
+  input.focus();
+  input.select();
+  const finish = () => {
+    const val = Math.max(0, Math.min(9999999, Math.floor(parseFloat(input.value) || 0)));
+    if (typeof updatePassiveBookLevel === 'function') updatePassiveBookLevel(name, val);
+    else {
+      levels[name] = val;
+      localStorage.setItem('rpg_books_levels_final_verified_v8', JSON.stringify(levels));
+    }
+    span.innerHTML = '<b>' + val + '</b> ур.';
+    updateEquipLevels();
+  };
+  input.onblur = finish;
+  input.onkeydown = (ev) => { if (ev.key === 'Enter') { ev.preventDefault(); input.blur(); } };
+};
+
 function updateEquipLevels(){
   let levels = {};
   try { levels = JSON.parse(localStorage.getItem('rpg_books_levels_final_verified_v8') || '{}'); } catch (e) {}
   document.querySelectorAll('.equip-slot[data-kind="passive"][data-item]').forEach(slot => {
     const box = slot.querySelector('.equip-level');
-    if (!box) return;
-    slot.classList.add('has-level');
-    const num = box.querySelector('b');
-    if (num) num.textContent = levels[slot.dataset.item] || 0;
+    if (!box || box.querySelector('input')) return;
+    box.innerHTML = '<b>' + (levels[slot.dataset.item] || 0) + '</b> ур.';
   });
 }
 
