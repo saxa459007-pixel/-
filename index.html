@@ -3148,8 +3148,13 @@ const raw = localStorage.getItem(RESIST_RUNES_KEY);
 if (raw !== null && raw !== '') return parseInt(raw) || 0;
 // первый запуск: восстанавливаем руны из уже сохранённого %
 const el = document.querySelector('.stat-value[data-key="resist"]');
-const p = parseInt(String((el && el.textContent) || '0').replace('%','')) || 0;
-return p > 0 ? Math.ceil(Math.pow(p / 10, 4)) : 0;
+let p = parseInt(String((el && el.textContent) || '0').replace('%','')) || 0;
+// если доспех уже надет — снимаем его вклад, иначе руны завысятся
+if (isArmorEquipped() && p > 20) p = Math.round((p - 20) / 0.8);
+const runes = p > 0 ? Math.ceil(Math.pow(p / 10, 4)) : 0;
+// сохраняем сразу: иначе при каждом пересчёте руны выводились бы из уже изменённого %
+localStorage.setItem(RESIST_RUNES_KEY, String(runes));
+return runes;
 }
 function setResistRunes(n) { localStorage.setItem(RESIST_RUNES_KEY, String(Math.max(0, Math.floor(n) || 0))); }
 function isArmorEquipped() { try { return !!(getEquip()['armor-0']); } catch (e) { return false; } }
