@@ -376,7 +376,7 @@ window.editActiveStat = function(event, element, statKey) {
         const stats = getStatsFromProfile();
         items.forEach(item => {
             const bookName = item.querySelector('.book-name').textContent;
-            const level = parseInt(item.querySelector('.book-level-input').value) || 1;
+            const level = parseInt(item.querySelector('.book-level-input').value) || 0;
             const descDiv = item.querySelector('.book-desc');
             if (descDiv) {
                 descDiv.innerHTML = getSkillDescription(bookName, level, stats);
@@ -1167,6 +1167,7 @@ function applyBulkLevelToActive(level) {
 
     localStorage.setItem('rpg_active_books_levels_final_verified_v8', JSON.stringify(savedLevels));
     localStorage.setItem('rpg_date_final_verified_v8', Date.now().toString());
+    if (typeof updateEquipLevels === 'function') updateEquipLevels();
 }
 
 function applyBulkLevelToPassive(level) {
@@ -1195,6 +1196,7 @@ function applyBulkLevelToPassive(level) {
 
     localStorage.setItem('rpg_books_levels_final_verified_v8', JSON.stringify(savedLevels));
     localStorage.setItem('rpg_date_final_verified_v8', Date.now().toString());
+    if (typeof updateEquipLevels === 'function') updateEquipLevels();
 }
 
 // Закрытие панели при клике вне её

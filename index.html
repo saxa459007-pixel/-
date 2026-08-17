@@ -1837,7 +1837,7 @@ display: none !important;
 <div id="page-profile" class="page active">
   <div class="profile-card">
     <div class="profile-header">
-      <img src="https://via.placeholder.com/50" alt="Avatar" class="avatar" id="user-avatar">
+      <img src="data:image/svg+xml;charset=utf-8,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 50 50%27%3E%3Ccircle cx=%2725%27 cy=%2725%27 r=%2725%27 fill=%27%23444a54%27/%3E%3Ccircle cx=%2725%27 cy=%2720%27 r=%278%27 fill=%27%238b93a1%27/%3E%3Cpath d=%27M9 47a16 16 0 0 1 32 0z%27 fill=%27%238b93a1%27/%3E%3C/svg%3E" alt="Avatar" class="avatar" id="user-avatar">
       <div class="info">
         <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 5px;">
           <h1 class="player-name" id="user-name" style="margin: 0;">Загрузка...</h1>
@@ -2148,7 +2148,7 @@ async function loadProfile(silent = false) {
         const profileData = await response.json();
         console.log('✅ Профиль загружен:', profileData);
         
-        const statsToUpdate = ['lvl', 'str', 'agi', 'vit', 'luck', 'atk', 'armor', 'karma'];
+        const statsToUpdate = ['lvl', 'str', 'agi', 'vit', 'luck', 'atk', 'armor', 'karma', 'class_lvl'];
         
         if (profileData.stats) {
             statsToUpdate.forEach(key => {
@@ -2163,6 +2163,7 @@ async function loadProfile(silent = false) {
         }
         
         updateKarmaIcon();
+        updateClassResult();
         saveStats();
         
         if (profileData.class) {
@@ -2228,6 +2229,7 @@ const triggerBtn = document.getElementById('classTrigger');
 const listDiv = document.getElementById('classList');
 const karmaIconSpan = document.getElementById('karma-icon');
 const INVENTORY_KEY = 'rpg_inventory_v1';
+const SPEED_RING_KEY = 'rpg_speed_ring_equipped';
 
 function measureTextWidth(text, font, padding = 0) {
     const span = document.createElement('span');
@@ -2490,22 +2492,28 @@ function updateSpeedCalculations() {
     document.getElementById('speed-str-time').textContent = calculateSpeedTime(stats.str, bookLevel, hasRing, bookEquipped).toFixed(1);
     document.getElementById('speed-agi-time').textContent = calculateSpeedTime(stats.agi, bookLevel, hasRing, bookEquipped).toFixed(1);
     
-    saveSpeedSettings(bookLevel, bookEquipped);
+    saveSpeedSettings(bookLevel, bookEquipped, hasRing);
     saveAllDataToVK(); // Сохраняем в VK Cloud
 }
 
-function saveSpeedSettings(level, equipped) {
+function saveSpeedSettings(level, equipped, ring) {
     const savedLevels = JSON.parse(localStorage.getItem('rpg_books_levels_final_verified_v8') || '{}');
     savedLevels['Расторопность'] = level;
     localStorage.setItem('rpg_books_levels_final_verified_v8', JSON.stringify(savedLevels));
     localStorage.setItem('rpg_speed_book_equipped', equipped ? 'true' : 'false');
+    localStorage.setItem(SPEED_RING_KEY, ring ? 'true' : 'false');
     localStorage.setItem('rpg_date_final_verified_v8', Date.now().toString());
+    // уровень Расторопности виден и на иконке в Экипировке — держим их в согласии
+    if (typeof updateEquipLevels === 'function') updateEquipLevels();
 }
 
 function loadSpeedSettings() {
     const savedLevels = JSON.parse(localStorage.getItem('rpg_books_levels_final_verified_v8') || '{}');
     const bookLevel = savedLevels['Расторопность'] || 0;
     const bookEquipped = localStorage.getItem('rpg_speed_book_equipped') === 'true';
+    const ringEquipped = localStorage.getItem(SPEED_RING_KEY) === 'true';
+    const ringCheckbox = document.getElementById('speedRingCheckbox');
+    if (ringCheckbox) ringCheckbox.checked = ringEquipped;
     
     const speedInput = document.getElementById('speedBookLevel');
     if (speedInput) {
@@ -2518,7 +2526,7 @@ function loadSpeedSettings() {
         equippedCheckbox.checked = bookEquipped;
     }
     
-    return { bookLevel, bookEquipped };
+    return { bookLevel, bookEquipped, ringEquipped };
 }
 
 // Редактирование значения стата в блоке Расторопности (как в капе статов)
@@ -3155,6 +3163,9 @@ const passiveBooks = JSON.parse(localStorage.getItem('rpg_books_levels_final_ver
 const activeBooks = JSON.parse(localStorage.getItem('rpg_active_books_levels_final_verified_v8') || '{}');
 const inventory = localStorage.getItem(INVENTORY_KEY) || '{}';
 const speedEquipped = localStorage.getItem('rpg_speed_book_equipped') || 'false';
+const speedRing = localStorage.getItem(SPEED_RING_KEY) || 'false';
+const equip = localStorage.getItem(EQUIP_KEY) || '{}';
+const resistRunes = localStorage.getItem(RESIST_RUNES_KEY) || '0';
 const userData = {
 stats: stats,
 class: classData,
@@ -3164,8 +3175,11 @@ active: activeBooks
 },
 inventory: JSON.parse(inventory),
 speedEquipped: speedEquipped === 'true',
+speedRing: speedRing === 'true',
+equip: JSON.parse(equip),
+resistRunes: parseInt(resistRunes) || 0,
 lastSave: Date.now(),
-version: '1.2'
+version: '1.3'
 };
 await vkBridge.send('VKWebAppStorageSet', {
 key: VK_STORAGE_KEY,
@@ -3230,6 +3244,15 @@ loadInventory();
 if (userData.speedEquipped !== undefined) {
 localStorage.setItem('rpg_speed_book_equipped', userData.speedEquipped ? 'true' : 'false');
 }
+if (userData.speedRing !== undefined) {
+localStorage.setItem(SPEED_RING_KEY, userData.speedRing ? 'true' : 'false');
+}
+if (userData.equip) {
+localStorage.setItem(EQUIP_KEY, JSON.stringify(userData.equip));
+}
+if (userData.resistRunes !== undefined) {
+localStorage.setItem(RESIST_RUNES_KEY, String(userData.resistRunes));
+}
 localStorage.setItem(DATE_KEY, Date.now().toString());
 console.log('✅ Данные загружены из облака VK');
 updateClassResult();
@@ -3238,6 +3261,7 @@ loadCapStatsFromProfile();
 updateRedistributeCard();
 loadSpeedSettings();
 updateSpeedCalculations();
+if (typeof renderEquipSlots === 'function') renderEquipSlots();
 return true;
 }
 return false;
@@ -3296,15 +3320,32 @@ return Math.min(100, Math.floor(resist));
 const RESIST_RUNES_KEY = 'rpg_resist_runes';
 function getResistRunes() {
 const raw = localStorage.getItem(RESIST_RUNES_KEY);
-if (raw !== null && raw !== '') return parseInt(raw) || 0;
-// первый запуск: восстанавливаем руны из уже сохранённого %
+if (raw !== null && raw !== '') {
+const n = parseInt(raw) || 0;
+// восстановление после старой ошибки: руны 0, а сохранённый % больше нуля
+if (n === 0) { const back = deriveResistRunes(); if (back > 0) return back; }
+return n;
+}
+return deriveResistRunes();
+}
+// Первый запуск: восстанавливаем руны из сохранённого %.
+// Берём его из localStorage, а не из DOM: renderEquipSlots срабатывает раньше loadStats,
+// и в разметке в этот момент ещё стоит 0% — руны обнулялись.
+function deriveResistRunes() {
+let p = 0;
+try {
+const saved = JSON.parse(localStorage.getItem(DB_KEY) || '{}');
+p = parseInt(String(saved.resist || '').replace('%','')) || 0;
+} catch (e) {}
+if (!p) {
 const el = document.querySelector('.stat-value[data-key="resist"]');
-let p = parseInt(String((el && el.textContent) || '0').replace('%','')) || 0;
+p = parseInt(String((el && el.textContent) || '0').replace('%','')) || 0;
+}
 // если доспех уже надет — снимаем его вклад, иначе руны завысятся
-if (isArmorEquipped() && p > 20) p = Math.round((p - 20) / 0.8);
+if (isArmorEquipped()) p = Math.max(0, Math.round((p - 20) / 0.8));
 const runes = p > 0 ? Math.ceil(Math.pow(p / 10, 4)) : 0;
-// сохраняем сразу: иначе при каждом пересчёте руны выводились бы из уже изменённого %
-localStorage.setItem(RESIST_RUNES_KEY, String(runes));
+// ноль не фиксируем: данные могли ещё не загрузиться, вывод повторится позже
+if (runes > 0) localStorage.setItem(RESIST_RUNES_KEY, String(runes));
 return runes;
 }
 function setResistRunes(n) { localStorage.setItem(RESIST_RUNES_KEY, String(Math.max(0, Math.floor(n) || 0))); }
@@ -3728,6 +3769,8 @@ if (pageName === 'passive') {
 if (typeof renderPassiveBooks === 'function') renderPassiveBooks();
 } else if (pageName === 'active') {
 if (typeof renderActiveBooks === 'function') renderActiveBooks();
+} else if (pageName === 'profile') {
+if (typeof renderEquipSlots === 'function') renderEquipSlots();
 } else if (pageName === 'cap') {
 loadCapStatsFromProfile();
 updateRedistributeCard();
