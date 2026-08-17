@@ -964,6 +964,78 @@ border-bottom: 1px solid var(--separator-color);
 text-align: center;
 }
 .slot-picker-list { overflow-y: auto; }
+.adm-group {
+padding: 7px 15px 4px;
+font-size: 11px;
+color: var(--text-secondary);
+background-color: var(--inventory-bg);
+}
+.adm-row {
+display: flex;
+align-items: center;
+gap: 10px;
+padding: 9px 15px;
+border-bottom: 1px solid var(--separator-color);
+cursor: pointer;
+-webkit-tap-highlight-color: transparent;
+}
+.adm-check {
+width: 16px;
+height: 16px;
+border-radius: 5px;
+flex: none;
+border: 1px solid var(--text-secondary);
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 11px;
+color: transparent;
+}
+.adm-row.on .adm-check {
+background-color: var(--accent);
+border-color: var(--accent);
+color: #fff;
+}
+.adm-name { flex: 1; font-size: 13px; color: var(--text-secondary); }
+.adm-row.on .adm-name { color: var(--text-main); }
+.adm-val {
+font-size: 13px;
+font-weight: 700;
+min-width: 46px;
+text-align: right;
+color: var(--text-secondary);
+}
+.adm-row.on .adm-val { border-bottom: 1px dashed var(--text-secondary); }
+.adm-row.on .adm-val.plus { color: #97C459; }
+.adm-row.on .adm-val.minus { color: #F09595; }
+.adm-row.on .adm-val.zero { color: var(--text-main); }
+.adm-range { font-size: 10px; color: #7a7f87; min-width: 58px; text-align: right; }
+.adm-val-input {
+width: 46px;
+background: transparent;
+border: none;
+outline: none;
+color: var(--text-main);
+font-size: 13px;
+font-weight: 700;
+font-family: inherit;
+text-align: right;
+padding: 0;
+-moz-appearance: textfield;
+}
+.adm-val-input::-webkit-outer-spin-button,
+.adm-val-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.adm-foot {
+display: flex;
+justify-content: space-between;
+align-items: center;
+padding: 10px 15px;
+font-size: 12px;
+color: var(--text-secondary);
+border-top: 1px solid var(--separator-color);
+}
+.adm-foot b { color: var(--gold); }
+.adm-reset { color: var(--accent); cursor: pointer; -webkit-tap-highlight-color: transparent; }
 .slot-picker-item {
 display: flex;
 align-items: center;
@@ -1872,7 +1944,7 @@ display: none !important;
           <div class="equip-slot equip-toggle" data-slot="passive-4" data-kind="passive" data-item="Мародер" onclick="toggleEquipItem(this)" title="Мародер"><img src="icons/passives/marauder.webp" alt="Мародер"><span class="equip-level" onclick="editEquipLevel(event, this)"><b>0</b> ур.</span></div>
           <div class="equip-slot equip-toggle" data-slot="passive-5" data-kind="passive" data-item="Презрение к боли" onclick="toggleEquipItem(this)" title="Презрение к боли"><img src="icons/passives/pain-contempt.webp" alt="Презрение к боли"><span class="equip-level" onclick="editEquipLevel(event, this)"><b>0</b> ур.</span></div>
           <div class="equip-slot equip-toggle" data-slot="passive-6" data-kind="passive" data-item="Расторопность" onclick="toggleEquipItem(this)" title="Расторопность"><img src="icons/passives/speed.webp" alt="Расторопность"><span class="equip-level" onclick="editEquipLevel(event, this)"><b>0</b> ур.</span></div>
-          <div class="equip-slot"><img src="icons/book-adm.webp" alt="Книга Адмов" title="Книга Адмов"><span class="equip-level"></span></div>
+          <div class="equip-slot equip-toggle" id="admBookSlot" onclick="openAdmBook()" title="Книга адмов"><img src="icons/book-adm.webp" alt="Книга адмов"><span class="equip-level"></span></div>
           <div class="equip-slot equip-toggle" data-slot="armor-0" data-kind="armor" data-item="Бессмертная доблесть" onclick="toggleEquipItem(this)" title="Бессмертная доблесть"><img src="icons/items/armor-valor.png" alt="Бессмертная доблесть"><span class="equip-info" onclick="event.stopPropagation(); showItemInfo('Бессмертная доблесть')">i</span><span class="equip-level"></span></div>
           <div class="equip-slot"><img src="icons/cloak-heavy.png" alt="Плащ" title="Плащ"><span class="equip-level"></span></div>
           <div class="equip-slot equip-toggle" data-slot="ring-0" data-kind="ring" data-item="Кровавая клятва" onclick="toggleEquipItem(this)" title="Кровавая клятва"><img src="icons/items/ring-blood-oath.png" alt="Кровавая клятва"><span class="equip-info" onclick="event.stopPropagation(); showItemInfo('Кровавая клятва')">i</span><span class="equip-level"></span></div>
@@ -2996,6 +3068,7 @@ const speedEquipped = localStorage.getItem('rpg_speed_book_equipped') || 'false'
 const speedRing = localStorage.getItem(SPEED_RING_KEY) || 'false';
 const equip = localStorage.getItem(EQUIP_KEY) || '{}';
 const resistRunes = localStorage.getItem(RESIST_RUNES_KEY) || '0';
+const admBook = localStorage.getItem(ADM_KEY) || '{}';
 const userData = {
 stats: stats,
 class: classData,
@@ -3007,6 +3080,7 @@ speedEquipped: speedEquipped === 'true',
 speedRing: speedRing === 'true',
 equip: JSON.parse(equip),
 resistRunes: parseInt(resistRunes) || 0,
+adm: JSON.parse(admBook),
 lastSave: Date.now(),
 version: '1.3'
 };
@@ -3077,6 +3151,9 @@ localStorage.setItem(EQUIP_KEY, JSON.stringify(userData.equip));
 }
 if (userData.resistRunes !== undefined) {
 localStorage.setItem(RESIST_RUNES_KEY, String(userData.resistRunes));
+}
+if (userData.adm) {
+localStorage.setItem(ADM_KEY, JSON.stringify(userData.adm));
 }
 localStorage.setItem(DATE_KEY, Date.now().toString());
 console.log('✅ Данные загружены из облака VK');
@@ -3636,8 +3713,9 @@ function renderEquipSlots(){
   if (typeof updateResistDisplay === 'function') updateResistDisplay();
   if (typeof updateEquipLevels === 'function') updateEquipLevels();
   if (typeof updateClassIcons === 'function') updateClassIcons();
+  if (typeof updateAdmSlot === 'function') updateAdmSlot();
 }
-// первичная отрисовка экипировки (не зависит от window.onload)
+// первичная отрисовка экипировки(не зависит от window.onload)
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', renderEquipSlots);
 else renderEquipSlots();
 
@@ -3809,6 +3887,127 @@ window.closeSlotPicker = function(){
   _pickerSlot = null;
 };
 
+// === КНИГА АДМОВ: набор из восьми параметров, каждый включается отдельно ===
+const ADM_KEY = 'rpg_adm_book_v1';
+const ADM_PARAMS = [
+  { g: 'Параметры персонажа', k: 'atk_dmg',     n: 'Урон от параметра «атака»', lo: -45, hi: 42 },
+  { g: 'Параметры персонажа', k: 'dmg_spread',  n: 'Максимальный разброс урона', lo: -27, hi: 41 },
+  { g: 'В Темнолесье',        k: 'tl_dmg',      n: 'Урон',                       lo: -26, hi: 38 },
+  { g: 'В Темнолесье',        k: 'tl_armor',    n: 'Броня',                      lo:   1, hi: 18 },
+  { g: 'В Темнолесье',        k: 'tl_heal',     n: 'Исцеление',                  lo: -29, hi: 40 },
+  { g: 'Репутация и трофеи',  k: 'rep_order',   n: 'Репутация ордена',           lo: -42, hi: 60 },
+  { g: 'Репутация и трофеи',  k: 'rep_hunters', n: 'Репутация охотников',        lo: -42, hi: 60 },
+  { g: 'Репутация и трофеи',  k: 'loot',        n: 'Трофеев в луте',             lo: -18, hi: 17 }
+];
+function getAdmBook(){ try { return JSON.parse(localStorage.getItem(ADM_KEY) || '{}'); } catch (e) { return {}; } }
+function setAdmBook(o){ localStorage.setItem(ADM_KEY, JSON.stringify(o)); }
+function admClamp(param, v){ return Math.max(param.lo, Math.min(param.hi, Math.round(v) || 0)); }
+// сколько параметров задано — это же число стоит под иконкой
+function admChosenCount(){
+  const d = getAdmBook();
+  return ADM_PARAMS.filter(pm => d[pm.k] && d[pm.k].on).length;
+}
+function admSign(v){ return v > 0 ? '+' + v : String(v); }
+function updateAdmSlot(){
+  const slot = document.getElementById('admBookSlot');
+  if (!slot) return;
+  const c = admChosenCount();
+  slot.classList.toggle('on', c > 0);
+  const box = slot.querySelector('.equip-level');
+  if (box) box.innerHTML = c ? '<b>' + c + '</b> шт.' : '';
+}
+function renderAdmBook(){
+  const list = document.getElementById('admBookList');
+  if (!list) return;
+  const d = getAdmBook();
+  list.innerHTML = '';
+  let group = null;
+  ADM_PARAMS.forEach(pm => {
+    if (pm.g !== group) {
+      group = pm.g;
+      const h = document.createElement('div');
+      h.className = 'adm-group';
+      h.textContent = group;
+      list.appendChild(h);
+    }
+    const saved = d[pm.k] || {};
+    const on = !!saved.on;
+    const v = admClamp(pm, saved.v || 0);
+    const row = document.createElement('div');
+    row.className = 'adm-row' + (on ? ' on' : '');
+    row.dataset.admKey = pm.k;
+    row.onclick = () => toggleAdmParam(pm.k);
+    const check = document.createElement('span');
+    check.className = 'adm-check';
+    check.textContent = '✓';
+    const name = document.createElement('span');
+    name.className = 'adm-name';
+    name.textContent = pm.n;
+    const val = document.createElement('span');
+    val.className = 'adm-val ' + (v > 0 ? 'plus' : v < 0 ? 'minus' : 'zero');
+    val.textContent = on ? admSign(v) + '%' : '—';
+    val.onclick = (e) => { e.stopPropagation(); editAdmValue(pm.k, val); };
+    const range = document.createElement('span');
+    range.className = 'adm-range';
+    range.textContent = admSign(pm.lo) + '…' + admSign(pm.hi) + '%';
+    row.appendChild(check); row.appendChild(name); row.appendChild(val); row.appendChild(range);
+    list.appendChild(row);
+  });
+  const chosen = document.getElementById('admChosen');
+  if (chosen) chosen.textContent = admChosenCount();
+  updateAdmSlot();
+}
+window.toggleAdmParam = function(key){
+  const d = getAdmBook();
+  const cur = d[key] || { on: false, v: 0 };
+  // значение запоминается и после выключения — вернёшь галку, число на месте
+  d[key] = { on: !cur.on, v: cur.v || 0 };
+  setAdmBook(d);
+  renderAdmBook();
+  if (typeof saveAllDataToVK === 'function') saveAllDataToVK();
+};
+window.editAdmValue = function(key, span){
+  const pm = ADM_PARAMS.find(x => x.k === key);
+  if (!pm || span.querySelector('input')) return;
+  const d = getAdmBook();
+  const cur = d[key] || { on: false, v: 0 };
+  if (!cur.on) { toggleAdmParam(key); return; }
+  const input = document.createElement('input');
+  input.type = 'number';
+  input.className = 'adm-val-input';
+  input.value = cur.v || 0;
+  input.addEventListener('input', function(){ if (this.value.length > 4) this.value = this.value.slice(0, 4); });
+  span.textContent = '';
+  span.appendChild(input);
+  input.focus();
+  input.select();
+  let done = false;
+  const finish = () => {
+    if (done) return; done = true;
+    const raw = parseInt(input.value, 10);
+    const v = admClamp(pm, isNaN(raw) ? 0 : raw);
+    const cd = getAdmBook();
+    cd[key] = { on: true, v: v };
+    setAdmBook(cd);
+    renderAdmBook();
+    if (typeof saveAllDataToVK === 'function') saveAllDataToVK();
+  };
+  input.onblur = finish;
+  input.onkeydown = (e) => { if (e.key === 'Enter') { e.preventDefault(); input.blur(); } };
+};
+window.resetAdmBook = function(){
+  setAdmBook({});
+  renderAdmBook();
+  if (typeof saveAllDataToVK === 'function') saveAllDataToVK();
+};
+window.openAdmBook = function(){
+  renderAdmBook();
+  document.getElementById('admBookOverlay').classList.add('show');
+};
+window.closeAdmBook = function(){
+  document.getElementById('admBookOverlay').classList.remove('show');
+};
+
 window.onload = async () => {
 checkReset();
 try {
@@ -3869,6 +4068,16 @@ adjustSpeedBookInput(speedInput);
   <div class="slot-picker">
     <div class="slot-picker-title" id="slotPickerTitle">Выбор</div>
     <div class="slot-picker-list" id="slotPickerList"></div>
+  </div>
+</div>
+<div class="slot-picker-overlay" id="admBookOverlay" onclick="if(event.target===this) closeAdmBook()">
+  <div class="slot-picker">
+    <div class="slot-picker-title">Книга адмов</div>
+    <div class="slot-picker-list" id="admBookList"></div>
+    <div class="adm-foot">
+      <span>Выбрано: <b id="admChosen">0</b> из 8</span>
+      <span class="adm-reset" onclick="resetAdmBook()">Сбросить всё</span>
+    </div>
   </div>
 </div>
 </body>
