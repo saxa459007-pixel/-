@@ -1725,13 +1725,13 @@ display: none !important;
           <div class="equip-slot" data-slot="passive-5" data-kind="passive" onclick="openSlotPicker(this)"><img src="icons/slot-passive.png" alt="Слот пассивного умения" title="Слот пассивного умения"></div>
           <div class="equip-slot" data-slot="passive-6" data-kind="passive" onclick="openSlotPicker(this)"><img src="icons/slot-passive.png" alt="Слот пассивного умения" title="Слот пассивного умения"></div>
           <div class="equip-slot"><img src="icons/book-adm.webp" alt="Книга Адмов" title="Книга Адмов"></div>
-          <div class="equip-slot"><img src="icons/slot-armor.png" alt="Слот доспеха" title="Слот доспеха"></div>
+          <div class="equip-slot" data-slot="armor-0" data-kind="armor" onclick="openSlotPicker(this)"><img src="icons/slot-armor.png" alt="Слот доспеха" title="Слот доспеха"></div>
           <div class="equip-slot"><img src="icons/cloak-heavy.png" alt="Плащ" title="Плащ"></div>
-          <div class="equip-slot"><img src="icons/slot-ring.png" alt="Слот кольца" title="Слот кольца"></div>
-          <div class="equip-slot"><img src="icons/slot-ring.png" alt="Слот кольца" title="Слот кольца"></div>
-          <div class="equip-slot"><img src="icons/slot-ring.png" alt="Слот кольца" title="Слот кольца"></div>
-          <div class="equip-slot"><img src="icons/slot-ring.png" alt="Слот кольца" title="Слот кольца"></div>
-          <div class="equip-slot"><img src="icons/slot-ring.png" alt="Слот кольца" title="Слот кольца"></div>
+          <div class="equip-slot" data-slot="ring-0" data-kind="ring" onclick="openSlotPicker(this)"><img src="icons/slot-ring.png" alt="Слот кольца" title="Слот кольца"></div>
+          <div class="equip-slot" data-slot="ring-1" data-kind="ring" onclick="openSlotPicker(this)"><img src="icons/slot-ring.png" alt="Слот кольца" title="Слот кольца"></div>
+          <div class="equip-slot" data-slot="ring-2" data-kind="ring" onclick="openSlotPicker(this)"><img src="icons/slot-ring.png" alt="Слот кольца" title="Слот кольца"></div>
+          <div class="equip-slot" data-slot="ring-3" data-kind="ring" onclick="openSlotPicker(this)"><img src="icons/slot-ring.png" alt="Слот кольца" title="Слот кольца"></div>
+          <div class="equip-slot" data-slot="ring-4" data-kind="ring" onclick="openSlotPicker(this)"><img src="icons/slot-ring.png" alt="Слот кольца" title="Слот кольца"></div>
       </div>
     </div>
   </div>
@@ -3453,13 +3453,23 @@ updateSpeedCalculations();
 // === ЭКИПИРОВКА: выбор книги в слот ===
 const EQUIP_KEY = 'rpg_equip_v1';
 const ACTIVE_ICONS = {"Берсеркер":"berserk","Грязный удар":"dirty-strike","Заражение":"infection","Кровотечение":"bleeding","Мощный удар":"power-strike","Огонек надежды":"hope-fire","Проклятие тьмы":"dark-curse","Раскол":"split","Расправа":"execution","Рассечение":"cleave","Сила теней":"shadow-power","Слабое исцеление":"weak-heal","Слепота":"blind","Таран":"ram","Удар вампира":"vampire-strike","Целебный огонь":"healing-fire"};
+const ARMOR_ITEMS = {"Бессмертная доблесть":"armor-valor"};
+const RING_ITEMS = {"Кровавая клятва":"ring-blood-oath","Змеиная хватка":"ring-serpent","Сплетение вечности":"ring-eternity","Шепот забвения":"ring-oblivion","Кольцо Ордена":"ring-order"};
 const PASSIVE_ICONS = {"Атлетика":"athletics","Ведьмак":"witcher","Воздаяние":"vengeance","Гладиатор":"gladiator","Мародер":"marauder","Презрение к боли":"pain-contempt","Расторопность":"speed"};
 function getEquip(){ try { return JSON.parse(localStorage.getItem(EQUIP_KEY) || '{}'); } catch(e){ return {}; } }
 function setEquip(o){ localStorage.setItem(EQUIP_KEY, JSON.stringify(o)); }
-function equipEmptyIcon(kind){ return kind === 'active' ? 'icons/slot-active.png' : 'icons/slot-passive.png'; }
+function equipEmptyIcon(kind){
+  if (kind === 'active') return 'icons/slot-active.png';
+  if (kind === 'passive') return 'icons/slot-passive.png';
+  if (kind === 'armor') return 'icons/slot-armor.png';
+  return 'icons/slot-ring.png';
+}
 function equipIconPath(kind, name){
-  const slug = (kind === 'active') ? ACTIVE_ICONS[name] : PASSIVE_ICONS[name];
-  return slug ? ('icons/' + (kind === 'active' ? 'actives' : 'passives') + '/' + slug + '.webp') : null;
+  if (kind === 'active') { const s = ACTIVE_ICONS[name]; return s ? 'icons/actives/' + s + '.webp' : null; }
+  if (kind === 'passive') { const s = PASSIVE_ICONS[name]; return s ? 'icons/passives/' + s + '.webp' : null; }
+  if (kind === 'armor') { const s = ARMOR_ITEMS[name]; return s ? 'icons/items/' + s + '.png' : null; }
+  if (kind === 'ring') { const s = RING_ITEMS[name]; return s ? 'icons/items/' + s + '.png' : null; }
+  return null;
 }
 function renderEquipSlots(){
   const eq = getEquip();
@@ -3495,11 +3505,14 @@ window.openSlotPicker = function(slotEl){
     .filter(([k, v]) => k !== slotEl.dataset.slot && v)
     .map(([k, v]) => v));
   // для пассивок показываем только те, для которых есть иконки
-  const pool = (kind === 'active') ? Object.keys(ACTIVE_SKILLS) : Object.keys(PASSIVE_ICONS);
+  const pools = { active: Object.keys(ACTIVE_SKILLS), passive: Object.keys(PASSIVE_ICONS),
+                  armor: Object.keys(ARMOR_ITEMS), ring: Object.keys(RING_ITEMS) };
+  const pool = pools[kind] || [];
   const names = pool
     .filter(n => !taken.has(n) || n === currentName)
     .sort((a,b) => a.localeCompare(b,'ru'));
-  document.getElementById('slotPickerTitle').textContent = (kind === 'active') ? 'Активное умение' : 'Пассивное умение';
+  const titles = { active:'Активное умение', passive:'Пассивное умение', armor:'Доспех', ring:'Кольцо' };
+  document.getElementById('slotPickerTitle').textContent = titles[kind] || 'Выбор';
   const list = document.getElementById('slotPickerList');
   list.innerHTML = '';
   const clear = document.createElement('div');
