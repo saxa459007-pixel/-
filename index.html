@@ -814,21 +814,6 @@ display: block;
 user-select: none;
 }
 .equip-slot[data-slot] { cursor: pointer; position: relative; }
-.equip-name {
-position: absolute;
-top: -3px;
-left: 0;
-right: 0;
-text-align: center;
-font-size: 9px;
-line-height: 1.1;
-font-weight: 700;
-color: var(--text-main);
-text-transform: uppercase;
-text-shadow: 0 1px 2px rgba(0,0,0,0.9);
-pointer-events: none;
-z-index: 2;
-}
 /* Окно выбора книги для слота */
 .slot-picker-overlay {
 position: fixed;
@@ -1728,26 +1713,26 @@ display: none !important;
 
     <div class="inventory-content" id="inventoryContent">
       <div class="equip-grid">
-          <div class="equip-slot"><span class="equip-name"></span><img src="icons/premium.png" alt="Премиум-аккаунт" title="Премиум-аккаунт"></div>
-          <div class="equip-slot" data-slot="active-0" data-kind="active" onclick="openSlotPicker(this)"><span class="equip-name"></span><img src="icons/slot-active.png" alt="Слот активного умения" title="Слот активного умения"></div>
-          <div class="equip-slot" data-slot="active-1" data-kind="active" onclick="openSlotPicker(this)"><span class="equip-name"></span><img src="icons/slot-active.png" alt="Слот активного умения" title="Слот активного умения"></div>
-          <div class="equip-slot" data-slot="active-2" data-kind="active" onclick="openSlotPicker(this)"><span class="equip-name"></span><img src="icons/slot-active.png" alt="Слот активного умения" title="Слот активного умения"></div>
-          <div class="equip-slot" data-slot="passive-0" data-kind="passive" onclick="openSlotPicker(this)"><span class="equip-name"></span><img src="icons/slot-passive.png" alt="Слот пассивного умения" title="Слот пассивного умения"></div>
-          <div class="equip-slot" data-slot="passive-1" data-kind="passive" onclick="openSlotPicker(this)"><span class="equip-name"></span><img src="icons/slot-passive.png" alt="Слот пассивного умения" title="Слот пассивного умения"></div>
-          <div class="equip-slot" data-slot="passive-2" data-kind="passive" onclick="openSlotPicker(this)"><span class="equip-name"></span><img src="icons/slot-passive.png" alt="Слот пассивного умения" title="Слот пассивного умения"></div>
-          <div class="equip-slot" data-slot="passive-3" data-kind="passive" onclick="openSlotPicker(this)"><span class="equip-name"></span><img src="icons/slot-passive.png" alt="Слот пассивного умения" title="Слот пассивного умения"></div>
-          <div class="equip-slot" data-slot="passive-4" data-kind="passive" onclick="openSlotPicker(this)"><span class="equip-name"></span><img src="icons/slot-passive.png" alt="Слот пассивного умения" title="Слот пассивного умения"></div>
-          <div class="equip-slot" data-slot="passive-5" data-kind="passive" onclick="openSlotPicker(this)"><span class="equip-name"></span><img src="icons/slot-passive.png" alt="Слот пассивного умения" title="Слот пассивного умения"></div>
-          <div class="equip-slot" data-slot="passive-6" data-kind="passive" onclick="openSlotPicker(this)"><span class="equip-name"></span><img src="icons/slot-passive.png" alt="Слот пассивного умения" title="Слот пассивного умения"></div>
-          <div class="equip-slot"><span class="equip-name"></span><img src="icons/book-adm.webp" alt="Книга Адмов" title="Книга Адмов"></div>
-          <div class="equip-slot"><span class="equip-name"></span><img src="icons/slot-weapon.png" alt="Слот оружия" title="Слот оружия"></div>
-          <div class="equip-slot"><span class="equip-name"></span><img src="icons/slot-armor.png" alt="Слот доспеха" title="Слот доспеха"></div>
-          <div class="equip-slot"><span class="equip-name"></span><img src="icons/cloak-heavy.png" alt="Плащ" title="Плащ"></div>
-          <div class="equip-slot"><span class="equip-name"></span><img src="icons/slot-ring.png" alt="Слот кольца" title="Слот кольца"></div>
-          <div class="equip-slot"><span class="equip-name"></span><img src="icons/slot-ring.png" alt="Слот кольца" title="Слот кольца"></div>
-          <div class="equip-slot"><span class="equip-name"></span><img src="icons/slot-ring.png" alt="Слот кольца" title="Слот кольца"></div>
-          <div class="equip-slot"><span class="equip-name"></span><img src="icons/slot-ring.png" alt="Слот кольца" title="Слот кольца"></div>
-          <div class="equip-slot"><span class="equip-name"></span><img src="icons/slot-ring.png" alt="Слот кольца" title="Слот кольца"></div>
+          <div class="equip-slot"><img src="icons/premium.png" alt="Премиум-аккаунт" title="Премиум-аккаунт"></div>
+          <div class="equip-slot" data-slot="active-0" data-kind="active" onclick="openSlotPicker(this)"><img src="icons/slot-active.png" alt="Слот активного умения" title="Слот активного умения"></div>
+          <div class="equip-slot" data-slot="active-1" data-kind="active" onclick="openSlotPicker(this)"><img src="icons/slot-active.png" alt="Слот активного умения" title="Слот активного умения"></div>
+          <div class="equip-slot" data-slot="active-2" data-kind="active" onclick="openSlotPicker(this)"><img src="icons/slot-active.png" alt="Слот активного умения" title="Слот активного умения"></div>
+          <div class="equip-slot" data-slot="passive-0" data-kind="passive" onclick="openSlotPicker(this)"><img src="icons/slot-passive.png" alt="Слот пассивного умения" title="Слот пассивного умения"></div>
+          <div class="equip-slot" data-slot="passive-1" data-kind="passive" onclick="openSlotPicker(this)"><img src="icons/slot-passive.png" alt="Слот пассивного умения" title="Слот пассивного умения"></div>
+          <div class="equip-slot" data-slot="passive-2" data-kind="passive" onclick="openSlotPicker(this)"><img src="icons/slot-passive.png" alt="Слот пассивного умения" title="Слот пассивного умения"></div>
+          <div class="equip-slot" data-slot="passive-3" data-kind="passive" onclick="openSlotPicker(this)"><img src="icons/slot-passive.png" alt="Слот пассивного умения" title="Слот пассивного умения"></div>
+          <div class="equip-slot" data-slot="passive-4" data-kind="passive" onclick="openSlotPicker(this)"><img src="icons/slot-passive.png" alt="Слот пассивного умения" title="Слот пассивного умения"></div>
+          <div class="equip-slot" data-slot="passive-5" data-kind="passive" onclick="openSlotPicker(this)"><img src="icons/slot-passive.png" alt="Слот пассивного умения" title="Слот пассивного умения"></div>
+          <div class="equip-slot" data-slot="passive-6" data-kind="passive" onclick="openSlotPicker(this)"><img src="icons/slot-passive.png" alt="Слот пассивного умения" title="Слот пассивного умения"></div>
+          <div class="equip-slot"><img src="icons/book-adm.webp" alt="Книга Адмов" title="Книга Адмов"></div>
+          <div class="equip-slot"><img src="icons/slot-weapon.png" alt="Слот оружия" title="Слот оружия"></div>
+          <div class="equip-slot"><img src="icons/slot-armor.png" alt="Слот доспеха" title="Слот доспеха"></div>
+          <div class="equip-slot"><img src="icons/cloak-heavy.png" alt="Плащ" title="Плащ"></div>
+          <div class="equip-slot"><img src="icons/slot-ring.png" alt="Слот кольца" title="Слот кольца"></div>
+          <div class="equip-slot"><img src="icons/slot-ring.png" alt="Слот кольца" title="Слот кольца"></div>
+          <div class="equip-slot"><img src="icons/slot-ring.png" alt="Слот кольца" title="Слот кольца"></div>
+          <div class="equip-slot"><img src="icons/slot-ring.png" alt="Слот кольца" title="Слот кольца"></div>
+          <div class="equip-slot"><img src="icons/slot-ring.png" alt="Слот кольца" title="Слот кольца"></div>
       </div>
     </div>
   </div>
