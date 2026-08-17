@@ -265,7 +265,12 @@ window.editActiveTarget = function(spanEl) {
     input.value = current;
     input.className = 'book-val-input';
     const fit = () => { input.style.width = (measureTextWidth(input.value || '1', window.getComputedStyle(input).font) + 2) + 'px'; };
-    input.addEventListener('input', fit);
+    input.maxLength = 7;
+    input.addEventListener('input', function() {
+        // Живое ограничение цели: максимум 7 знаков
+        if (this.value.length > 7) this.value = this.value.slice(0, 7);
+        fit();
+    });
     spanEl.textContent = '';
     spanEl.appendChild(input);
     fit(); input.focus(); input.select();
@@ -915,7 +920,12 @@ window.editPassiveTarget = function(spanEl) {
         const w = measureTextWidth(input.value || '1', window.getComputedStyle(input).font);
         input.style.width = (w + 2) + 'px';
     };
-    input.addEventListener('input', fit);
+    input.maxLength = 7;
+    input.addEventListener('input', function() {
+        // Живое ограничение цели: максимум 7 знаков
+        if (this.value.length > 7) this.value = this.value.slice(0, 7);
+        fit();
+    });
     spanEl.textContent = '';
     spanEl.appendChild(input);
     fit();
