@@ -79,42 +79,72 @@ function formatGold(amount) {
     return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
 }
 
+// === Загрузка прайса: ОДИН запрос к Gist на всё приложение ===
+// Раньше запрос уходил на КАЖДУЮ книгу (61 шт.) — GitHub отвечал 429 и цены не грузились.
+const PRICES_LS_KEY = 'rpg_prices_cache_v1';
+const PRICES_RETRY_DELAY = 60000; // не долбить Gist при ошибке (429/сеть) — пауза 1 мин
+let _pricesData = null;
+let _pricesFetchedAt = 0;
+let _pricesPromise = null;
+let _pricesFailedAt = 0;
+
+async function loadPricesData() {
+    const now = Date.now();
+    if (_pricesData && (now - _pricesFetchedAt < CACHE_DURATION)) return _pricesData;
+    if (_pricesPromise) return _pricesPromise; // склеиваем одновременные вызовы в один запрос
+    // после неудачи не повторяем запрос для каждой книги — иначе десятки обращений и бан 429
+    if (_pricesFailedAt && (now - _pricesFailedAt < PRICES_RETRY_DELAY)) return _pricesData;
+
+    _pricesPromise = (async () => {
+        try {
+            const response = await fetch(GIST_URL);
+            if (!response.ok) throw new Error('HTTP ' + response.status);
+            const data = await response.json();
+            _pricesData = data;
+            _pricesFetchedAt = Date.now();
+            _pricesFailedAt = 0;
+            try { localStorage.setItem(PRICES_LS_KEY, JSON.stringify({ t: _pricesFetchedAt, d: data })); } catch (e) {}
+            return data;
+        } catch (error) {
+            console.log('Цены недоступны, берём из локального кэша:', error.message);
+            _pricesFailedAt = Date.now();
+            try {
+                const raw = localStorage.getItem(PRICES_LS_KEY);
+                if (raw) {
+                    const cached = JSON.parse(raw);
+                    if (cached && cached.d) { _pricesData = cached.d; return cached.d; }
+                }
+            } catch (e) {}
+            return null;
+        } finally {
+            _pricesPromise = null;
+        }
+    })();
+
+    return _pricesPromise;
+}
+
 // Получение цены книги из Gist
 async function getBookPrice(bookName) {
     const bookId = BOOK_IDS[bookName];
-    if (!bookId) {
-        console.log('ID не найден для:', bookName);
-        return null;
-    }
+    if (!bookId) return null;
 
-    // Проверка кэша
     const now = Date.now();
     if (PRICE_CACHE[bookId] && (now - PRICE_CACHE[bookId].timestamp < CACHE_DURATION)) {
         return PRICE_CACHE[bookId].price;
     }
 
-    try {
-        const response = await fetch(GIST_URL);
-        if (!response.ok) throw new Error('Network response was not ok');
-        
-        const pricesData = await response.json();
-        
-        // Ищем книгу по ID
-        for (const [name, data] of Object.entries(pricesData)) {
-            if (data.id === bookId && data.price > 0) {
-                const price = parseInt(data.price);
-                PRICE_CACHE[bookId] = {
-                    price: price,
-                    timestamp: now
-                };
-                return price;
-            }
+    const pricesData = await loadPricesData();
+    if (!pricesData) return null;
+
+    for (const [name, data] of Object.entries(pricesData)) {
+        if (data.id === bookId && data.price > 0) {
+            const price = parseInt(data.price);
+            PRICE_CACHE[bookId] = { price: price, timestamp: Date.now() };
+            return price;
         }
-        return null;
-    } catch (error) {
-        console.error('Ошибка загрузки цен:', error);
-        return null;
     }
+    return null;
 }
 
 // Расчет стоимости прокачки (1 уровень = цена книги / 5)
