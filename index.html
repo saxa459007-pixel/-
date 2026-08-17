@@ -202,6 +202,30 @@ text-transform: lowercase;
 white-space: nowrap;
 margin: 0;
 }
+.equip-toggle img {
+opacity: 0.4;
+filter: grayscale(1);
+transition: opacity 0.15s, filter 0.15s;
+}
+.equip-toggle.on img { opacity: 1; filter: none; }
+.equip-info {
+position: absolute;
+right: 0;
+bottom: 0;
+width: 16px;
+height: 16px;
+border-radius: 50%;
+border: 1px solid var(--text-secondary);
+background-color: var(--card-bg);
+color: var(--text-secondary);
+font-size: 10px;
+font-style: italic;
+font-family: Georgia, serif;
+display: flex;
+align-items: center;
+justify-content: center;
+-webkit-tap-highlight-color: transparent;
+}
 .speed-toggle {
 display: inline-flex;
 align-items: center;
@@ -1855,11 +1879,11 @@ display: none !important;
           <div class="equip-slot"><img src="icons/book-adm.webp" alt="Книга Адмов" title="Книга Адмов"></div>
           <div class="equip-slot" data-slot="armor-0" data-kind="armor" onclick="openSlotPicker(this)"><img src="icons/slot-armor.png" alt="Слот доспеха" title="Слот доспеха"></div>
           <div class="equip-slot"><img src="icons/cloak-heavy.png" alt="Плащ" title="Плащ"></div>
-          <div class="equip-slot" data-slot="ring-0" data-kind="ring" onclick="openSlotPicker(this)"><img src="icons/slot-ring.png" alt="Слот кольца" title="Слот кольца"></div>
-          <div class="equip-slot" data-slot="ring-1" data-kind="ring" onclick="openSlotPicker(this)"><img src="icons/slot-ring.png" alt="Слот кольца" title="Слот кольца"></div>
-          <div class="equip-slot" data-slot="ring-2" data-kind="ring" onclick="openSlotPicker(this)"><img src="icons/slot-ring.png" alt="Слот кольца" title="Слот кольца"></div>
-          <div class="equip-slot" data-slot="ring-3" data-kind="ring" onclick="openSlotPicker(this)"><img src="icons/slot-ring.png" alt="Слот кольца" title="Слот кольца"></div>
-          <div class="equip-slot" data-slot="ring-4" data-kind="ring" onclick="openSlotPicker(this)"><img src="icons/slot-ring.png" alt="Слот кольца" title="Слот кольца"></div>
+          <div class="equip-slot equip-toggle" data-slot="ring-0" data-kind="ring" data-item="Кровавая клятва" onclick="toggleEquipItem(this)" title="Кровавая клятва"><img src="icons/items/ring-blood-oath.png" alt="Кровавая клятва"><span class="equip-info" onclick="event.stopPropagation(); showItemInfo('Кровавая клятва')">i</span></div>
+          <div class="equip-slot equip-toggle" data-slot="ring-1" data-kind="ring" data-item="Змеиная хватка" onclick="toggleEquipItem(this)" title="Змеиная хватка"><img src="icons/items/ring-serpent.png" alt="Змеиная хватка"><span class="equip-info" onclick="event.stopPropagation(); showItemInfo('Змеиная хватка')">i</span></div>
+          <div class="equip-slot equip-toggle" data-slot="ring-2" data-kind="ring" data-item="Сплетение вечности" onclick="toggleEquipItem(this)" title="Сплетение вечности"><img src="icons/items/ring-eternity.png" alt="Сплетение вечности"><span class="equip-info" onclick="event.stopPropagation(); showItemInfo('Сплетение вечности')">i</span></div>
+          <div class="equip-slot equip-toggle" data-slot="ring-3" data-kind="ring" data-item="Шепот забвения" onclick="toggleEquipItem(this)" title="Шепот забвения"><img src="icons/items/ring-oblivion.png" alt="Шепот забвения"><span class="equip-info" onclick="event.stopPropagation(); showItemInfo('Шепот забвения')">i</span></div>
+          <div class="equip-slot equip-toggle" data-slot="ring-4" data-kind="ring" data-item="Кольцо Ордена" onclick="toggleEquipItem(this)" title="Кольцо Ордена"><img src="icons/items/ring-order.png" alt="Кольцо Ордена"><span class="equip-info" onclick="event.stopPropagation(); showItemInfo('Кольцо Ордена')">i</span></div>
       </div>
     </div>
   </div>
@@ -3700,6 +3724,7 @@ function renderEquipSlots(){
   document.querySelectorAll('.equip-slot[data-slot]').forEach(slot => {
     const kind = slot.dataset.kind;
     const name = eq[slot.dataset.slot];
+    if (slot.dataset.item) { slot.classList.toggle('on', !!name); return; }
     const img = slot.querySelector('img');
     const lbl = slot.querySelector('.equip-name');
     if (name) {
@@ -3720,6 +3745,14 @@ if (document.readyState === 'loading') document.addEventListener('DOMContentLoad
 else renderEquipSlots();
 
 let _pickerSlot = null;
+window.toggleEquipItem = function(el){
+  const eq = getEquip();
+  const key = el.dataset.slot;
+  if (eq[key]) delete eq[key]; else eq[key] = el.dataset.item;
+  setEquip(eq);
+  renderEquipSlots();
+};
+
 window.openSlotPicker = function(slotEl){
   _pickerSlot = slotEl;
   const kind = slotEl.dataset.kind;
