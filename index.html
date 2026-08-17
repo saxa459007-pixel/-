@@ -964,46 +964,30 @@ border-bottom: 1px solid var(--separator-color);
 text-align: center;
 }
 .slot-picker-list { overflow-y: auto; }
-.adm-group {
-padding: 7px 15px 4px;
-font-size: 11px;
-color: var(--text-secondary);
-background-color: var(--inventory-bg);
-}
 .adm-row {
-display: flex;
-align-items: center;
-gap: 10px;
 padding: 9px 15px;
 border-bottom: 1px solid var(--separator-color);
 cursor: pointer;
 -webkit-tap-highlight-color: transparent;
 }
-.adm-mark {
-width: 10px;
-flex: none;
-font-size: 11px;
-line-height: 1;
-text-align: center;
-color: #5a5f68;
-}
+.adm-row:last-child { border-bottom: none; }
+.adm-line { font-size: 13px; line-height: 1.4; }
+.adm-bullet { color: #8b9099; }
+.adm-mark { display: inline-block; width: 10px; text-align: center; font-size: 11px; color: #5a5f68; }
 .adm-mark.up { color: #e04b4b; }
 .adm-mark.down { color: #8a2f2f; }
-.adm-text { flex: 1; min-width: 0; }
-.adm-name { display: block; font-size: 13px; color: var(--text-secondary); }
+.adm-name { color: var(--text-secondary); }
 .adm-row.on .adm-name { color: var(--text-main); font-weight: 500; }
-.adm-range { display: block; font-size: 10px; color: #7a7f87; margin-top: 1px; }
-.adm-val {
-flex: none;
-font-size: 13px;
-font-weight: 700;
-min-width: 46px;
-text-align: right;
-color: var(--text-secondary);
+.adm-range {
+font-size: 10px;
+color: #7a7f87;
+margin-top: 1px;
+margin-left: 20px;
 }
+.adm-val { font-weight: 700; color: #6b7079; }
 .adm-row.on .adm-val { color: var(--text-main); border-bottom: 1px dashed var(--text-secondary); }
 .adm-val-input {
-width: 46px;
+width: 40px;
 background: transparent;
 border: none;
 outline: none;
@@ -1011,23 +995,11 @@ color: var(--text-main);
 font-size: 13px;
 font-weight: 700;
 font-family: inherit;
-text-align: right;
 padding: 0;
 -moz-appearance: textfield;
 }
 .adm-val-input::-webkit-outer-spin-button,
 .adm-val-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-.adm-foot {
-display: flex;
-justify-content: space-between;
-align-items: center;
-padding: 10px 15px;
-font-size: 12px;
-color: var(--text-secondary);
-border-top: 1px solid var(--separator-color);
-}
-.adm-foot b { color: var(--gold); }
-.adm-reset { color: var(--accent); cursor: pointer; -webkit-tap-highlight-color: transparent; }
 .slot-picker-item {
 display: flex;
 align-items: center;
@@ -3882,14 +3854,14 @@ window.closeSlotPicker = function(){
 // === КНИГА АДМОВ: набор из восьми параметров, каждый включается отдельно ===
 const ADM_KEY = 'rpg_adm_book_v1';
 const ADM_PARAMS = [
-  { g: 'Параметры персонажа', k: 'atk_dmg',     n: 'Урон от параметра «атака»', lo: -45, hi: 42 },
-  { g: 'Параметры персонажа', k: 'dmg_spread',  n: 'Максимальный разброс урона', lo: -27, hi: 41 },
-  { g: 'В Темнолесье',        k: 'tl_dmg',      n: 'Урон',                       lo: -26, hi: 38 },
-  { g: 'В Темнолесье',        k: 'tl_armor',    n: 'Броня',                      lo:   1, hi: 18 },
-  { g: 'В Темнолесье',        k: 'tl_heal',     n: 'Исцеление',                  lo: -29, hi: 40 },
-  { g: 'Репутация и трофеи',  k: 'rep_order',   n: 'Репутация ордена',           lo: -42, hi: 60 },
-  { g: 'Репутация и трофеи',  k: 'rep_hunters', n: 'Репутация охотников',        lo: -42, hi: 60 },
-  { g: 'Репутация и трофеи',  k: 'loot',        n: 'Трофеев в луте',             lo: -18, hi: 17 }
+  { k: 'atk_dmg',     n: 'Урон от параметра «атака»',  lo: -45, hi: 42 },
+  { k: 'dmg_spread',  n: 'Максимальный разброс урона', lo: -27, hi: 41 },
+  { k: 'tl_dmg',      n: 'Урон в Темнолесье',          lo: -26, hi: 38 },
+  { k: 'tl_armor',    n: 'Броня в Темнолесье',         lo:   1, hi: 18 },
+  { k: 'tl_heal',     n: 'Исцеление в Темнолесье',     lo: -29, hi: 40 },
+  { k: 'rep_order',   n: 'Репутация ордена',           lo: -42, hi: 60 },
+  { k: 'rep_hunters', n: 'Репутация охотников',        lo: -42, hi: 60 },
+  { k: 'loot',        n: 'Трофеев в луте',             lo: -18, hi: 17 }
 ];
 function getAdmBook(){ try { return JSON.parse(localStorage.getItem(ADM_KEY) || '{}'); } catch (e) { return {}; } }
 function setAdmBook(o){ localStorage.setItem(ADM_KEY, JSON.stringify(o)); }
@@ -3906,22 +3878,14 @@ function updateAdmSlot(){
   const c = admChosenCount();
   slot.classList.toggle('on', c > 0);
   const box = slot.querySelector('.equip-level');
-  if (box) box.innerHTML = c ? '<b>' + c + '</b> шт.' : '';
+  if (box) box.innerHTML = '';
 }
 function renderAdmBook(){
   const list = document.getElementById('admBookList');
   if (!list) return;
   const d = getAdmBook();
   list.innerHTML = '';
-  let group = null;
   ADM_PARAMS.forEach(pm => {
-    if (pm.g !== group) {
-      group = pm.g;
-      const h = document.createElement('div');
-      h.className = 'adm-group';
-      h.textContent = group;
-      list.appendChild(h);
-    }
     const saved = d[pm.k] || {};
     const on = !!saved.on;
     const v = admClamp(pm, saved.v || 0);
@@ -3929,29 +3893,33 @@ function renderAdmBook(){
     row.className = 'adm-row' + (on ? ' on' : '');
     row.dataset.admKey = pm.k;
     row.onclick = () => toggleAdmParam(pm.k);
+    const line = document.createElement('div');
+    line.className = 'adm-line';
+    const bullet = document.createElement('span');
+    bullet.className = 'adm-bullet';
+    bullet.textContent = '•';
     // маркер как в игре: вверх — параметр в плюс, вниз — в минус
     const mark = document.createElement('span');
     const dir = on ? (v > 0 ? 'up' : v < 0 ? 'down' : '') : '';
     mark.className = 'adm-mark' + (dir ? ' ' + dir : '');
-    mark.textContent = dir === 'up' ? '▲' : dir === 'down' ? '▼' : '•';
-    const text = document.createElement('span');
-    text.className = 'adm-text';
+    mark.textContent = dir === 'up' ? '▲' : dir === 'down' ? '▼' : '';
     const name = document.createElement('span');
     name.className = 'adm-name';
-    name.textContent = pm.n;
-    const range = document.createElement('span');
-    range.className = 'adm-range';
-    range.textContent = 'от ' + admSign(pm.lo) + '% до ' + admSign(pm.hi) + '%';
-    text.appendChild(name); text.appendChild(range);
+    name.textContent = pm.n + ':';
     const val = document.createElement('span');
     val.className = 'adm-val';
     val.textContent = on ? admSign(v) + '%' : '—';
     val.onclick = (e) => { e.stopPropagation(); editAdmValue(pm.k, val); };
-    row.appendChild(mark); row.appendChild(text); row.appendChild(val);
+    line.appendChild(bullet); line.appendChild(document.createTextNode(' '));
+    line.appendChild(mark); line.appendChild(document.createTextNode(' '));
+    line.appendChild(name); line.appendChild(document.createTextNode(' '));
+    line.appendChild(val);
+    const range = document.createElement('div');
+    range.className = 'adm-range';
+    range.textContent = 'от ' + admSign(pm.lo) + '% до ' + admSign(pm.hi) + '%';
+    row.appendChild(line); row.appendChild(range);
     list.appendChild(row);
   });
-  const chosen = document.getElementById('admChosen');
-  if (chosen) chosen.textContent = admChosenCount();
   updateAdmSlot();
 }
 window.toggleAdmParam = function(key){
@@ -3973,9 +3941,11 @@ window.editAdmValue = function(key, span){
   input.type = 'number';
   input.className = 'adm-val-input';
   input.value = cur.v || 0;
-  input.addEventListener('input', function(){ if (this.value.length > 4) this.value = this.value.slice(0, 4); });
+  const fit = () => { input.style.width = (measureTextWidth(input.value || '0', window.getComputedStyle(input).font) + 2) + 'px'; };
+  input.addEventListener('input', function(){ if (this.value.length > 4) this.value = this.value.slice(0, 4); fit(); });
   span.textContent = '';
   span.appendChild(input);
+  fit();
   input.focus();
   input.select();
   let done = false;
@@ -3991,11 +3961,6 @@ window.editAdmValue = function(key, span){
   };
   input.onblur = finish;
   input.onkeydown = (e) => { if (e.key === 'Enter') { e.preventDefault(); input.blur(); } };
-};
-window.resetAdmBook = function(){
-  setAdmBook({});
-  renderAdmBook();
-  if (typeof saveAllDataToVK === 'function') saveAllDataToVK();
 };
 window.openAdmBook = function(){
   renderAdmBook();
@@ -4071,10 +4036,6 @@ adjustSpeedBookInput(speedInput);
   <div class="slot-picker">
     <div class="slot-picker-title">Книга адмов</div>
     <div class="slot-picker-list" id="admBookList"></div>
-    <div class="adm-foot">
-      <span>Выбрано: <b id="admChosen">0</b> из 8</span>
-      <span class="adm-reset" onclick="resetAdmBook()">Сбросить всё</span>
-    </div>
   </div>
 </div>
 </body>
