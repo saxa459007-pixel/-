@@ -1040,56 +1040,6 @@ line-height: 1.45;
 text-align: left;
 white-space: pre-line;
 }
-.book-cell {
-background-color: transparent;
-border: none;
-border-radius: 0;
-padding: 5px 0;
-display: flex;
-flex-direction: column;
-align-items: flex-start;
-cursor: pointer;
-min-height: 75px;
-width: 100%;
-}
-.book-cell:hover {
-background-color: transparent;
-}
-.book-cell.empty {
-background-color: transparent;
-cursor: default;
-}
-.book-cell.empty:hover {
-background-color: transparent;
-}
-.book-cell-name {
-font-size: 12px;
-font-weight: 600;
-color: var(--text-main);
-text-align: left;
-margin-bottom: 0;
-width: 100%;
-white-space: nowrap;
-overflow: hidden;
-text-overflow: ellipsis;
-padding-left: 0;
-}
-.book-svg {
-margin: 0;
-display: flex;
-justify-content: flex-start;
-align-items: center;
-line-height: 0;
-flex-shrink: 0;
-width: 40px;
-height: 40px;
-}
-.book-svg svg {
-width: 40px;
-height: 40px;
-display: block;
-flex-shrink: 0;
-}
 .book-level-wrapper {
 width: 100%;
 display: flex;
@@ -2228,7 +2178,6 @@ const VK_STORAGE_KEY = 'rpg_complete_user_data_v1';
 const triggerBtn = document.getElementById('classTrigger');
 const listDiv = document.getElementById('classList');
 const karmaIconSpan = document.getElementById('karma-icon');
-const INVENTORY_KEY = 'rpg_inventory_v1';
 const SPEED_RING_KEY = 'rpg_speed_ring_equipped';
 
 function measureTextWidth(text, font, padding = 0) {
@@ -2663,17 +2612,6 @@ window.editSpeedStat = function(statKey, event) {
     };
 };
 
-// Функция для синхронизации при изменении уровня на странице пассивных книг
-function syncPassiveToInventory(bookName, level) {
-    const inventoryInput = document.getElementById(`inventory-book-${bookName}`);
-    if (inventoryInput) {
-        inventoryInput.value = level;
-        adjustInventoryInputWidth(inventoryInput);
-    }
-    saveInventory();
-    saveAllDataToVK(); // Сохраняем в VK Cloud
-}
-
 // Функция для обновления отображения пассивной книги
 function updatePassiveBookDisplay(bookName, newLevel) {
     const passiveItems = document.querySelectorAll('#passiveBooksContainer .book-item');
@@ -2699,26 +2637,6 @@ function updatePassiveBookDisplay(bookName, newLevel) {
     }
 }
 
-// Обновленная функция syncInventoryBookLevel с лимитом 7 чисел
-window.syncInventoryBookLevel = function(bookName, level) {
-    const savedLevels = JSON.parse(localStorage.getItem('rpg_books_levels_final_verified_v8') || '{}');
-    let newLevel = parseInt(level) || 0;
-    
-    if (newLevel > MAX_BOOK_VALUE) {
-        newLevel = MAX_BOOK_VALUE;
-        const input = document.getElementById(`inventory-book-${bookName}`);
-        if (input) input.value = MAX_BOOK_VALUE;
-    }
-    
-    savedLevels[bookName] = newLevel;
-    localStorage.setItem('rpg_books_levels_final_verified_v8', JSON.stringify(savedLevels));
-    localStorage.setItem('rpg_date_final_verified_v8', Date.now().toString());
-    
-    updatePassiveBookDisplay(bookName, newLevel);
-    saveInventory();
-    saveAllDataToVK(); // Сохраняем в VK Cloud
-};
-
 // Переопределяем функцию updatePassiveBookLevel для синхронизации с инвентарем
 const originalUpdatePassiveBookLevel = window.updatePassiveBookLevel;
 window.updatePassiveBookLevel = function(name, value) {
@@ -2730,8 +2648,8 @@ window.updatePassiveBookLevel = function(name, value) {
     if (originalUpdatePassiveBookLevel) {
         originalUpdatePassiveBookLevel(name, newLevel);
     }
-    
-    syncPassiveToInventory(name, newLevel);
+
+    saveAllDataToVK(); // Сохраняем в VK Cloud
 };
 
 window.editCapLevel = function(wrapper) {
@@ -3057,93 +2975,6 @@ window.toggleInventory = function() {
     localStorage.setItem('inventory_open', content.classList.contains('show'));
 };
 
-// Функция для подгона ширины поля ввода в инвентаре
-function adjustInventoryInputWidth(input) {
-    if (input.value.length > 7) {
-        input.value = input.value.slice(0, 7);
-    }
-    
-    let num = parseInt(input.value);
-    if (!isNaN(num) && num > MAX_BOOK_VALUE) {
-        input.value = MAX_BOOK_VALUE.toString();
-    }
-    
-    if (input.value.match(/^0+$/)) {
-        input.value = '0';
-    }
-    
-    const span = document.createElement('span');
-    span.style.font = window.getComputedStyle(input).font;
-    span.style.visibility = 'hidden';
-    span.style.position = 'absolute';
-    span.style.whiteSpace = 'nowrap';
-    span.textContent = input.value || '1';
-    document.body.appendChild(span);
-    
-    const textWidth = span.offsetWidth;
-    document.body.removeChild(span);
-    
-    const newWidth = Math.min(80, textWidth + 2);
-    input.style.width = newWidth + 'px';
-}
-
-function saveInventory() {
-    const inventory = { books: {} };
-    
-    document.querySelectorAll('.book-cell').forEach((cell) => {
-        if (!cell.classList.contains('empty')) {
-            const name = cell.dataset.book;
-            const level = cell.querySelector('.book-level-input-inventory').value;
-            inventory.books[name] = { level };
-        }
-    });
-    
-    localStorage.setItem(INVENTORY_KEY, JSON.stringify(inventory));
-}
-
-function loadInventory() {
-    const savedLevels = JSON.parse(localStorage.getItem('rpg_books_levels_final_verified_v8') || '{}');
-    
-    document.querySelectorAll('.book-cell').forEach(cell => {
-        if (!cell.classList.contains('empty')) {
-            const name = cell.dataset.book;
-            const input = cell.querySelector('.book-level-input-inventory');
-            if (input && savedLevels[name] !== undefined) {
-                let level = savedLevels[name];
-                if (level > MAX_BOOK_VALUE) level = MAX_BOOK_VALUE;
-                input.value = level;
-                adjustInventoryInputWidth(input);
-            }
-        }
-    });
-    
-    const savedInventory = localStorage.getItem(INVENTORY_KEY);
-    if (savedInventory) {
-        try {
-            const inventory = JSON.parse(savedInventory);
-            if (inventory.books) {
-                Object.entries(inventory.books).forEach(([name, data]) => {
-                    let level = data.level;
-                    if (level > MAX_BOOK_VALUE) level = MAX_BOOK_VALUE;
-                    if (level !== savedLevels[name]) {
-                        savedLevels[name] = level;
-                    }
-                });
-                localStorage.setItem('rpg_books_levels_final_verified_v8', JSON.stringify(savedLevels));
-            }
-        } catch (e) {
-            console.log('Ошибка загрузки инвентаря', e);
-        }
-    }
-}
-
-document.addEventListener('change', function(e) {
-    if (e.target.classList.contains('book-level-input-inventory')) {
-        saveInventory();
-        saveAllDataToVK();
-    }
-});
-
 const inventoryOpen = localStorage.getItem('inventory_open') === 'true';
 if (inventoryOpen) {
     setTimeout(() => {
@@ -3161,7 +2992,6 @@ stats[el.dataset.key] = el.textContent;
 const classData = localStorage.getItem(CLASS_KEY) || "жнец душ";
 const passiveBooks = JSON.parse(localStorage.getItem('rpg_books_levels_final_verified_v8') || '{}');
 const activeBooks = JSON.parse(localStorage.getItem('rpg_active_books_levels_final_verified_v8') || '{}');
-const inventory = localStorage.getItem(INVENTORY_KEY) || '{}';
 const speedEquipped = localStorage.getItem('rpg_speed_book_equipped') || 'false';
 const speedRing = localStorage.getItem(SPEED_RING_KEY) || 'false';
 const equip = localStorage.getItem(EQUIP_KEY) || '{}';
@@ -3173,7 +3003,6 @@ books: {
 passive: passiveBooks,
 active: activeBooks
 },
-inventory: JSON.parse(inventory),
 speedEquipped: speedEquipped === 'true',
 speedRing: speedRing === 'true',
 equip: JSON.parse(equip),
@@ -3236,10 +3065,6 @@ active[name] = level;
 });
 localStorage.setItem('rpg_active_books_levels_final_verified_v8', JSON.stringify(active));
 }
-}
-if (userData.inventory) {
-localStorage.setItem(INVENTORY_KEY, JSON.stringify(userData.inventory));
-loadInventory();
 }
 if (userData.speedEquipped !== undefined) {
 localStorage.setItem('rpg_speed_book_equipped', userData.speedEquipped ? 'true' : 'false');
@@ -3659,28 +3484,6 @@ listDiv.appendChild(div);
 updateClassResult();
 }
 
-function initInventorySync() {
-document.querySelectorAll('.book-cell:not(.empty)').forEach(cell => {
-const input = cell.querySelector('.book-level-input-inventory');
-if (input) {
-const originalOnChange = input.onchange;
-input.addEventListener('change', function(e) {
-const bookName = cell.dataset.book;
-let level = parseInt(this.value) || 0;
-if (level > MAX_BOOK_VALUE) {
-level = MAX_BOOK_VALUE;
-this.value = MAX_BOOK_VALUE;
-adjustInventoryInputWidth(this);
-}
-window.syncInventoryBookLevel(bookName, level);
-if (originalOnChange) {
-originalOnChange.call(this, e);
-}
-});
-}
-});
-}
-
 // Заглушки для функций книг
 if (typeof updatePassiveBookDescription !== 'function') {
     window.updatePassiveBookDescription = function() {};
@@ -4008,7 +3811,6 @@ window.closeSlotPicker = function(){
 
 window.onload = async () => {
 checkReset();
-loadInventory();
 try {
 // страховка: если VK не отвечает (открыто вне VK) — не залипаем, идём по локальным данным
 await Promise.race([
@@ -4034,7 +3836,6 @@ loadCapStatsFromProfile();
 updateRedistributeCard();
 loadSpeedSettings();
 updateSpeedCalculations();
-initInventorySync();
 } catch (error) {
 console.log('Ошибка инициализации VK Bridge:', error);
 document.getElementById('user-name').textContent = 'Тестовый пользователь';
@@ -4048,7 +3849,6 @@ loadCapStatsFromProfile();
 updateRedistributeCard();
 loadSpeedSettings();
 updateSpeedCalculations();
-initInventorySync();
 }
 
 renderEquipSlots();
