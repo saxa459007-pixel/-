@@ -755,8 +755,8 @@ margin-top: 15px;
 }
 .inventory-header {
 padding: 12px 15px;
-display: flex;
-justify-content: space-between;
+display: grid;
+grid-template-columns: 1fr auto 1fr;
 align-items: center;
 cursor: pointer;
 background-color: var(--card-bg);
@@ -813,6 +813,68 @@ display: block;
 -webkit-user-drag: none;
 user-select: none;
 }
+.equip-slot[data-slot] { cursor: pointer; position: relative; }
+.equip-name {
+position: absolute;
+top: -3px;
+left: 0;
+right: 0;
+text-align: center;
+font-size: 9px;
+line-height: 1.1;
+font-weight: 700;
+color: var(--text-main);
+text-transform: uppercase;
+text-shadow: 0 1px 2px rgba(0,0,0,0.9);
+pointer-events: none;
+z-index: 2;
+}
+/* Окно выбора книги для слота */
+.slot-picker-overlay {
+position: fixed;
+inset: 0;
+background: rgba(0,0,0,0.6);
+display: none;
+align-items: center;
+justify-content: center;
+z-index: 10000;
+padding: 20px;
+}
+.slot-picker-overlay.show { display: flex; }
+.slot-picker {
+background-color: var(--card-bg);
+border-radius: 8px;
+width: 100%;
+max-width: 320px;
+max-height: 70vh;
+display: flex;
+flex-direction: column;
+overflow: hidden;
+}
+.slot-picker-title {
+padding: 12px 15px;
+font-size: 15px;
+font-weight: 700;
+color: var(--text-main);
+border-bottom: 1px solid var(--separator-color);
+text-align: center;
+}
+.slot-picker-list { overflow-y: auto; }
+.slot-picker-item {
+display: flex;
+align-items: center;
+gap: 10px;
+padding: 10px 15px;
+font-size: 13px;
+color: var(--text-main);
+cursor: pointer;
+border-bottom: 1px solid var(--separator-color);
+-webkit-tap-highlight-color: transparent;
+}
+.slot-picker-item:last-child { border-bottom: none; }
+.slot-picker-item:active { background-color: rgba(255,255,255,0.1); }
+.slot-picker-item img { width: 28px; height: 28px; object-fit: contain; flex-shrink: 0; }
+.slot-picker-clear { color: var(--text-secondary); justify-content: center; }
 .book-cell {
 background-color: transparent;
 border: none;
@@ -1659,32 +1721,33 @@ display: none !important;
   <!-- ИНВЕНТАРЬ -->
   <div class="inventory-section">
     <div class="inventory-header" onclick="toggleInventory()">
-      <span class="inventory-title">Экипировка</span>
-      <span class="inventory-arrow" id="inventoryArrow">▼</span>
+      <span></span>
+      <span class="inventory-title" style="text-align:center;">Экипировка</span>
+      <span class="inventory-arrow" id="inventoryArrow" style="justify-self:end;">▼</span>
     </div>
 
     <div class="inventory-content" id="inventoryContent">
       <div class="equip-grid">
-          <div class="equip-slot"><img src="icons/premium.png" alt="Премиум-аккаунт" title="Премиум-аккаунт"></div>
-          <div class="equip-slot"><img src="icons/slot-active.png" alt="Слот активного умения" title="Слот активного умения"></div>
-          <div class="equip-slot"><img src="icons/slot-active.png" alt="Слот активного умения" title="Слот активного умения"></div>
-          <div class="equip-slot"><img src="icons/slot-active.png" alt="Слот активного умения" title="Слот активного умения"></div>
-          <div class="equip-slot"><img src="icons/slot-passive.png" alt="Слот пассивного умения" title="Слот пассивного умения"></div>
-          <div class="equip-slot"><img src="icons/slot-passive.png" alt="Слот пассивного умения" title="Слот пассивного умения"></div>
-          <div class="equip-slot"><img src="icons/slot-passive.png" alt="Слот пассивного умения" title="Слот пассивного умения"></div>
-          <div class="equip-slot"><img src="icons/slot-passive.png" alt="Слот пассивного умения" title="Слот пассивного умения"></div>
-          <div class="equip-slot"><img src="icons/slot-passive.png" alt="Слот пассивного умения" title="Слот пассивного умения"></div>
-          <div class="equip-slot"><img src="icons/slot-passive.png" alt="Слот пассивного умения" title="Слот пассивного умения"></div>
-          <div class="equip-slot"><img src="icons/slot-passive.png" alt="Слот пассивного умения" title="Слот пассивного умения"></div>
-          <div class="equip-slot"><img src="icons/book-adm.webp" alt="Книга Адмов" title="Книга Адмов"></div>
-          <div class="equip-slot"><img src="icons/slot-weapon.png" alt="Слот оружия" title="Слот оружия"></div>
-          <div class="equip-slot"><img src="icons/slot-armor.png" alt="Слот доспеха" title="Слот доспеха"></div>
-          <div class="equip-slot"><img src="icons/cloak-heavy.png" alt="Плащ" title="Плащ"></div>
-          <div class="equip-slot"><img src="icons/slot-ring.png" alt="Слот кольца" title="Слот кольца"></div>
-          <div class="equip-slot"><img src="icons/slot-ring.png" alt="Слот кольца" title="Слот кольца"></div>
-          <div class="equip-slot"><img src="icons/slot-ring.png" alt="Слот кольца" title="Слот кольца"></div>
-          <div class="equip-slot"><img src="icons/slot-ring.png" alt="Слот кольца" title="Слот кольца"></div>
-          <div class="equip-slot"><img src="icons/slot-ring.png" alt="Слот кольца" title="Слот кольца"></div>
+          <div class="equip-slot"><span class="equip-name"></span><img src="icons/premium.png" alt="Премиум-аккаунт" title="Премиум-аккаунт"></div>
+          <div class="equip-slot" data-slot="active-0" data-kind="active" onclick="openSlotPicker(this)"><span class="equip-name"></span><img src="icons/slot-active.png" alt="Слот активного умения" title="Слот активного умения"></div>
+          <div class="equip-slot" data-slot="active-1" data-kind="active" onclick="openSlotPicker(this)"><span class="equip-name"></span><img src="icons/slot-active.png" alt="Слот активного умения" title="Слот активного умения"></div>
+          <div class="equip-slot" data-slot="active-2" data-kind="active" onclick="openSlotPicker(this)"><span class="equip-name"></span><img src="icons/slot-active.png" alt="Слот активного умения" title="Слот активного умения"></div>
+          <div class="equip-slot" data-slot="passive-0" data-kind="passive" onclick="openSlotPicker(this)"><span class="equip-name"></span><img src="icons/slot-passive.png" alt="Слот пассивного умения" title="Слот пассивного умения"></div>
+          <div class="equip-slot" data-slot="passive-1" data-kind="passive" onclick="openSlotPicker(this)"><span class="equip-name"></span><img src="icons/slot-passive.png" alt="Слот пассивного умения" title="Слот пассивного умения"></div>
+          <div class="equip-slot" data-slot="passive-2" data-kind="passive" onclick="openSlotPicker(this)"><span class="equip-name"></span><img src="icons/slot-passive.png" alt="Слот пассивного умения" title="Слот пассивного умения"></div>
+          <div class="equip-slot" data-slot="passive-3" data-kind="passive" onclick="openSlotPicker(this)"><span class="equip-name"></span><img src="icons/slot-passive.png" alt="Слот пассивного умения" title="Слот пассивного умения"></div>
+          <div class="equip-slot" data-slot="passive-4" data-kind="passive" onclick="openSlotPicker(this)"><span class="equip-name"></span><img src="icons/slot-passive.png" alt="Слот пассивного умения" title="Слот пассивного умения"></div>
+          <div class="equip-slot" data-slot="passive-5" data-kind="passive" onclick="openSlotPicker(this)"><span class="equip-name"></span><img src="icons/slot-passive.png" alt="Слот пассивного умения" title="Слот пассивного умения"></div>
+          <div class="equip-slot" data-slot="passive-6" data-kind="passive" onclick="openSlotPicker(this)"><span class="equip-name"></span><img src="icons/slot-passive.png" alt="Слот пассивного умения" title="Слот пассивного умения"></div>
+          <div class="equip-slot"><span class="equip-name"></span><img src="icons/book-adm.webp" alt="Книга Адмов" title="Книга Адмов"></div>
+          <div class="equip-slot"><span class="equip-name"></span><img src="icons/slot-weapon.png" alt="Слот оружия" title="Слот оружия"></div>
+          <div class="equip-slot"><span class="equip-name"></span><img src="icons/slot-armor.png" alt="Слот доспеха" title="Слот доспеха"></div>
+          <div class="equip-slot"><span class="equip-name"></span><img src="icons/cloak-heavy.png" alt="Плащ" title="Плащ"></div>
+          <div class="equip-slot"><span class="equip-name"></span><img src="icons/slot-ring.png" alt="Слот кольца" title="Слот кольца"></div>
+          <div class="equip-slot"><span class="equip-name"></span><img src="icons/slot-ring.png" alt="Слот кольца" title="Слот кольца"></div>
+          <div class="equip-slot"><span class="equip-name"></span><img src="icons/slot-ring.png" alt="Слот кольца" title="Слот кольца"></div>
+          <div class="equip-slot"><span class="equip-name"></span><img src="icons/slot-ring.png" alt="Слот кольца" title="Слот кольца"></div>
+          <div class="equip-slot"><span class="equip-name"></span><img src="icons/slot-ring.png" alt="Слот кольца" title="Слот кольца"></div>
       </div>
     </div>
   </div>
@@ -3403,6 +3466,82 @@ updateSpeedCalculations();
 }
 };
 
+// === ЭКИПИРОВКА: выбор книги в слот ===
+const EQUIP_KEY = 'rpg_equip_v1';
+const ACTIVE_ICONS = {"Берсеркер":"berserk","Грязный удар":"dirty-strike","Заражение":"infection","Кровотечение":"bleeding","Мощный удар":"power-strike","Огонек надежды":"hope-fire","Проклятие тьмы":"dark-curse","Раскол":"split","Расправа":"execution","Рассечение":"cleave","Сила теней":"shadow-power","Слабое исцеление":"weak-heal","Слепота":"blind","Таран":"ram","Удар вампира":"vampire-strike","Целебный огонь":"healing-fire"};
+const PASSIVE_ICONS = {"Атлетика":"athletics","Ведьмак":"witcher","Воздаяние":"vengeance","Гладиатор":"gladiator","Мародер":"marauder","Презрение к боли":"pain-contempt","Расторопность":"speed"};
+function getEquip(){ try { return JSON.parse(localStorage.getItem(EQUIP_KEY) || '{}'); } catch(e){ return {}; } }
+function setEquip(o){ localStorage.setItem(EQUIP_KEY, JSON.stringify(o)); }
+function equipEmptyIcon(kind){ return kind === 'active' ? 'icons/slot-active.png' : 'icons/slot-passive.png'; }
+function equipIconPath(kind, name){
+  const slug = (kind === 'active') ? ACTIVE_ICONS[name] : PASSIVE_ICONS[name];
+  return slug ? ('icons/' + (kind === 'active' ? 'actives' : 'passives') + '/' + slug + '.webp') : null;
+}
+function renderEquipSlots(){
+  const eq = getEquip();
+  document.querySelectorAll('.equip-slot[data-slot]').forEach(slot => {
+    const kind = slot.dataset.kind;
+    const name = eq[slot.dataset.slot];
+    const img = slot.querySelector('img');
+    const lbl = slot.querySelector('.equip-name');
+    if (name) {
+      img.src = equipIconPath(kind, name) || equipEmptyIcon(kind);
+      img.title = name; img.alt = name;
+      if (lbl) lbl.textContent = name;
+    } else {
+      img.src = equipEmptyIcon(kind);
+      img.title = kind === 'active' ? 'Слот активного умения' : 'Слот пассивного умения';
+      img.alt = img.title;
+      if (lbl) lbl.textContent = '';
+    }
+  });
+}
+// первичная отрисовка экипировки (не зависит от window.onload)
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', renderEquipSlots);
+else renderEquipSlots();
+
+let _pickerSlot = null;
+window.openSlotPicker = function(slotEl){
+  _pickerSlot = slotEl;
+  const kind = slotEl.dataset.kind;
+  const src = (kind === 'active') ? ACTIVE_SKILLS : PASSIVE_SKILLS;
+  const names = Object.keys(src).sort((a,b) => a.localeCompare(b,'ru'));
+  document.getElementById('slotPickerTitle').textContent = (kind === 'active') ? 'Активное умение' : 'Пассивное умение';
+  const list = document.getElementById('slotPickerList');
+  list.innerHTML = '';
+  const clear = document.createElement('div');
+  clear.className = 'slot-picker-item slot-picker-clear';
+  clear.textContent = '— Очистить слот —';
+  clear.onclick = () => selectBookForSlot(null);
+  list.appendChild(clear);
+  names.forEach(n => {
+    const row = document.createElement('div');
+    row.className = 'slot-picker-item';
+    const im = document.createElement('img');
+    im.src = equipIconPath(kind, n) || equipEmptyIcon(kind);
+    im.alt = '';
+    const sp = document.createElement('span');
+    sp.textContent = n;
+    row.appendChild(im); row.appendChild(sp);
+    row.onclick = () => selectBookForSlot(n);
+    list.appendChild(row);
+  });
+  document.getElementById('slotPickerOverlay').classList.add('show');
+};
+window.selectBookForSlot = function(name){
+  if (_pickerSlot) {
+    const eq = getEquip();
+    if (name) eq[_pickerSlot.dataset.slot] = name; else delete eq[_pickerSlot.dataset.slot];
+    setEquip(eq);
+    renderEquipSlots();
+  }
+  closeSlotPicker();
+};
+window.closeSlotPicker = function(){
+  document.getElementById('slotPickerOverlay').classList.remove('show');
+  _pickerSlot = null;
+};
+
 window.onload = async () => {
 checkReset();
 loadInventory();
@@ -3444,6 +3583,8 @@ updateSpeedCalculations();
 initInventorySync();
 }
 
+renderEquipSlots();
+
 // Инициализация поля ввода уровня книги Расторопности
 const speedInput = document.getElementById('speedBookLevel');
 if (speedInput) {
@@ -3451,5 +3592,11 @@ adjustSpeedBookInput(speedInput);
 }
 };
 </script>
+<div class="slot-picker-overlay" id="slotPickerOverlay" onclick="if(event.target===this) closeSlotPicker()">
+  <div class="slot-picker">
+    <div class="slot-picker-title" id="slotPickerTitle">Выбор</div>
+    <div class="slot-picker-list" id="slotPickerList"></div>
+  </div>
+</div>
 </body>
 </html>
