@@ -3792,10 +3792,12 @@ window.editEquipLevel = function(e, span){
   e.stopPropagation();
   if (span.querySelector('input')) return;
   const slot = span.closest('.equip-slot');
-  const name = slot && slot.dataset.item;
+  const name = slot && equipSlotBook(slot);
   if (!name) return;
+  const kind = slot.dataset.kind;
+  const storeKey = equipLevelsKey(kind);
   let levels = {};
-  try { levels = JSON.parse(localStorage.getItem('rpg_books_levels_final_verified_v8') || '{}'); } catch (err) {}
+  try { levels = JSON.parse(localStorage.getItem(storeKey) || '{}'); } catch (err) {}
   const input = document.createElement('input');
   input.type = 'number';
   input.className = 'equip-level-input';
@@ -3807,10 +3809,11 @@ window.editEquipLevel = function(e, span){
   input.select();
   const finish = () => {
     const val = Math.max(0, Math.min(9999999, Math.floor(parseFloat(input.value) || 0)));
-    if (typeof updatePassiveBookLevel === 'function') updatePassiveBookLevel(name, val);
+    const updater = (kind === 'active') ? window.updateActiveBookLevel : window.updatePassiveBookLevel;
+    if (typeof updater === 'function') updater(name, val);
     else {
       levels[name] = val;
-      localStorage.setItem('rpg_books_levels_final_verified_v8', JSON.stringify(levels));
+      localStorage.setItem(storeKey, JSON.stringify(levels));
     }
     span.innerHTML = '<b>' + val + '</b> ур.';
     updateEquipLevels();
@@ -3819,13 +3822,27 @@ window.editEquipLevel = function(e, span){
   input.onkeydown = (ev) => { if (ev.key === 'Enter') { ev.preventDefault(); input.blur(); } };
 };
 
+const LEVELS_KEY_PASSIVE = 'rpg_books_levels_final_verified_v8';
+const LEVELS_KEY_ACTIVE = 'rpg_active_books_levels_final_verified_v8';
+function equipLevelsKey(kind){ return kind === 'active' ? LEVELS_KEY_ACTIVE : LEVELS_KEY_PASSIVE; }
+// имя книги в слоте: у закреплённых — data-item, у активок — что выбрано в слоте
+function equipSlotBook(slot){
+  if (slot.dataset.item) return slot.dataset.item;
+  try { return (JSON.parse(localStorage.getItem(EQUIP_KEY) || '{}'))[slot.dataset.slot] || null; } catch (e) { return null; }
+}
 function updateEquipLevels(){
-  let levels = {};
-  try { levels = JSON.parse(localStorage.getItem('rpg_books_levels_final_verified_v8') || '{}'); } catch (e) {}
-  document.querySelectorAll('.equip-slot[data-kind="passive"][data-item]').forEach(slot => {
+  const cache = {};
+  const read = (kind) => {
+    const key = equipLevelsKey(kind);
+    if (!cache[key]) { try { cache[key] = JSON.parse(localStorage.getItem(key) || '{}'); } catch (e) { cache[key] = {}; } }
+    return cache[key];
+  };
+  document.querySelectorAll('.equip-slot[data-kind="passive"], .equip-slot[data-kind="active"]').forEach(slot => {
     const box = slot.querySelector('.equip-level');
     if (!box || box.querySelector('input')) return;
-    box.innerHTML = '<b>' + (levels[slot.dataset.item] || 0) + '</b> ур.';
+    const name = equipSlotBook(slot);
+    if (!name) { box.innerHTML = ''; return; }
+    box.innerHTML = '<b>' + (read(slot.dataset.kind)[name] || 0) + '</b> ур.';
     // уменьшаем шрифт, если длинное число не влезает в слот
     box.style.fontSize = '';
     let fs = 10;

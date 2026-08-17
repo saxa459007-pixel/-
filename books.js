@@ -431,6 +431,7 @@ window.updateActiveBookLevel = function(name, value) {
     
     savedLevels[name] = newLevel;
     localStorage.setItem('rpg_active_books_levels_final_verified_v8', JSON.stringify(savedLevels));
+    if (typeof updateEquipLevels === 'function') updateEquipLevels();
     
     const items = document.querySelectorAll('#activeBooksContainer .book-item');
     for (const item of items) {
@@ -697,6 +698,7 @@ window.renderActiveBooks = async function() {
         container.appendChild(item);
     }
     refreshPricesInList('active');
+    if (typeof updateEquipLevels === 'function') updateEquipLevels();
     handleActiveSearch();
 };
 
