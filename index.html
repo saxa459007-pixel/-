@@ -1725,7 +1725,6 @@ display: none !important;
           <div class="equip-slot" data-slot="passive-5" data-kind="passive" onclick="openSlotPicker(this)"><img src="icons/slot-passive.png" alt="Слот пассивного умения" title="Слот пассивного умения"></div>
           <div class="equip-slot" data-slot="passive-6" data-kind="passive" onclick="openSlotPicker(this)"><img src="icons/slot-passive.png" alt="Слот пассивного умения" title="Слот пассивного умения"></div>
           <div class="equip-slot"><img src="icons/book-adm.webp" alt="Книга Адмов" title="Книга Адмов"></div>
-          <div class="equip-slot"><img src="icons/slot-weapon.png" alt="Слот оружия" title="Слот оружия"></div>
           <div class="equip-slot"><img src="icons/slot-armor.png" alt="Слот доспеха" title="Слот доспеха"></div>
           <div class="equip-slot"><img src="icons/cloak-heavy.png" alt="Плащ" title="Плащ"></div>
           <div class="equip-slot"><img src="icons/slot-ring.png" alt="Слот кольца" title="Слот кольца"></div>
@@ -3489,8 +3488,17 @@ let _pickerSlot = null;
 window.openSlotPicker = function(slotEl){
   _pickerSlot = slotEl;
   const kind = slotEl.dataset.kind;
-  const src = (kind === 'active') ? ACTIVE_SKILLS : PASSIVE_SKILLS;
-  const names = Object.keys(src).sort((a,b) => a.localeCompare(b,'ru'));
+  const eqAll = getEquip();
+  const currentName = eqAll[slotEl.dataset.slot];
+  // занятые книги (в других слотах) — одна книга может стоять только в одном слоте
+  const taken = new Set(Object.entries(eqAll)
+    .filter(([k, v]) => k !== slotEl.dataset.slot && v)
+    .map(([k, v]) => v));
+  // для пассивок показываем только те, для которых есть иконки
+  const pool = (kind === 'active') ? Object.keys(ACTIVE_SKILLS) : Object.keys(PASSIVE_ICONS);
+  const names = pool
+    .filter(n => !taken.has(n) || n === currentName)
+    .sort((a,b) => a.localeCompare(b,'ru'));
   document.getElementById('slotPickerTitle').textContent = (kind === 'active') ? 'Активное умение' : 'Пассивное умение';
   const list = document.getElementById('slotPickerList');
   list.innerHTML = '';
