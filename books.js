@@ -407,6 +407,23 @@ window.editActiveStat = function(event, element, statKey) {
     input.onclick = e => e.stopPropagation();
 };
 
+// Подтягивает свежие цены и обновляет их в уже отрисованном списке (не блокирует рендер)
+async function refreshPricesInList(kind) {
+    const data = await loadPricesData();
+    if (!data) return;
+    const sel = (kind === 'active') ? '#activeBooksContainer .book-item' : '#passiveBooksContainer .book-item';
+    document.querySelectorAll(sel).forEach(item => {
+        const name = item.dataset.bookExact;
+        const input = item.querySelector('.book-level-input');
+        const lvl = parseInt(input && input.value) || 0;
+        const price = getBookPriceSync(name);
+        const div = item.querySelector('.book-price');
+        if (!div) return;
+        const total = (price && price > 0) ? calculateUpgradeCost(lvl, price) : null;
+        div.innerHTML = '🌕 ' + (total ? formatGold(total) : '0');
+    });
+}
+
 window.updateActiveBookLevel = function(name, value) {
     const savedLevels = JSON.parse(localStorage.getItem('rpg_active_books_levels_final_verified_v8') || '{}');
     const newLevel = parseInt(value) || 0;
@@ -562,16 +579,10 @@ window.renderActiveBooks = async function() {
         item.dataset.bookExact = name;
         
         let priceText = '0';
-        try {
-            const bookPrice = await getBookPrice(name);
-            if (bookPrice && bookPrice > 0) {
-                const totalCost = calculateUpgradeCost(lvl, bookPrice);
-                if (totalCost) {
-                    priceText = formatGold(totalCost);
-                }
-            }
-        } catch (e) {
-            console.log('Ошибка получения цены для', name);
+        const bookPrice = getBookPriceSync(name);
+        if (bookPrice && bookPrice > 0) {
+            const totalCost = calculateUpgradeCost(lvl, bookPrice);
+            if (totalCost) priceText = formatGold(totalCost);
         }
         
         const headerDiv = document.createElement('div');
@@ -685,6 +696,7 @@ window.renderActiveBooks = async function() {
         
         container.appendChild(item);
     }
+    refreshPricesInList('active');
     handleActiveSearch();
 };
 
@@ -738,16 +750,10 @@ window.renderPassiveBooks = async function() {
         item.dataset.bookExact = name;
         
         let priceText = '0';
-        try {
-            const bookPrice = await getBookPrice(name);
-            if (bookPrice && bookPrice > 0) {
-                const totalCost = calculateUpgradeCost(lvl, bookPrice);
-                if (totalCost) {
-                    priceText = formatGold(totalCost);
-                }
-            }
-        } catch (e) {
-            console.log('Ошибка получения цены для', name);
+        const bookPrice = getBookPriceSync(name);
+        if (bookPrice && bookPrice > 0) {
+            const totalCost = calculateUpgradeCost(lvl, bookPrice);
+            if (totalCost) priceText = formatGold(totalCost);
         }
         
         const headerDiv = document.createElement('div');
@@ -849,6 +855,7 @@ window.renderPassiveBooks = async function() {
         
         container.appendChild(item);
     }
+    refreshPricesInList('passive');
     handlePassiveSearch();
 };
 

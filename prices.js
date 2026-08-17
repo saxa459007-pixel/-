@@ -124,6 +124,31 @@ async function loadPricesData() {
     return _pricesPromise;
 }
 
+// Мгновенная цена из уже загруженных данных (без сети) — для быстрой отрисовки списка
+function getBookPriceSync(bookName) {
+    const bookId = BOOK_IDS[bookName];
+    if (!bookId || !_pricesData) return null;
+    for (const [name, data] of Object.entries(_pricesData)) {
+        if (data.id === bookId && data.price > 0) return parseInt(data.price);
+    }
+    return null;
+}
+
+// Поднимаем последний сохранённый прайс сразу при загрузке скрипта,
+// чтобы список книг рисовался с ценами моментально
+(function primePricesFromCache() {
+    try {
+        const raw = localStorage.getItem(PRICES_LS_KEY);
+        if (raw) {
+            const cached = JSON.parse(raw);
+            if (cached && cached.d) { _pricesData = cached.d; _pricesFetchedAt = cached.t || 0; }
+        }
+    } catch (e) {}
+})();
+
+// Фоновая подгрузка свежих цен (не блокирует отрисовку)
+loadPricesData();
+
 // Получение цены книги из Gist
 async function getBookPrice(bookName) {
     const bookId = BOOK_IDS[bookName];
