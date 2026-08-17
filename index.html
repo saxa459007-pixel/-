@@ -202,6 +202,19 @@ text-transform: lowercase;
 white-space: nowrap;
 margin: 0;
 }
+.equip-slot.has-level { flex-direction: column; gap: 1px; }
+.equip-slot.has-level img { flex: 1; min-height: 0; width: 100%; }
+.equip-level {
+font-size: 11px;
+line-height: 1;
+white-space: nowrap;
+color: var(--text-secondary);
+opacity: 0.55;
+transition: opacity 0.15s;
+}
+.equip-level b { font-weight: 700; }
+.equip-toggle.on .equip-level { opacity: 1; }
+.equip-toggle.on .equip-level b { color: var(--text-main); }
 .equip-toggle img {
 opacity: 0.4;
 filter: grayscale(1);
@@ -1869,13 +1882,13 @@ display: none !important;
           <div class="equip-slot" data-slot="active-0" data-kind="active" onclick="openSlotPicker(this)"><img src="icons/slot-active.png" alt="Слот активного умения" title="Слот активного умения"></div>
           <div class="equip-slot" data-slot="active-1" data-kind="active" onclick="openSlotPicker(this)"><img src="icons/slot-active.png" alt="Слот активного умения" title="Слот активного умения"></div>
           <div class="equip-slot" data-slot="active-2" data-kind="active" onclick="openSlotPicker(this)"><img src="icons/slot-active.png" alt="Слот активного умения" title="Слот активного умения"></div>
-          <div class="equip-slot equip-toggle" data-slot="passive-0" data-kind="passive" data-item="Атлетика" onclick="toggleEquipItem(this)" title="Атлетика"><img src="icons/passives/athletics.webp" alt="Атлетика"></div>
-          <div class="equip-slot equip-toggle" data-slot="passive-1" data-kind="passive" data-item="Ведьмак" onclick="toggleEquipItem(this)" title="Ведьмак"><img src="icons/passives/witcher.webp" alt="Ведьмак"></div>
-          <div class="equip-slot equip-toggle" data-slot="passive-2" data-kind="passive" data-item="Воздаяние" onclick="toggleEquipItem(this)" title="Воздаяние"><img src="icons/passives/vengeance.webp" alt="Воздаяние"></div>
-          <div class="equip-slot equip-toggle" data-slot="passive-3" data-kind="passive" data-item="Гладиатор" onclick="toggleEquipItem(this)" title="Гладиатор"><img src="icons/passives/gladiator.webp" alt="Гладиатор"></div>
-          <div class="equip-slot equip-toggle" data-slot="passive-4" data-kind="passive" data-item="Мародер" onclick="toggleEquipItem(this)" title="Мародер"><img src="icons/passives/marauder.webp" alt="Мародер"></div>
-          <div class="equip-slot equip-toggle" data-slot="passive-5" data-kind="passive" data-item="Презрение к боли" onclick="toggleEquipItem(this)" title="Презрение к боли"><img src="icons/passives/pain-contempt.webp" alt="Презрение к боли"></div>
-          <div class="equip-slot equip-toggle" data-slot="passive-6" data-kind="passive" data-item="Расторопность" onclick="toggleEquipItem(this)" title="Расторопность"><img src="icons/passives/speed.webp" alt="Расторопность"></div>
+          <div class="equip-slot equip-toggle" data-slot="passive-0" data-kind="passive" data-item="Атлетика" onclick="toggleEquipItem(this)" title="Атлетика"><img src="icons/passives/athletics.webp" alt="Атлетика"><span class="equip-level"><b>0</b> ур.</span></div>
+          <div class="equip-slot equip-toggle" data-slot="passive-1" data-kind="passive" data-item="Ведьмак" onclick="toggleEquipItem(this)" title="Ведьмак"><img src="icons/passives/witcher.webp" alt="Ведьмак"><span class="equip-level"><b>0</b> ур.</span></div>
+          <div class="equip-slot equip-toggle" data-slot="passive-2" data-kind="passive" data-item="Воздаяние" onclick="toggleEquipItem(this)" title="Воздаяние"><img src="icons/passives/vengeance.webp" alt="Воздаяние"><span class="equip-level"><b>0</b> ур.</span></div>
+          <div class="equip-slot equip-toggle" data-slot="passive-3" data-kind="passive" data-item="Гладиатор" onclick="toggleEquipItem(this)" title="Гладиатор"><img src="icons/passives/gladiator.webp" alt="Гладиатор"><span class="equip-level"><b>0</b> ур.</span></div>
+          <div class="equip-slot equip-toggle" data-slot="passive-4" data-kind="passive" data-item="Мародер" onclick="toggleEquipItem(this)" title="Мародер"><img src="icons/passives/marauder.webp" alt="Мародер"><span class="equip-level"><b>0</b> ур.</span></div>
+          <div class="equip-slot equip-toggle" data-slot="passive-5" data-kind="passive" data-item="Презрение к боли" onclick="toggleEquipItem(this)" title="Презрение к боли"><img src="icons/passives/pain-contempt.webp" alt="Презрение к боли"><span class="equip-level"><b>0</b> ур.</span></div>
+          <div class="equip-slot equip-toggle" data-slot="passive-6" data-kind="passive" data-item="Расторопность" onclick="toggleEquipItem(this)" title="Расторопность"><img src="icons/passives/speed.webp" alt="Расторопность"><span class="equip-level"><b>0</b> ур.</span></div>
           <div class="equip-slot"><img src="icons/book-adm.webp" alt="Книга Адмов" title="Книга Адмов"></div>
           <div class="equip-slot equip-toggle" data-slot="armor-0" data-kind="armor" data-item="Бессмертная доблесть" onclick="toggleEquipItem(this)" title="Бессмертная доблесть"><img src="icons/items/armor-valor.png" alt="Бессмертная доблесть"><span class="equip-info" onclick="event.stopPropagation(); showItemInfo('Бессмертная доблесть')">i</span></div>
           <div class="equip-slot"><img src="icons/cloak-heavy.png" alt="Плащ" title="Плащ"></div>
@@ -3739,12 +3752,26 @@ function renderEquipSlots(){
     }
   });
   if (typeof updateResistDisplay === 'function') updateResistDisplay();
+  if (typeof updateEquipLevels === 'function') updateEquipLevels();
 }
 // первичная отрисовка экипировки (не зависит от window.onload)
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', renderEquipSlots);
 else renderEquipSlots();
 
 let _pickerSlot = null;
+// Уровни пассивок на иконках экипировки — из того же хранилища, что и вкладка «Пассивки»
+function updateEquipLevels(){
+  let levels = {};
+  try { levels = JSON.parse(localStorage.getItem('rpg_books_levels_final_verified_v8') || '{}'); } catch (e) {}
+  document.querySelectorAll('.equip-slot[data-kind="passive"][data-item]').forEach(slot => {
+    const box = slot.querySelector('.equip-level');
+    if (!box) return;
+    slot.classList.add('has-level');
+    const num = box.querySelector('b');
+    if (num) num.textContent = levels[slot.dataset.item] || 0;
+  });
+}
+
 window.toggleEquipItem = function(el){
   const eq = getEquip();
   const key = el.dataset.slot;
