@@ -3186,12 +3186,8 @@ return Math.min(100, Math.floor(resist));
 const RESIST_RUNES_KEY = 'rpg_resist_runes';
 function getResistRunes() {
 const raw = localStorage.getItem(RESIST_RUNES_KEY);
-if (raw !== null && raw !== '') {
-const n = parseInt(raw) || 0;
-// восстановление после старой ошибки: руны 0, а сохранённый % больше нуля
-if (n === 0) { const back = deriveResistRunes(); if (back > 0) return back; }
-return n;
-}
+// ноль здесь осознанный выбор пользователя, выводить руны заново нельзя
+if (raw !== null && raw !== '') return parseInt(raw) || 0;
 return deriveResistRunes();
 }
 // Первый запуск: восстанавливаем руны из сохранённого %.
@@ -3924,9 +3920,10 @@ function renderAdmBook(){
 }
 window.toggleAdmParam = function(key){
   const d = getAdmBook();
+  const pm = ADM_PARAMS.find(x => x.k === key);
   const cur = d[key] || { on: false, v: 0 };
   // значение запоминается и после выключения — вернёшь галку, число на месте
-  d[key] = { on: !cur.on, v: cur.v || 0 };
+  d[key] = { on: !cur.on, v: pm ? admClamp(pm, cur.v || 0) : (cur.v || 0) };
   setAdmBook(d);
   renderAdmBook();
   if (typeof saveAllDataToVK === 'function') saveAllDataToVK();
@@ -3952,7 +3949,7 @@ window.editAdmValue = function(key, span){
   const finish = () => {
     if (done) return; done = true;
     const raw = parseInt(input.value, 10);
-    const v = admClamp(pm, isNaN(raw) ? 0 : raw);
+    const v = admClamp(pm, isNaN(raw) ? (cur.v || 0) : raw);
     const cd = getAdmBook();
     cd[key] = { on: true, v: v };
     setAdmBook(cd);

@@ -210,7 +210,7 @@ function findLevelForActiveTarget(skillName, targetDamage, stats) {
     const MAX = 9999999;
     // Цель выше достижимого — ставим максимум, доступный в приложении
     if (getDmg(MAX) < targetDamage) return MAX;
-    let lo = 1, hi = MAX, res = null;
+    let lo = 0, hi = MAX, res = null;
     for (let i = 0; i < 64 && lo <= hi; i++) {
         const mid = Math.floor((lo + hi) / 2);
         if (getDmg(mid) >= targetDamage) { res = mid; hi = mid - 1; } else { lo = mid + 1; }
@@ -244,7 +244,7 @@ function findLevelForActivePercent(skillName, key, target) {
     if (top == null) return null;
     // Цель выше достижимого — ставим максимум, доступный в приложении
     if (top < target) return MAX;
-    let lo = 1, hi = MAX, res = null;
+    let lo = 0, hi = MAX, res = null;
     for (let i = 0; i < 64 && lo <= hi; i++) {
         const mid = Math.floor((lo + hi) / 2);
         if (getV(mid) >= target) { res = mid; hi = mid - 1; } else { lo = mid + 1; }
@@ -906,7 +906,7 @@ function findLevelByTargetPassive(bookName, key, target) {
     // Цель за пределом возможного — ставим максимум (значение упрётся в кап книги)
     const limit = getVal(MAX);
     if (increasing ? (target > limit) : (target < limit)) return MAX;
-    let lo = 1, hi = MAX, res = null;
+    let lo = 0, hi = MAX, res = null;
     for (let i = 0; i < 64 && lo <= hi; i++) {
         const mid = Math.floor((lo + hi) / 2);
         const eff = getVal(mid);
