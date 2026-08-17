@@ -979,37 +979,29 @@ border-bottom: 1px solid var(--separator-color);
 cursor: pointer;
 -webkit-tap-highlight-color: transparent;
 }
-.adm-check {
-width: 16px;
-height: 16px;
-border-radius: 5px;
+.adm-mark {
+width: 10px;
 flex: none;
-border: 1px solid var(--text-secondary);
-display: flex;
-align-items: center;
-justify-content: center;
 font-size: 11px;
-color: transparent;
+line-height: 1;
+text-align: center;
+color: #5a5f68;
 }
-.adm-row.on .adm-check {
-background-color: var(--accent);
-border-color: var(--accent);
-color: #fff;
-}
-.adm-name { flex: 1; font-size: 13px; color: var(--text-secondary); }
-.adm-row.on .adm-name { color: var(--text-main); }
+.adm-mark.up { color: #e04b4b; }
+.adm-mark.down { color: #8a2f2f; }
+.adm-text { flex: 1; min-width: 0; }
+.adm-name { display: block; font-size: 13px; color: var(--text-secondary); }
+.adm-row.on .adm-name { color: var(--text-main); font-weight: 500; }
+.adm-range { display: block; font-size: 10px; color: #7a7f87; margin-top: 1px; }
 .adm-val {
+flex: none;
 font-size: 13px;
 font-weight: 700;
 min-width: 46px;
 text-align: right;
 color: var(--text-secondary);
 }
-.adm-row.on .adm-val { border-bottom: 1px dashed var(--text-secondary); }
-.adm-row.on .adm-val.plus { color: #97C459; }
-.adm-row.on .adm-val.minus { color: #F09595; }
-.adm-row.on .adm-val.zero { color: var(--text-main); }
-.adm-range { font-size: 10px; color: #7a7f87; min-width: 58px; text-align: right; }
+.adm-row.on .adm-val { color: var(--text-main); border-bottom: 1px dashed var(--text-secondary); }
 .adm-val-input {
 width: 46px;
 background: transparent;
@@ -3937,20 +3929,25 @@ function renderAdmBook(){
     row.className = 'adm-row' + (on ? ' on' : '');
     row.dataset.admKey = pm.k;
     row.onclick = () => toggleAdmParam(pm.k);
-    const check = document.createElement('span');
-    check.className = 'adm-check';
-    check.textContent = '✓';
+    // маркер как в игре: вверх — параметр в плюс, вниз — в минус
+    const mark = document.createElement('span');
+    const dir = on ? (v > 0 ? 'up' : v < 0 ? 'down' : '') : '';
+    mark.className = 'adm-mark' + (dir ? ' ' + dir : '');
+    mark.textContent = dir === 'up' ? '▲' : dir === 'down' ? '▼' : '•';
+    const text = document.createElement('span');
+    text.className = 'adm-text';
     const name = document.createElement('span');
     name.className = 'adm-name';
     name.textContent = pm.n;
-    const val = document.createElement('span');
-    val.className = 'adm-val ' + (v > 0 ? 'plus' : v < 0 ? 'minus' : 'zero');
-    val.textContent = on ? admSign(v) + '%' : '—';
-    val.onclick = (e) => { e.stopPropagation(); editAdmValue(pm.k, val); };
     const range = document.createElement('span');
     range.className = 'adm-range';
-    range.textContent = admSign(pm.lo) + '…' + admSign(pm.hi) + '%';
-    row.appendChild(check); row.appendChild(name); row.appendChild(val); row.appendChild(range);
+    range.textContent = 'от ' + admSign(pm.lo) + '% до ' + admSign(pm.hi) + '%';
+    text.appendChild(name); text.appendChild(range);
+    const val = document.createElement('span');
+    val.className = 'adm-val';
+    val.textContent = on ? admSign(v) + '%' : '—';
+    val.onclick = (e) => { e.stopPropagation(); editAdmValue(pm.k, val); };
+    row.appendChild(mark); row.appendChild(text); row.appendChild(val);
     list.appendChild(row);
   });
   const chosen = document.getElementById('admChosen');
