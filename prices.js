@@ -106,7 +106,6 @@ async function loadPricesData() {
             try { localStorage.setItem(PRICES_LS_KEY, JSON.stringify({ t: _pricesFetchedAt, d: data })); } catch (e) {}
             return data;
         } catch (error) {
-            console.log('Цены недоступны, берём из локального кэша:', error.message);
             _pricesFailedAt = Date.now();
             try {
                 const raw = localStorage.getItem(PRICES_LS_KEY);

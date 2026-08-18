@@ -103,7 +103,6 @@ function calculateActiveDamage(skillName, level, stats) {
                 return skill.calc ? skill.calc(level) : '?';
         }
     } catch (e) {
-        console.log('Ошибка расчета для', skillName, e);
         return '?';
     }
 }
@@ -484,7 +483,6 @@ async function updateActiveBookPrice(bookElement, bookName, level) {
             }
         }
     } catch (e) {
-        console.log('Ошибка обновления цены для', bookName);
     }
 }
 
@@ -1012,7 +1010,6 @@ async function updatePassiveBookPrice(bookElement, bookName, level) {
             }
         }
     } catch (e) {
-        console.log('Ошибка обновления цены для', bookName);
     }
 }
 
