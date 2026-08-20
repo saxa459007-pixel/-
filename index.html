@@ -1145,17 +1145,18 @@ display: flex;
 align-items: center;
 flex-wrap: wrap;
 gap: 6px;
-font-size: 13px;
+font-size: 11px;
 color: var(--text-secondary);
 }
+.pvp-stat-icon { font-style: normal; font-size: 18px; line-height: 1; vertical-align: middle; }
 .pvp-warden-toggle { width: auto; height: auto; padding: 0; border: none; background: none; }
 .pvp-warden-toggle.on { background: none; border: none; }
 .pvp-warden-toggle img { width: 22px; height: 22px; }
 .pvp-target-stats b {
 color: var(--text-main);
+font-size: 14px;
 font-weight: 700;
 cursor: pointer;
-border-bottom: 1px dotted var(--text-secondary);
 }
 .pvp-target-input {
 width: 34px;
@@ -1163,7 +1164,7 @@ background: transparent;
 border: none;
 outline: none;
 color: var(--text-main);
-font-size: 13px;
+font-size: 14px;
 font-weight: 700;
 font-family: inherit;
 padding: 0;
@@ -2028,8 +2029,8 @@ display: none !important;
           <div class="pvp-target-name">👤 Противник</div>
           <div class="pvp-target-stats">
             <span>Хар-ки:</span>
-            <span>🛡️<b id="pvpTargetArmor" onclick="editPvpTarget('armor', this)">0</b>%</span>
-            <span>🔰<b id="pvpTargetResist" onclick="editPvpTarget('resist', this)">0</b>%</span>
+            <span><i class="pvp-stat-icon">🛡️</i><b id="pvpTargetArmor" onclick="editPvpTarget('armor', this)">0</b>%</span>
+            <span><i class="pvp-stat-icon">🔰</i><b id="pvpTargetResist" onclick="editPvpTarget('resist', this)">0</b>%</span>
             <label class="speed-toggle pvp-warden-toggle" id="pvpWardenToggle" title="Доспех смотрителя">
               <input type="checkbox" id="pvpWardenCheckbox" onchange="togglePvpWarden()">
               <img src="icons/items/armor-warden.png" alt="Доспех смотрителя">
