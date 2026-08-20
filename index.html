@@ -12,7 +12,7 @@
 --nav-bg: #2b2e33;
 --text-main: #ffffff;
 --text-secondary: #b0b3b8;
---accent: #5865F2;
+--accent: var(--text-main);
 --input-bg: #4a5059;
 --separator-color: #4a5057;
 --gold: #ffd700;
@@ -785,8 +785,8 @@ margin-left: 5px;
 }
 
 .redistribute-btn:hover {
-background-color: var(--accent);
-border-color: var(--accent);
+background-color: rgba(255,255,255,0.15);
+border-color: var(--text-secondary);
 }
 
 .redistribute-btn:active {
@@ -1122,8 +1122,9 @@ width: 100%;
 padding: 10px 15px;
 border: none;
 background: transparent;
-color: var(--accent);
+color: var(--text-main);
 font-size: 13px;
+font-weight: 500;
 font-family: inherit;
 cursor: pointer;
 -webkit-tap-highlight-color: transparent;
@@ -1275,11 +1276,11 @@ background-color: rgba(255,255,255,0.05);
 color: var(--text-main);
 }
 .bulk-level-btn:active {
-background-color: rgba(88, 101, 242, 0.2);
+background-color: rgba(255,255,255,0.2);
 }
 .bulk-level-btn.active {
 color: var(--accent);
-background-color: rgba(88, 101, 242, 0.15);
+background-color: rgba(255,255,255,0.15);
 }
 .bulk-level-btn svg {
 width: 20px;
@@ -1383,11 +1384,11 @@ background-color: rgba(255, 255, 255, 0.1);
 color: var(--text-main);
 }
 .bulk-panel-btn-apply {
-background-color: var(--accent);
-color: white;
+background-color: var(--text-main);
+color: var(--nav-bg);
 }
 .bulk-panel-btn-apply:hover {
-background-color: #4752c4;
+background-color: var(--text-secondary);
 }
 .no-results {
 text-align: center;
